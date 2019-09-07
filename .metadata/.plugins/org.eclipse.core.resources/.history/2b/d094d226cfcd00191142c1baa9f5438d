@@ -1,0 +1,79 @@
+package com.dam.portfolio;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.dam.exception.DamServiceException;
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.model.entity.MapAssetClassToPortfolioConstruction;
+import com.dam.portfolio.model.entity.MappedConstruction;
+import com.dam.portfolio.model.entity.PortfolioConstruction;
+
+/**
+ * Wird für die Gesamtkonstruktion der Portfolios benötigt. Stellt die
+ * Konstrukte zusammen und liefert sie zurück. Greift auf die DB zu.
+ * 
+ * @author dirk
+ *
+ */
+public class PortfolioStorageManager {
+
+	@Autowired
+	PortfolioConstructionStore portfolioConstructionStore;
+
+	@Autowired
+	AssetClassStore assetClassStore;
+
+	@Autowired
+	MapAssetClassToPortfolioConstructionStore mapStore;
+
+	public MappedConstruction getMappedConstruct(Long portfolioConstructionId) throws DamServiceException {
+		PortfolioConstruction construction = portfolioConstructionStore
+				.getPortfolioConstructionById(portfolioConstructionId);
+		if (null == construction) {
+			throw new DamServiceException(new Long(500), "Fehler bei Ermittlung MappedConstruction", "MappedConstruction zur ID nicht gefunden.");
+		}
+
+		List<MapAssetClassToPortfolioConstruction> mapEntries = mapStore
+				.getMapsByPortfolioConstructionId(portfolioConstructionId);
+		if (null == mapEntries || mapEntries.isEmpty()) {
+			throw new DamServiceException(new Long(500), "Fehler bei Ermittlung MappedConstruction", "Keine Mapping Einträge zur ID gefunden.");
+		}
+
+		List<AssetClass> assetClassList = new ArrayList<>();
+		Iterator<MapAssetClassToPortfolioConstruction> it = mapEntries.iterator();
+		while (it.hasNext()) {
+			MapAssetClassToPortfolioConstruction map = it.next();
+			assetClassList.add(assetClassStore.getAssetClassById(map.getAssetClassId()));
+		}
+
+		return new MappedConstruction(construction, assetClassList);
+	}
+
+	public Integer storeMappedConstruct(MappedConstruction mappedConstruction)  throws DamServiceException {
+		if (null == mappedConstruction || null == mappedConstruction.getPortfolioConstruction() || null == mappedConstruction.getPortfolioConstruction().getPortfolioConstructionId()) {
+			throw new DamServiceException(new Long(500), "Fehler bei Speichern einer MappedConstruction", "MappedConstruction ist null oder eines der Elemente ist null oder leer.");
+		}
+		
+		if (null == mappedConstruction.getAssetClasses() || mappedConstruction.getAssetClasses().isEmpty()) {
+			throw new DamServiceException(new Long(500), "Fehler bei Speichern einer MappedConstruction", "AssetClass Liste ist null oder leer.");
+		}
+		
+		Integer counter = new Integer(0);
+		Iterator<AssetClass> it = mappedConstruction.getAssetClasses().iterator();
+		while (it.hasNext()) {
+			MapAssetClassToPortfolioConstruction mapEntry = new MapAssetClassToPortfolioConstruction();
+			Long assetClassId = it.next().getAssetClassId();
+			mapEntry.setAssetClassId(assetClassId);
+			mapEntry.setPortfolioConstructionId(mappedConstruction.getPortfolioConstruction().getPortfolioConstructionId());
+			mapStore.createMapEntry(mapEntry);
+			counter++;
+		}
+		
+		return counter; 
+		
+	}
+}

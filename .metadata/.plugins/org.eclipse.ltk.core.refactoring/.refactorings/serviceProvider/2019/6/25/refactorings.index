@@ -1,0 +1,22 @@
+1560874960128	Delete element
+1560875454483	Rename package 'com.dam.rest.serviceDelegation'
+1560875754676	Rename package 'serviceProvider'
+1560879057102	Encapsulate field 'jsonMessage'
+1560879101860	Delete element
+1560880955184	Rename type 'LoginRequest'
+1560881270829	Encapsulate field 'jsonMessage'
+1560881283600	Encapsulate field 'password'
+1560882686269	Rename type 'UserServiceConsumer'
+1560883250505	Copy compilation unit
+1560892100000	Copy compilation unit
+1560896507977	Encapsulate field 'token'
+1560939601519	Encapsulate field 'protocol'
+1560947370055	Delete element
+1560964379198	Rename field 'result'
+1560965526777	Rename type 'Controller'
+1560978961719	Copy compilation unit
+1560980727648	Copy compilation unit
+1561032887599	Copy compilation unit
+1561050476614	Delete element
+1561052097632	Rename local variable 'wrappedRequest'
+1561074431161	Rename method 'put'

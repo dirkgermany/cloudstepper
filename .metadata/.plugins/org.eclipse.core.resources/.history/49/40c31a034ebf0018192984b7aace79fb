@@ -1,0 +1,10 @@
+server.port=8040
+
+webclient.person.port=8050
+webclient.person.host=localhost
+
+webclient.organization.port=8060
+webclient.organization.host=localhost
+
+webclient.communication.port=8070
+webclient.organization.host=localhost

@@ -1,0 +1,145 @@
+package com.dam.portfolio.model.entity;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.springframework.stereotype.Component;
+
+import com.dam.portfolio.types.Risc;
+
+@Entity
+@Component
+@Table(name = "PortfolioConstruction")
+public class PortfolioConstruction {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long portfolioConstructionId;
+	
+	@Column(nullable=false, unique=true)
+	private String constructionName;
+	
+
+	@Column(nullable=false)
+	@Enumerated(EnumType.STRING)
+	private Risc risc;
+	
+	@Column(nullable=false)
+	private Float callMoneyPct;
+
+	@Column(nullable=false)
+	private Float goldPct;
+	
+	@Column(nullable=false)
+	private Float loanPct;
+	
+	@Column(nullable=false)
+	private Float sharePct;
+
+	@Column(nullable=false)
+	private Date validFrom;
+
+	@Column(nullable=false)
+	private Date validUntil;
+
+	public PortfolioConstruction () {	
+	}
+	
+	public PortfolioConstruction (Risc risc, Float callMoneyPct, Float goldPct, Float loanPct, Float sharePct, Date validFrom, Date validUntil) {
+	}
+
+	public Long getPortfolioConstructionId() {
+		return portfolioConstructionId;
+	}
+
+	public void setPortfolioConstructionId(Long portfolioConstructionId) {
+		this.portfolioConstructionId = portfolioConstructionId;
+	}
+
+	public Risc getRisc() {
+		return risc;
+	}
+
+	public void setRisc(Risc risc) {
+		this.risc = risc;
+	}
+
+	public Float getCallMoneyPct() {
+		return callMoneyPct;
+	}
+
+	public void setCallMoneyPct(Float callMoneyPct) {
+		this.callMoneyPct = callMoneyPct;
+	}
+
+	public Float getGoldPct() {
+		return goldPct;
+	}
+
+	public void setGoldPct(Float goldPct) {
+		this.goldPct = goldPct;
+	}
+
+	public Float getLoanPct() {
+		return loanPct;
+	}
+
+	public void setLoanPct(Float loanPct) {
+		this.loanPct = loanPct;
+	}
+
+	public Float getSharePct() {
+		return sharePct;
+	}
+
+	public void setSharePct(Float sharePct) {
+		this.sharePct = sharePct;
+	}
+
+	public Date getValidFrom() {
+		return validFrom;
+	}
+
+	public void setValidFrom(Date validFrom) {
+		this.validFrom = validFrom;
+	}
+
+	public Date getValidUntil() {
+		return validUntil;
+	}
+
+	public void setValidUntil(Date validUntil) {
+		this.validUntil = validUntil;
+	}
+	
+	public PortfolioConstruction updateEntity (PortfolioConstruction container) {
+		setConstructionName(container.getConstructionName());
+		setCallMoneyPct(container.getCallMoneyPct());
+		setGoldPct(container.getGoldPct());
+		setLoanPct(container.getLoanPct());
+		setRisc(container.getRisc());
+		setSharePct(container.getSharePct());
+		setValidFrom(container.getValidFrom());
+		setValidUntil(container.getValidUntil());
+		
+		return this;
+	}
+
+	public String getConstructionName() {
+		return constructionName;
+	}
+
+	public void setConstructionName(String constructionName) {
+		this.constructionName = constructionName;
+	}
+	
+}

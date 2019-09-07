@@ -1,0 +1,21 @@
+package com.dam.portfolio.rest.message.mapAssetClassToPortfolioConstruction;
+
+import com.dam.portfolio.model.entity.AssetClassToPortfolioMap;
+import com.dam.portfolio.rest.message.RestResponse;
+
+public abstract class AssetClassToPortfolioConstructionMapWriteResponse extends RestResponse{
+    private AssetClassToPortfolioMap map;
+	
+	public AssetClassToPortfolioConstructionMapWriteResponse(Long result, String shortStatus, String longStatus, AssetClassToPortfolioMap map) {
+		super(result, shortStatus, longStatus);
+		setMapAssetClassToPortfolioConstruction(map);
+	}
+
+	private void setMapAssetClassToPortfolioConstruction(AssetClassToPortfolioMap map) {
+		this.map = map;
+	}
+	
+	public AssetClassToPortfolioMap getMapAssetClassToPortfolioConstruction() {
+		return map;
+	}
+}

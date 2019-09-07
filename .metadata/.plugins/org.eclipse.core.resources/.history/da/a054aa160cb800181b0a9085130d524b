@@ -1,0 +1,35 @@
+package photocrm.mapping;
+
+import photocrm.model.OrganizationEntity;
+import services.photocrm.entity_service_organization.InsertOrganizationRequest;
+import services.photocrm.entity_service_organization.Organization;
+import services.photocrm.entity_service_organization.OrganizationType;
+
+public class OrganizationMapper {
+	
+	public static Organization entityToXml (OrganizationEntity entity) {
+		Organization organizationXml = new Organization();
+		organizationXml.setOrganizationType(entity.getOrganizationType());
+		organizationXml.setId(entity.getId());
+		organizationXml.setClientId(entity.getClientId());
+		organizationXml.setName(entity.getName());
+		return organizationXml;
+	}
+	
+	public static OrganizationEntity xmlToEntity (Organization xml) {
+		OrganizationEntity entity = new OrganizationEntity();
+		entity.setOrganizationType(xml.getOrganizationType());
+		entity.setId(xml.getId());
+		entity.setClientId(xml.getClientId());
+		entity.setName(xml.getName());
+		return entity;
+	}
+	
+	public static OrganizationEntity requestToEntity (InsertOrganizationRequest request) {
+		OrganizationEntity entity = new OrganizationEntity();
+		entity.setOrganizationType(OrganizationType.valueOf(request.getOrganizationTypeString()));
+		entity.setClientId(request.getClientId());
+		return entity;
+	}
+
+}

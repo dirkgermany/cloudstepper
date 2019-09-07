@@ -1,0 +1,49 @@
+package hello.endpoint;
+
+import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
+import services.photocrm.soap_soap_service.ComplexCurrency;
+import services.photocrm.soap_soap_service.ComplexCountry;
+
+
+@Component
+public class CountryRepository {
+	private static final Map<String, ComplexCountry> countries = new HashMap<>();
+
+	@PostConstruct
+	public void initData() {
+		ComplexCountry spain = new ComplexCountry();
+		spain.setName("Spain");
+		spain.setCapital("Madrid");
+		spain.setCurrency(ComplexCurrency.EUR);
+		spain.setPopulation(46704314);
+
+		countries.put(spain.getName(), spain);
+
+		ComplexCountry poland = new ComplexCountry();
+		poland.setName("Poland");
+		poland.setCapital("Warsaw");
+		poland.setCurrency(ComplexCurrency.PLN);
+		poland.setPopulation(38186860);
+
+		countries.put(poland.getName(), poland);
+
+		ComplexCountry uk = new ComplexCountry();
+		uk.setName("United Kingdom");
+		uk.setCapital("London");
+		uk.setCurrency(ComplexCurrency.GBP);
+		uk.setPopulation(63705000);
+
+		countries.put(uk.getName(), uk);
+	}
+
+	public ComplexCountry findCountry(String name) {
+		Assert.notNull(name, "The country's name must not be null");
+		return countries.get(name);
+	}
+}

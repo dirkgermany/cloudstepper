@@ -1,0 +1,22 @@
+package com.dam.portfolio.rest.message.mappedConstruction;
+
+import com.dam.portfolio.model.entity.MappedConstruction;
+import com.dam.portfolio.rest.message.RestRequest;
+
+public abstract class MappedConstructionWriteRequest extends RestRequest {
+
+	private MappedConstruction mappedConstruction;
+
+    public MappedConstructionWriteRequest(Long requestorUserId, MappedConstruction mappedConstruction) {
+		super("DAM 2.0");
+    }
+
+	public MappedConstruction getMappedConstruction() {
+		return this.mappedConstruction;
+	}
+
+	public void setMapAssetClassToPortfolioConstruction(MappedConstruction mappedConstruction) {
+		this.mappedConstruction = mappedConstruction;
+	}
+    
+}

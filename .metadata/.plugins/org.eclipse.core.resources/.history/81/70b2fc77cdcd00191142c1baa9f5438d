@@ -1,0 +1,10 @@
+package com.dam.portfolio.rest.message.mappedConstruction;
+
+import com.dam.portfolio.model.entity.MapAssetClassToPortfolioConstruction;
+
+public class MappedConstructionUpdateRequest extends MapAssetClassToPortfolioConstructionWriteRequest {
+
+    public MappedConstructionUpdateRequest(Long requestorUserId, MapAssetClassToPortfolioConstruction map) {
+    	super (requestorUserId, map);
+    }
+}

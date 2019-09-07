@@ -1,0 +1,10 @@
+package com.dam.portfolio.rest.message.RelationAssetClassToPortfolioConstruction;
+
+import com.dam.portfolio.rest.message.RestResponse;
+
+public class RelationAssetClassPortfolioConstructionDropResponse extends RestResponse{
+    	
+	public RelationAssetClassPortfolioConstructionDropResponse (Long result) {
+		super(result, "OK", "AssetClass dropped");
+	}  
+}

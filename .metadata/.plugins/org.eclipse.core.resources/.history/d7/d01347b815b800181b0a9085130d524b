@@ -1,0 +1,61 @@
+//
+// Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.7 generiert 
+// Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2018.09.14 um 01:57:11 PM CEST 
+//
+
+
+package services.photocrm.entity_service_organization;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java-Klasse für anonymous complex type.
+ * 
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * 
+ * <pre>
+ * &lt;complexType>
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "id"
+})
+@XmlRootElement(name = "getOrganizationByIdRequest")
+public class GetOrganizationByIdRequest {
+
+    protected int id;
+
+    /**
+     * Ruft den Wert der id-Eigenschaft ab.
+     * 
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Legt den Wert der id-Eigenschaft fest.
+     * 
+     */
+    public void setId(int value) {
+        this.id = value;
+    }
+
+}

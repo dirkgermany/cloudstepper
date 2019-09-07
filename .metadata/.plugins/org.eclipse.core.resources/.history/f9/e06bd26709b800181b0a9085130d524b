@@ -1,0 +1,50 @@
+package photocrm.endpoint;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+import photocrm.business.DoSomething;
+import photocrm.exception.ServiceException;
+import services.photocrm.entity_service_organization.GetOrganizationByClientAndIdRequest;
+import services.photocrm.entity_service_organization.GetOrganizationByClientAndIdResponse;
+import services.photocrm.entity_service_organization.GetOrganizationByIdRequest;
+import services.photocrm.entity_service_organization.GetOrganizationByIdResponse;
+import services.photocrm.entity_service_organization.InsertOrganizationRequest;
+import services.photocrm.entity_service_organization.InsertOrganizationResponse;
+import services.photocrm.entity_service_organization.UpdateOrganizationRequest;
+import services.photocrm.entity_service_organization.UpdateOrganizationResponse;
+
+@Endpoint
+public class OrganizationEndpoint {
+	private static final String NAMESPACE_URI = "http://photocrm.services/entity-service-organization";
+
+	@Autowired
+	private DoSomething doSomething;
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "insertOrganizationRequest")
+	@ResponsePayload
+	public InsertOrganizationResponse insertOrganization(@RequestPayload InsertOrganizationRequest request) throws ServiceException { 
+		return doSomething.insertOrganization(request);
+	}
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "getOrganizationByIdRequest")
+	@ResponsePayload
+	public GetOrganizationByIdResponse getOrganizationById(@RequestPayload GetOrganizationByIdRequest request) throws ServiceException{
+		return doSomething.getOrganizationById(request);
+	}
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "getOrganizationByClientAndIdRequest")
+	@ResponsePayload
+	public GetOrganizationByClientAndIdResponse getOrganizationByClientAndId(@RequestPayload GetOrganizationByClientAndIdRequest request) throws ServiceException{
+		return doSomething.getOrganizationByClientAndId(request);
+	}
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "updateOrganizationRequest")
+	@ResponsePayload
+	public UpdateOrganizationResponse updateOrganization(@RequestPayload UpdateOrganizationRequest request) throws ServiceException{
+		return doSomething.updateOrganization(request);
+	}
+}

@@ -1,0 +1,11 @@
+package com.dam.person.rest.message;
+
+import com.dam.authentication.model.entity.Person;
+
+public class CreateResponse extends WriteResponse{
+
+	public CreateResponse(Person person) {
+		super(new Long(0), "OK", "Person Created", person);
+	}
+    	
+}

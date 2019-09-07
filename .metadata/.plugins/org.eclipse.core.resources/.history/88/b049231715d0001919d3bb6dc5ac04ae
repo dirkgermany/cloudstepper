@@ -1,0 +1,10 @@
+package com.dam.portfolio.rest.message.portfolio;
+
+import com.dam.portfolio.model.entity.Portfolio;
+
+public class ConstructionUpdateRequest extends ConstructionWriteRequest {
+
+    public ConstructionUpdateRequest(Long requestorUserId, Portfolio portfolio) {
+    	super (requestorUserId, portfolio);
+    }
+}

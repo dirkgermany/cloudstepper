@@ -1,0 +1,11 @@
+package com.dam.portfolio.rest.message.RelationAssetClassToPortfolioConstruction;
+
+import com.dam.portfolio.model.entity.AssetClass;
+
+public class RelationAssetClassToPortfolioConstructionUpdateResponse extends RelationAssetClassPortfolioConstructionWriteResponse{
+    	
+	public RelationAssetClassToPortfolioConstructionUpdateResponse (AssetClass assetClass) {
+		super(new Long(200), "OK", "AssetClass Updated", assetClass);
+	}  
+
+}

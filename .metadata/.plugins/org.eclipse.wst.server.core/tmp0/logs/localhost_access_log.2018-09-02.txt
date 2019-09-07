@@ -1,0 +1,17 @@
+127.0.0.1 - - [02/Sep/2018:21:47:25 +0200] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:16:23 +0200] "GET /CrunchifyWSClient/sampleCrunchifyHelloWorldProxy/TestClient.jsp?endpoint=http://localhost:5922/CrunchifyWS/services/CrunchifyHelloWorld HTTP/1.1" 404 1145
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:16:23 +0200] "GET /favicon.ico HTTP/1.1" 404 1085
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:20:16 +0200] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:21:25 +0200] "GET /CrunchifyWSClient/sampleCrunchifyHelloWorldProxy/TestClient.jsp?endpoint=http://localhost:5922/CrunchifyWS/services/CrunchifyHelloWorld HTTP/1.1" 404 1145
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:33:21 +0200] "GET /manager/html HTTP/1.1" 404 1090
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:33:29 +0200] "GET / HTTP/1.1" 404 1074
+127.0.0.1 - - [02/Sep/2018:22:36:18 +0200] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:40:19 +0200] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:42:50 +0200] "GET /WebserviceHelloWorld HTTP/1.1" 404 1094
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:47:07 +0200] "GET /?wsdl HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:22:55:14 +0200] "GET /manager/status HTTP/1.1" 404 1092
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:23:02:32 +0200] "GET /manager/status HTTP/1.1" 404 1092
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:23:02:33 +0200] "GET /manager/status HTTP/1.1" 404 1092
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:23:02:34 +0200] "GET /manager/status HTTP/1.1" 404 1092
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:23:02:43 +0200] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [02/Sep/2018:23:04:46 +0200] "GET / HTTP/1.1" 404 1074

@@ -1,0 +1,25 @@
+package com.dam.portfolio.types;
+
+public enum AssetClassType {
+	
+	CONSERVATIVE ("konservativ"),
+	MODERATE ("moderat"),
+	BALANCED ("ausgewogen"),
+	DEDICATED ("chancenorientiert"),
+	RISKY ("risikobereit");
+	
+	private String meaning;
+	
+	AssetClassType() {
+		
+	}
+	
+	AssetClassType (String meaning) {
+		this.meaning = meaning;
+	}
+	
+	public String getMeaning() {
+		return meaning;
+	}
+
+}

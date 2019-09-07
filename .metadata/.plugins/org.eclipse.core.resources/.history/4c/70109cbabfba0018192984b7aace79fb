@@ -1,0 +1,54 @@
+package hello.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
+
+import hello.ConfigProperties;
+import hello.wsdl.GetCountryRequest;
+import hello.wsdl.GetCountryResponse;
+import hello.wsdl.InsertCountryRequest;
+import hello.wsdl.InsertCountryResponse;
+
+public class CountryClient extends WebServiceGatewaySupport {
+
+	private static final Logger log = LoggerFactory.getLogger(CountryClient.class);
+	
+	public GetCountryResponse getCountry(GetCountryRequest request) {
+		log.info("Test bla " + request.getId());
+
+		// Configuration
+		ConfigProperties config = new ConfigProperties();
+		try {
+			GetCountryResponse response = (GetCountryResponse) getWebServiceTemplate().marshalSendAndReceive(
+					"http://" + config.getPerson().getHost() + ":" + config.getPerson().getPort() + "/ws/countries", request,
+					new SoapActionCallback("http://photocrm.services/soap-db-service/GetCountryRequest"));
+			return response;
+		} catch (Exception ex) {
+			System.out.println("FEHLER " + ex);
+			log.error(ex.getMessage());
+			return null;
+		}
+		
+	}
+
+	public InsertCountryResponse insertCountry(InsertCountryRequest request) {
+
+		log.info("Requesting location for " + request.getName());
+
+		try {
+			InsertCountryResponse response = (InsertCountryResponse) getWebServiceTemplate().marshalSendAndReceive(
+					"http://localhost:8080/ws/countries", request,
+					new SoapActionCallback("http://photocrm.services/soap-db-service/InsertCountryRequest"));
+//					new SoapActionCallback("http://spring.io/guides/gs-producing-web-service/GetCountryRequest"));
+			return response;
+		} catch (Exception ex) {
+			System.out.println("FEHLER " + ex);
+			log.error(ex.getMessage());
+			return null;
+		}
+	}
+
+}

@@ -1,0 +1,15 @@
+package photocrm.mapping;
+
+import external.wsdl.InsertOrganizationRequest;
+import services.photocrm.soap_soap_service.CreateOrganizationRequest;
+
+public class OrganizationMapper {
+
+	public static InsertOrganizationRequest incomingRequestToOutgoingRequest (CreateOrganizationRequest incomingRequest) {
+		InsertOrganizationRequest outgoingRequest = new InsertOrganizationRequest();
+		outgoingRequest.setClientId(incomingRequest.getClientId());
+		outgoingRequest.setName(incomingRequest.getName());
+		outgoingRequest.setOrganizationTypeString(incomingRequest.getOrganizationTypeString());
+		return outgoingRequest;
+	}
+}

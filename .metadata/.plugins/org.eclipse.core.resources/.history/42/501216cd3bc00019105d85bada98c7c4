@@ -1,0 +1,42 @@
+package com.dam.authentication.model;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
+
+import com.dam.authentication.model.entity.Permission;
+
+@Transactional
+public interface PermissionModel extends Repository<Permission, Long>, CrudRepository<Permission, Long> {
+
+//	List<User> findByUserName(String userName);
+	Optional<Permission> findByUserId(Long userId);
+//	List<User> findByClientId(int clientId);
+
+	@Query("SELECT person FROM Person person where person.givenName = :givenName "
+			+ "AND person.lastName = :lastName")
+	List<Permission> getPersonByNames(@Param("givenName") String givenName, @Param("lastName") String lastName);
+//	
+//	@Query("SELECT pers FROM PersonEntity pers where pers.clientId = :clientId "
+//			+ "AND UPPER(pers.foreName) = UPPER(:foreName) "
+//			+ "AND UPPER(pers.surName) = UPPER(:surName)")
+//	PersonEntity findPersonByNames(@Param("clientId") int clientId, @Param("foreName") String foreName, @Param("surName") String surName);
+	
+	@Modifying
+	@Transactional
+	@Query("Update Person person set "
+	        + "person.userId = :#{#person.userId}, "
+	        + "person.givenName = :#{#person.givenName}, "
+	        + "person.personType = :#{#person.personType}, "
+	        + "person.gender = :#{#person.gender}, "
+			+ "person.lastName = :#{#person.lastName} "
+			+ "Where person.personId = :#{#person.personId} ")
+	Integer updatePerson(@Param("person") Permission permission);
+}

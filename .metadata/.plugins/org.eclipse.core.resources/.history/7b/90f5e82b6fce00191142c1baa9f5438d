@@ -1,0 +1,11 @@
+package com.dam.portfolio.rest.message.mappedConstruction;
+
+import com.dam.portfolio.model.entity.MappedConstruction;
+
+public class MappedConstructionCreateRequest extends MappedConstructionWriteRequest {
+
+    public MappedConstructionCreateRequest(Long requestorUserId, MappedConstruction mappedConstruction) {
+		super(requestorUserId, mappedConstruction);
+    }
+    
+}

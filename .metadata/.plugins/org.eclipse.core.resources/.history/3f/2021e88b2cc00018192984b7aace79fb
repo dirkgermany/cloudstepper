@@ -1,0 +1,120 @@
+package photocrm;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ConfigurationProperties (prefix = "webclient")
+public class ConfigProperties {
+
+	// properties for service entity-service-person
+	public static class Person {
+		private String port;
+        private String host; 
+		
+		public String getPort() {
+			return port;
+		}
+		public void setPort(String port) {
+			this.port = port;
+		}
+		public String getHost() {
+			return host;
+		}
+		public void setHost(String host) {
+			this.host = host;
+		}
+    }
+  
+	// properties for service entity-service-organization
+	public static class Organization {
+		private String port;
+        private String host; 
+		
+		public String getPort() {
+			return port;
+		}
+		public void setPort(String port) {
+			this.port = port;
+		}
+		public String getHost() {
+			return host;
+		}
+		public void setHost(String host) {
+			this.host = host;
+		}
+    }
+
+	// properties for service entity-service-organization
+	public static class Address {
+		private String port;
+        private String host; 
+		
+		public String getPort() {
+			return port;
+		}
+		public void setPort(String port) {
+			this.port = port;
+		}
+		public String getHost() {
+			return host;
+		}
+		public void setHost(String host) {
+			this.host = host;
+		}
+    }
+	
+	// properties for service entity-service-organization
+	public static class Communication {
+		private String port;
+        private String host; 
+		
+		public String getPort() {
+			return port;
+		}
+		public void setPort(String port) {
+			this.port = port;
+		}
+		public String getHost() {
+			return host;
+		}
+		public void setHost(String host) {
+			this.host = host;
+		}
+    }
+
+
+	private Person person;
+	private Organization organization;
+	private Communication communication;
+	private Address address;
+	
+	public Organization getOrganization() {
+		return organization;
+	}
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
+	}
+	
+	public Person getPerson () {
+		return person;
+	}
+	public void setPerson(Person person) {
+		this.person=person;
+	}
+		
+	public Person getCommunication () {
+		return communication;
+	}
+	public void setPerson(Communication communication) {
+		this.communication=communication;
+	}
+		
+	public Person getAddress () {
+		return address;
+	}
+	public void setAddress(Address person) {
+		this.address=address;
+	}
+		
+}

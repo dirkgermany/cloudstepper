@@ -1,0 +1,33 @@
+package com.dam.portfolio.rest.message.RelationAssetClassToPortfolioConstruction;
+
+import com.dam.portfolio.model.entity.RelationAssetClassToPortfolioConstruction;
+import com.dam.portfolio.rest.message.RestRequest;
+
+public abstract class RelationAssetClassToPortfolioConstructionWriteRequest extends RestRequest {
+
+	private Long assetClassId;
+	private Long portfolioConstructionId;
+
+    public RelationAssetClassToPortfolioConstructionWriteRequest(Long requestorUserId, RelationAssetClassToPortfolioConstruction relation) {
+		super("DAM 2.0");
+    }
+
+	public Long getAssetClassId() {
+		return assetClassId;
+	}
+
+	public void setAssetClassId(Long assetClassId) {
+		this.assetClassId = assetClassId;
+	}
+
+	public Long getPortfolioConstructionId() {
+		return portfolioConstructionId;
+	}
+
+	public void setPortfolioConstructionId(Long portfolioConstructionId) {
+		this.portfolioConstructionId = portfolioConstructionId;
+	}
+        
+
+    
+}

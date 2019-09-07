@@ -1,0 +1,47 @@
+package photocrm.meta;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import external.wsdl.InsertOrganizationRequest;
+import external.wsdl.InsertOrganizationResponse;
+import external.wsdl.InsertPersonRelationRequest;
+import external.wsdl.InsertPersonRelationResponse;
+import photocrm.client.OrganizationClient;
+import photocrm.client.PersonClient;
+import photocrm.mapping.OrganizationMapper;
+import services.photocrm.soap_soap_service.AddPersonToCompanyRequest;
+import services.photocrm.soap_soap_service.AddPersonToCompanyResponse;
+import services.photocrm.soap_soap_service.CreateOrganizationRequest;
+import services.photocrm.soap_soap_service.CreateOrganizationResponse;
+
+@Component
+public class WebClientLayer {
+
+	@Autowired
+	OrganizationClient organizationClient;
+	@Autowired
+	PersonClient personClient;
+
+	public CreateOrganizationResponse createOrganization(CreateOrganizationRequest incomingRequest) {
+		// Prepare Request which will be sent to the Entity-Service
+		InsertOrganizationRequest outgoingRequest = new InsertOrganizationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		InsertOrganizationResponse outgoingResponse = organizationClient.insertOrganization(outgoingRequest);
+		CreateOrganizationResponse incomingResponse = new CreateOrganizationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+	
+	
+	
+	public AddPersonToOrganizationResponse addPersonToOrganization (AddPersonToOrganizationRequest incomingRequest) {
+		InsertPersonRelationRequest outgoingRequest = new InsertPersonRelationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		InsertPersonRelationResponse outgoingResponse = organizationClient.insertPersonRelation(outgoingRequest);
+		AddPersonToOrganizationResponse incomingResponse = new AddPersonToOrganizationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+}

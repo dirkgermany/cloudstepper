@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bindings version="2.1" xmlns="http://java.sun.com/xml/ns/jaxb">
+  <!--
+
+Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.11 generiert 
+Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+Generiert: 2018.09.11 um 11:06:54 AM CEST 
+
+  -->
+  <bindings scd="x-schema::tns" xmlns:tns="http://photocrm.services/soap-soap-service">
+    <schemaBindings map="false">
+      <package name="hello.wsdl"/>
+    </schemaBindings>
+    <bindings scd="tns:createCountryRequest">
+      <class ref="hello.wsdl.CreateCountryRequest"/>
+    </bindings>
+    <bindings scd="tns:createCountryResponse">
+      <class ref="hello.wsdl.CreateCountryResponse"/>
+    </bindings>
+    <bindings scd="~tns:complexCountry">
+      <class ref="hello.wsdl.ComplexCountry"/>
+    </bindings>
+    <bindings scd="~tns:complexCurrency">
+      <typesafeEnumClass ref="hello.wsdl.ComplexCurrency"/>
+    </bindings>
+  </bindings>
+  <bindings scd="x-schema::tns" xmlns:tns="http://photocrm.services/soap-db-service">
+    <schemaBindings map="false">
+      <package name="hello.wsdl"/>
+    </schemaBindings>
+    <bindings scd="tns:getCountryRequest">
+      <class ref="hello.wsdl.GetCountryRequest"/>
+    </bindings>
+    <bindings scd="tns:getCountryResponse">
+      <class ref="hello.wsdl.GetCountryResponse"/>
+    </bindings>
+    <bindings scd="~tns:country">
+      <class ref="hello.wsdl.Country"/>
+    </bindings>
+    <bindings scd="tns:insertCountryRequest">
+      <class ref="hello.wsdl.InsertCountryRequest"/>
+    </bindings>
+    <bindings scd="tns:insertCountryResponse">
+      <class ref="hello.wsdl.InsertCountryResponse"/>
+    </bindings>
+    <bindings scd="~tns:currency">
+      <typesafeEnumClass ref="hello.wsdl.Currency"/>
+    </bindings>
+  </bindings>
+</bindings>
+

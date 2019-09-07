@@ -1,0 +1,31 @@
+package com.dam.portfolio.model.entity;
+
+import java.util.List;
+
+public class MappedConstruction {
+	
+	private List<AssetClass> assetClasses;
+	private PortfolioConstruction portfolioConstruction;
+	
+	public MappedConstruction (PortfolioConstruction portfolioConstruction, List<AssetClass> assetClasses) {
+		setAssetClasses(assetClasses);
+		setPortfolioConstruction(portfolioConstruction);
+	}
+
+	public List<AssetClass> getAssetClasses() {
+		return assetClasses;
+	}
+
+	public void setAssetClasses(List<AssetClass> assetClasses) {
+		this.assetClasses = assetClasses;
+	}
+
+	public PortfolioConstruction getPortfolioConstruction() {
+		return portfolioConstruction;
+	}
+
+	public void setPortfolioConstruction(PortfolioConstruction portfolioConstruction) {
+		this.portfolioConstruction = portfolioConstruction;
+	}
+
+}

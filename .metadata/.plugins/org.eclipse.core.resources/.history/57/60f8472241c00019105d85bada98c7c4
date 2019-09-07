@@ -1,0 +1,11 @@
+package com.dam.authentication.rest.message;
+
+import com.dam.authentication.model.entity.Permission;
+
+public class CreateResponse extends WriteResponse{
+
+	public CreateResponse(Permission permission) {
+		super(new Long(0), "OK", "Person Created", permission);
+	}
+    	
+}

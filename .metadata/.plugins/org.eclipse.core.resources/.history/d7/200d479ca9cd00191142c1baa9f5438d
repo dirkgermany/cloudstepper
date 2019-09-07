@@ -1,0 +1,23 @@
+package com.dam.portfolio.rest.message.RelationAssetClassToPortfolioConstruction;
+
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.rest.message.RestResponse;
+
+public class RelationAssetClassToPortfolioConstructionResponse extends RestResponse{
+    private AssetClass construction;
+    	
+	public RelationAssetClassToPortfolioConstructionResponse (AssetClass assetClass) {
+		super(new Long(200), "OK", "AssetClass found");
+		
+		setAssetClass(construction);
+	}  
+
+	private void setAssetClass(AssetClass user) {
+		this.construction = user;
+	}
+	
+	public AssetClass getAssetClass() {
+		return this.construction;
+	}
+	
+}

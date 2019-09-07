@@ -1,0 +1,19 @@
+1536927609709	Rename resource 'person.xsd'
+1536929636500	Rename type 'PersonEndpoint'
+1536930793783	Rename type 'PersonMapper'
+1536930950190	Delete element
+1536931044174	Rename type 'PersonEntity'
+1536931068723	Rename type 'PersonFacade'
+1536931085409	Rename type 'PersonModel'
+1536931913247	Delete element
+1536933549891	Delete elements
+1537089243606	Rename type 'OrganizationMappingEntity'
+1537089257351	Rename type 'OrganizationMappingFacade'
+1537089271414	Rename type 'OrganizationMappingModel'
+1537089432780	Delete element
+1537091517271	Rename field 'personQueryModel'
+1537121331858	Delete element
+1537121511987	Delete element
+1537122475614	Delete element
+1537122627334	Delete element
+1537132758372	Delete element

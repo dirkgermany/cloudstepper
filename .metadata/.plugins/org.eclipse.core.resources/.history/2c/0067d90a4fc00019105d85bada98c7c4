@@ -1,0 +1,34 @@
+package com.dam.authentication.rest.message;
+
+import com.dam.authentication.model.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class GetUserResponse extends RestResponse{
+    private User user = new User();
+    
+    public GetUserResponse () {
+		super(new Long(0), "OK", "User or Token validated");
+    }
+    	
+	public GetUserResponse (User user) {
+		super(new Long(0), "OK", "User or Token validated");
+		
+		this.user = user;
+	}  
+	
+	public GetUserResponse(Long userId, String userName, String password, String givenName, String lastName) {
+		super(userId, "OK", "User or Token validated");
+		user = new User(userName, password, givenName, lastName);
+		
+	}
+	
+	public void setUser (User user) {
+		this.user = user;
+	}
+
+	public User getUser() {
+		return this.user;
+	}
+		
+}

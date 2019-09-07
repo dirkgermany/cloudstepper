@@ -1,0 +1,72 @@
+package photocrm.business;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import photocrm.client.CountryClient;
+import photocrm.mapping.CountryMapper;
+import photocrm.wsdl.GetCountryRequest;
+import photocrm.wsdl.GetCountryResponse;
+import photocrm.wsdl.InsertCountryRequest;
+import photocrm.wsdl.InsertCountryResponse;
+import services.photocrm.soap_soap_service.ComplexCountry;
+import services.photocrm.soap_soap_service.CreateCountryRequest;
+import services.photocrm.soap_soap_service.CreateCountryResponse;
+import services.photocrm.soap_soap_service.ComplexCurrency;
+
+@Component
+public class DoSomething {
+
+	@Autowired
+	CountryClient countryClient;
+
+	public CreateCountryResponse createCountry(CreateCountryRequest request) {
+
+		System.out.println("AUFRUF DoSomething");
+
+		InsertCountryRequest insertRequest = CountryMapper.complexToSimple(request);
+		GetCountryRequest getRequest = new GetCountryRequest();
+		getRequest.setId(1);
+
+		System.out.println("VOR Benutzung countryClient");
+		GetCountryResponse getCountryResponse = countryClient.getCountry(getRequest);
+		System.out.println("GET REQUEST: " + getCountryResponse);
+		System.out.println("GET REQUEST: " + getCountryResponse.getCountry().getName());
+
+		InsertCountryResponse insertCountryResponse = countryClient.insertCountry(insertRequest);
+		System.out.println("NACH Benutzung countryClient");
+
+		CreateCountryResponse response = null;
+		try {
+			ComplexCountry countryToSet = new ComplexCountry();
+			countryToSet = CountryMapper.simpleToComplex(insertCountryResponse.getCountry());
+			response = new CreateCountryResponse();
+			response.setComplexCountry(countryToSet);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return response;
+	}
+	
+	public GetCountryResponse getCountry(GetCountryRequest request) {
+
+		System.out.println("AUFRUF getCountry");
+		GetCountryRequest getRequest = new GetCountryRequest();
+		request.setId(request.getId());
+
+		System.out.println("VOR Benutzung countryClient");
+		GetCountryResponse response = null;
+		try {
+		response = countryClient.getCountry(getRequest);
+		System.out.println("GET REQUEST: " + response);
+		System.out.println("GET REQUEST: " + response.getCountry().getName());
+
+		System.out.println("NACH GET IM CLIENT");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return response;
+	}
+
+
+}

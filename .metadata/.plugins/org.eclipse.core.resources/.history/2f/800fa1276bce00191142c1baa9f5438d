@@ -1,0 +1,9 @@
+package com.dam.exception;
+
+public class EntityNotFoundException extends DamServiceException{
+
+	public EntityNotFoundException(Long errorId, String shortMsg, String description) {
+		super(errorId, shortMsg, description);
+	}
+
+}

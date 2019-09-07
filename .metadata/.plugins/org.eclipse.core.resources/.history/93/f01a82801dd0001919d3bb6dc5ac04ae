@@ -1,0 +1,24 @@
+package com.dam.portfolio.rest.message.mapAssetClassToPortfolio;
+
+import java.util.List;
+
+import com.dam.portfolio.model.entity.AssetClassToPortfolioMap;
+import com.dam.portfolio.rest.message.RestResponse;
+
+public class AddAssetClassToPortfolioMapResponse extends RestResponse{
+	
+	private List<AssetClassToPortfolioMap> maps;
+
+	public AddAssetClassToPortfolioMapResponse(List<AssetClassToPortfolioMap> maps) {
+		super (new Long(200), "OK", "Assets Added");
+	}
+
+	public List<AssetClassToPortfolioMap> getAssetClassPortfolioMaps() {
+		return maps;
+	}
+
+	public void setAssetClassPortfolioMaps(List<AssetClassToPortfolioMap> maps) {
+		this.maps = maps;
+	}
+    	
+}

@@ -1,0 +1,23 @@
+package com.dam.authentication.rest.message;
+
+import com.dam.authentication.model.entity.Permission;
+
+public abstract class WriteRequest extends RestRequest {
+
+	private Permission permission = new Permission();	
+
+    public WriteRequest(Long requestorUserId, Permission permission) {
+		super("DAM 2.0");
+		setPerson(permission);
+		setRequestorUserId(requestorUserId);
+    }
+        
+    public Permission getPerson() {
+    	return permission;
+    }
+
+	public void setPerson(Permission permission) {
+		this.permission = permission;
+	}
+    
+}

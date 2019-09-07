@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+	<section name="MavenProjectWizardArchetypePage">
+		<item value="All Catalogs" key="catalog"/>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+	<section name="wizardPage">
+		<list key="groupId">
+			<item value="dam"/>
+			<item value="PhotoCRM"/>
+			<item value="WebServices"/>
+			<item value="ProductCatalogSOAPService"/>
+		</list>
+		<list key="name">
+		</list>
+		<list key="artifactId">
+			<item value="dam"/>
+			<item value="PhotoCRM"/>
+			<item value="WebServices"/>
+			<item value="ProductCatalogSOAPService"/>
+		</list>
+		<list key="version">
+			<item value="0.0.1-SNAPSHOT"/>
+		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.ui.internal.wizards.CustomArchetypeDialog">
+		<list key="archetypeVersion">
+			<item value="2.22.0"/>
+		</list>
+		<list key="archetypeGroupId">
+			<item value="org.apache.camel.archetypes"/>
+		</list>
+		<list key="archetypeArtifactId">
+			<item value="camel-archetype-java"/>
+		</list>
+		<list key="repositoryUrl">
+			<item value=""/>
+		</list>
+	</section>
+	<section name="MavenProjectWizardArtifactPage">
+		<list key="groupId">
+		</list>
+		<list key="name">
+		</list>
+		<list key="artifactId">
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+		<list key="version">
+			<item value="0.0.1-SNAPSHOT"/>
+		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+		<list key="ciManagementUrl">
+			<item value="https://travis-ci.org/frank-rahn/microservicess"/>
+		</list>
+		<list key="ciManagementSystem">
+			<item value="Travis CI"/>
+		</list>
+		<list key="issueManagementSystem">
+			<item value="GitHub Issues"/>
+		</list>
+		<list key="issueManagementUrl">
+			<item value="https://github.com/frank-rahn/microservices/issues"/>
+		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.ui.internal.dialogs.EditDependencyDialog">
+		<item value="480" key="width"/>
+		<item value="26" key="x"/>
+		<item value="23" key="y"/>
+		<item value="450" key="height"/>
+	</section>
+	<section name="org.eclipse.m2e.core.ui.internal.dialogs.MavenRepositorySearchDialog">
+		<item value="480" key="width"/>
+		<item value="26" key="x"/>
+		<item value="23" key="y"/>
+		<item value="633" key="height"/>
+	</section>
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="/home/dirk/workspace/userrepo"/>
+			<item value="/home/dirk/workspace/microservice"/>
+			<item value="/home/dirk/workspace/spring-boot"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+	<section name="MavenCheckoutLocationPage">
+		<list key="scmUrl">
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+	<section name="MavenProjectWizardLocationPage">
+		<list key="location">
+			<item value="/home/dirk/workspace/photocrm/domain-service-organization/src/main/resources/application.properties"/>
+			<item value="/home/dirk/workspace/WebConnection"/>
+			<item value="/home/dirk/workspace/PhotoCRM"/>
+			<item value="/home/dirk/workspace"/>
+			<item value="/home/dirk/workspace/cameldemo"/>
+			<item value="/home/dirk/workspace/Servers/Tomcat v9.0 Server at localhost-config"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+	<section name="Maven2ProjectWizardArchifactPage">
+		<list key="package">
+			<item value="com.dam.rest.serviceDelegation"/>
+			<item value="com.dam.rest.authentication"/>
+			<item value="com.dam.rest.security"/>
+		</list>
+		<list key="groupId">
+			<item value="com.dam.rest"/>
+		</list>
+		<list key="artifactId">
+			<item value="serviceDelegation"/>
+			<item value="authentication"/>
+			<item value="security"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+		<list key="version">
+			<item value="0.0.1-SNAPSHOT"/>
+		</list>
+	</section>
+	<section name="org.eclipse.m2e.editor.dialogs.ManageDependenciesDialog">
+		<item value="803" key="width"/>
+		<item value="26" key="x"/>
+		<item value="23" key="y"/>
+		<item value="450" key="height"/>
+	</section>
+</section>

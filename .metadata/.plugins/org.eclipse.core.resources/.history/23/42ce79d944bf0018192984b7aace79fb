@@ -1,0 +1,181 @@
+//
+// Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.11 generiert 
+// Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2018.09.23 um 05:22:09 PM CEST 
+//
+
+
+package external.wsdl;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java-Klasse für anonymous complex type.
+ * 
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * 
+ * <pre>
+ * &lt;complexType&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="operationResult" type="{http://photocrm.services/entity-service-person}operationResult"/&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="clientId" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="parentEntity" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="parentId" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="childId" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "operationResult",
+    "id",
+    "clientId",
+    "parentEntity",
+    "parentId",
+    "childId"
+})
+@XmlRootElement(name = "insertPersonRelationResponse", namespace = "http://photocrm.services/entity-service-person")
+public class InsertPersonRelationResponse {
+
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    @XmlSchemaType(name = "string")
+    protected OperationResult operationResult;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person")
+    protected int id;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person")
+    protected int clientId;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String parentEntity;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person")
+    protected int parentId;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person")
+    protected int childId;
+
+    /**
+     * Ruft den Wert der operationResult-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link OperationResult }
+     *     
+     */
+    public OperationResult getOperationResult() {
+        return operationResult;
+    }
+
+    /**
+     * Legt den Wert der operationResult-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link OperationResult }
+     *     
+     */
+    public void setOperationResult(OperationResult value) {
+        this.operationResult = value;
+    }
+
+    /**
+     * Ruft den Wert der id-Eigenschaft ab.
+     * 
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Legt den Wert der id-Eigenschaft fest.
+     * 
+     */
+    public void setId(int value) {
+        this.id = value;
+    }
+
+    /**
+     * Ruft den Wert der clientId-Eigenschaft ab.
+     * 
+     */
+    public int getClientId() {
+        return clientId;
+    }
+
+    /**
+     * Legt den Wert der clientId-Eigenschaft fest.
+     * 
+     */
+    public void setClientId(int value) {
+        this.clientId = value;
+    }
+
+    /**
+     * Ruft den Wert der parentEntity-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getParentEntity() {
+        return parentEntity;
+    }
+
+    /**
+     * Legt den Wert der parentEntity-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setParentEntity(String value) {
+        this.parentEntity = value;
+    }
+
+    /**
+     * Ruft den Wert der parentId-Eigenschaft ab.
+     * 
+     */
+    public int getParentId() {
+        return parentId;
+    }
+
+    /**
+     * Legt den Wert der parentId-Eigenschaft fest.
+     * 
+     */
+    public void setParentId(int value) {
+        this.parentId = value;
+    }
+
+    /**
+     * Ruft den Wert der childId-Eigenschaft ab.
+     * 
+     */
+    public int getChildId() {
+        return childId;
+    }
+
+    /**
+     * Legt den Wert der childId-Eigenschaft fest.
+     * 
+     */
+    public void setChildId(int value) {
+        this.childId = value;
+    }
+
+}

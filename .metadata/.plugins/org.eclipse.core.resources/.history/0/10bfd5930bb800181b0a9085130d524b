@@ -1,0 +1,92 @@
+package photocrm.meta;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import photocrm.exception.ServiceException;
+import photocrm.exception.ServiceFault;
+import photocrm.mapping.OrganizationMapper;
+import photocrm.mapping.PersonMapper;
+import photocrm.model.OrganizationEntity;
+import photocrm.model.OrganizationFacade;
+import photocrm.model.PersonEntity;
+import photocrm.model.PersonFacade;
+import services.photocrm.entity_service_organization.GetOrganizationByClientAndIdRequest;
+import services.photocrm.entity_service_organization.GetOrganizationByClientAndIdResponse;
+import services.photocrm.entity_service_organization.GetOrganizationByIdRequest;
+import services.photocrm.entity_service_organization.GetOrganizationByIdResponse;
+import services.photocrm.entity_service_organization.InsertOrganizationRequest;
+import services.photocrm.entity_service_organization.InsertOrganizationResponse;
+import services.photocrm.entity_service_organization.OrganizationType;
+import services.photocrm.entity_service_organization.UpdateOrganizationRequest;
+import services.photocrm.entity_service_organization.UpdateOrganizationResponse;
+import services.photocrm.entity_service_person.InsertPersonResponse;
+import services.photocrm.entity_service_person.OperationResult;
+
+@Component
+public class DatabaseLayer {
+	private static final Logger log = LoggerFactory.getLogger(PersonFacade.class);
+
+	@Autowired
+	private OrganizationFacade organizationFacade;
+
+	public InsertOrganizationResponse insertOrganization(InsertOrganizationRequest request) {
+		OrganizationEntity organizationEntity =  OrganizationMapper.requestToEntity(request);
+		OrganizationEntity entityReturned = null;
+		try {
+			entityReturned = organizationFacade.insertOrganization(organizationEntity);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION INSERT ", "entity: " + organizationEntity));
+		}
+
+		if (null == entityReturned) {
+			throw new ServiceException("ERROR INSERT",
+					new ServiceFault("Entity not inserted ", "entity: " + organizationEntity));
+		}
+
+		InsertOrganizationResponse response = new InsertOrganizationResponse();
+		response.setOrganization(OrganizationMapper.entityToXml(entityReturned));
+		response.setOperationResult(OperationResult.OK);
+		return response;
+		InsertOrganizationResponse response = new InsertOrganizationResponse();
+
+		return response;
+	}
+
+	public GetOrganizationByIdResponse getOrganizationById(GetOrganizationByIdRequest request) throws ServiceException {
+		OrganizationEntity countryEntityReturned = organizationFacade.getOrganizationById(request.getId());
+		GetOrganizationByIdResponse response = new GetOrganizationByIdResponse();
+		response.setOrganization(OrganizationMapper.entityToXml(countryEntityReturned));
+		
+		return response;
+	}
+
+	public GetOrganizationByClientAndIdResponse getOrganizationByClientAndId(
+			GetOrganizationByClientAndIdRequest request) throws ServiceException {
+		OrganizationEntity organizationEntityReturned = organizationFacade
+				.getOrganizationByClientAndId(request.getClientId(), request.getId());
+		GetOrganizationByClientAndIdResponse response = new GetOrganizationByClientAndIdResponse();
+		response.setOrganization(OrganizationMapper.entityToXml(organizationEntityReturned));
+		
+		return response;
+	}
+
+	public UpdateOrganizationResponse updateOrganization(UpdateOrganizationRequest request) throws ServiceException {
+		OrganizationEntity organizationEntity = new OrganizationEntity();
+		organizationEntity.setClientId(request.getClientId());
+		organizationEntity.setId(request.getId());
+		organizationEntity.setName(request.getName());
+		organizationEntity.setOrganizationType(OrganizationType.valueOf(request.getOrganizationTypeString()));
+		OrganizationEntity organizationEntityReturned = organizationFacade
+				.updateOrganization(organizationEntity);
+		UpdateOrganizationResponse response = new UpdateOrganizationResponse();
+		response.setOrganization(OrganizationMapper.entityToXml(organizationEntityReturned));
+		
+		return response;
+	}
+}

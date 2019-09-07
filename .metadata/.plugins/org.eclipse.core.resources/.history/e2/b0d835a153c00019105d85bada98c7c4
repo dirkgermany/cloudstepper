@@ -1,0 +1,9 @@
+package com.dam;
+
+public enum ServiceDomain {
+	
+	PERSON (),
+	ADDRESS (),
+	ALL();
+	
+}

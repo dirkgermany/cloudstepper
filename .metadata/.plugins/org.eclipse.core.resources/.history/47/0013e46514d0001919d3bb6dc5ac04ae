@@ -1,0 +1,11 @@
+package com.dam.portfolio.rest.message.construction;
+
+import com.dam.portfolio.model.entity.PortfolioConstruction;
+
+public class ConstructionCreateResponse extends ConstructionWriteResponse{
+
+	public ConstructionCreateResponse(PortfolioConstruction portfolioConstruction) {
+		super(new Long(200), "OK", "PortfolioConstruction Saved", portfolioConstruction);
+	}
+    	
+}

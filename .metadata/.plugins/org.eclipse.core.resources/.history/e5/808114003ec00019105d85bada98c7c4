@@ -1,0 +1,24 @@
+package com.dam.authentication.types;
+
+public enum Role {
+	
+	PRIVATE ("private"),
+	COMPANY ("company"),
+	AGENCY ("agency");
+	
+	private String term;
+	
+	Role() {
+		
+	}
+	
+	Role (String term) {
+		this.term = term;
+	}
+	
+	public String getTerm() {
+		return term;
+	}
+
+
+}

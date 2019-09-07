@@ -1,0 +1,22 @@
+1566935198703	Rename package 'com.dam.person'
+1566935663906	Rename type 'PersonController'
+1566935749024	Delete element
+1566935793386	Rename type 'PersonStore'
+1566935822166	Rename type 'PersonModel'
+1566935986036	Rename type 'PortfolioModel'
+1566935998275	Rename type 'PortfolioStore'
+1566936212116	Delete element
+1566936229715	Rename type 'Person'
+1566937405986	Rename type 'Gender'
+1566937414066	Delete element
+1566939699699	Rename type 'PersonResponse'
+1566939916806	Rename type 'WriteResponse'
+1566939947502	Rename type 'WriteRequest'
+1566939958324	Rename type 'UpdateResponse'
+1566939969814	Rename type 'UpdateRequest'
+1566939993532	Rename type 'PortfolioConstructionResponse'
+1566940024574	Rename type 'PersonRequest'
+1566940387453	Rename field 'user'
+1566940708949	Rename package 'com.dam.rest.personService'
+1566941672607	Rename type 'CreateRequest'
+1566941692769	Rename type 'CreateResponse'

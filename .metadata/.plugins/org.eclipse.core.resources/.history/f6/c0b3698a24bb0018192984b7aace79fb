@@ -1,0 +1,51 @@
+package photocrm.business;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import external.wsdl.CreateOrganizationRequest;
+import external.wsdl.CreateOrganizationResponse;
+import photocrm.client.OrganizationClient;
+import photocrm.client.PersonClient;
+import photocrm.mapping.CountryMapper;
+import services.photocrm.soap_soap_service.ComplexCountry;
+import services.photocrm.soap_soap_service.CreateCountryRequest;
+import services.photocrm.soap_soap_service.CreateCountryResponse;
+import services.photocrm.soap_soap_service.ComplexCurrency;
+
+@Component
+public class DoSomething {
+
+	@Autowired
+	OrganizationClient organizationClient;
+	@Autowired
+	PersonClient personClient;
+
+	public CreateOrganizationResponse createOrganization(CreateOrganizationRequest request) {
+
+		System.out.println("AUFRUF DoSomething");
+		
+		CreateCountryRequest requestCountry = new CreateCountryRequest();
+		requestCountry.setName("a");
+		
+		CreateCountryResponse responseCountry = personClient.getPersonsByOrganization(requestCountry);
+
+		CreateCountryResponse response = null;
+		try {
+			ComplexCountry countryToSet = new ComplexCountry();
+//			countryToSet = CountryMapper.simpleToComplex(insertCountryResponse.getCountry());
+			response = new CreateCountryResponse();
+			response.setComplexCountry(countryToSet);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return response;
+	}
+
+	public CreateCountryResponse machWas (CreateCountryRequest request) {
+		CreateCountryRequest requestCountry = new CreateCountryRequest();
+		organizationClient.getOrganizationById(requestCountry);
+		return null;
+	}
+
+}

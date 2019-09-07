@@ -1,0 +1,37 @@
+package com.dam.portfolio.model;
+
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
+
+import com.dam.portfolio.model.entity.MapAssetClassToPortfolioConstruction;
+
+@Transactional
+public interface MapAssetClassToPortfolioConstructionModel
+		extends Repository<MapAssetClassToPortfolioConstruction, Long>,
+		CrudRepository<MapAssetClassToPortfolioConstruction, Long> {
+
+	@Query("SELECT mapEntry FROM MapAssetClassToPortfolioConstruction mapEntry where mapEntry.assetClassId = :assetClassId "
+			+ "AND mapEntry.portfolioConstructionId = :portfolioConstructionId")
+	List<MapAssetClassToPortfolioConstruction> findAllMapsByAssetId(@Param("assetClassId") Long assetClassId,
+			@Param("portfolioConstructionId") Long portfolioConstructionId);
+
+	@Query("SELECT mapEntry FROM MapAssetClassToPortfolioConstruction mapEntry where mapEntry.assetClassId = :assetClassId ")
+	List<MapAssetClassToPortfolioConstruction> findAllMapsByAssetId(@Param("assetClassId") Long assetClassId);
+
+	@Query("SELECT mapEntry FROM MapAssetClassToPortfolioConstruction mapEntry where mapEntry.portfolioConstructionId = :portfolioConstructionId ")
+	List<MapAssetClassToPortfolioConstruction> findAllMapsByPortfolioConstructionId(
+			@Param("portfolioConstructionId") Long portfolioConstructionId);
+
+	@Query("DELETE from MapAssetClassToPortfolioConstruction mapEntry WHERE mapEntry.portfolioConstructionId = :portfolioConstructionId")
+	void deleteAllMapEntriesByConstructionId(@Param("portfolioConstructionId") Long portfolioConstructionId);
+
+	@Query("DELETE from MapAssetClassToPortfolioConstruction mapEntry WHERE mapEntry.assetClassId = :assetClassId")
+	void deleteAllMapEntriesByAssetClassId(@Param("assetClassId") Long assetClassId);
+
+}

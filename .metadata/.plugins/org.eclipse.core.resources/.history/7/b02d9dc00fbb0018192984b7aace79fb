@@ -1,0 +1,51 @@
+package hello.mapping;
+
+import hello.wsdl.Country;
+import hello.wsdl.Currency;
+import hello.wsdl.InsertCountryRequest;
+import services.photocrm.soap_soap_service.ComplexCountry;
+import services.photocrm.soap_soap_service.ComplexCurrency;
+import services.photocrm.soap_soap_service.CreateCountryRequest;
+
+public class CountryMapper {
+	
+	public static Country complexToSimple (ComplexCountry complex) {
+		Country simple = new Country();
+		simple.setCapital(complex.getCapital());
+		simple.setCurrency(Currency.valueOf(complex.getCurrency().toString()));
+		simple.setId(complex.getId());
+		simple.setName(complex.getName());
+		simple.setPopulation(complex.getPopulation());
+		return simple;
+	}
+	
+	public static ComplexCountry simpleToComplex (Country simple) {
+		ComplexCountry complex = new ComplexCountry();
+		complex.setCapital(simple.getCapital());
+		complex.setCurrency(ComplexCurrency.valueOf(simple.getCurrency().toString()));
+		complex.setId(simple.getId());
+		complex.setName(simple.getName());
+		complex.setPopulation(simple.getPopulation());
+		return complex;
+	}
+
+	public static InsertCountryRequest complexToSimple (CreateCountryRequest complex) {
+		InsertCountryRequest simple = new InsertCountryRequest();
+		simple.setCapital(complex.getCapital());
+		simple.setCurrencyString(complex.getCurrencyString());
+		simple.setName(complex.getName());
+		simple.setPopulation(complex.getPopulation());
+		return simple;
+	}
+	
+	public static CreateCountryRequest simpleToComplex (InsertCountryRequest simple) {
+		CreateCountryRequest complex = new CreateCountryRequest();
+		complex.setCapital(simple.getCapital());
+		complex.setCurrencyString(simple.getCurrencyString());
+		complex.setName(simple.getName());
+		complex.setPopulation(simple.getPopulation());
+		return complex;
+	}
+
+
+}

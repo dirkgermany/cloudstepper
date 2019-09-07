@@ -1,0 +1,13 @@
+1560703566342	Rename package 'com.dam.authentication'
+1560703648528	Rename type 'AuthenticationController'
+1560704365300	Rename type 'LoginRequest'
+1560705292516	Rename type 'TokenStore'
+1560705598627	Rename type 'Token'
+1560709626241	Delete element
+1560709671256	Rename type 'TokenResponse'
+1560710698353	Copy compilation unit
+1560710908721	Rename type 'createRequest'
+1560711313298	Delete element
+1560711332235	Copy compilation unit
+1560711739745	Copy compilation unit
+1560715726778	Copy compilation unit

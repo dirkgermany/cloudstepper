@@ -1,0 +1,48 @@
+1565969296890	Rename package 'com.dam.person'
+1565969508558	Rename type 'PersonModel'
+1565969535212	Rename type 'PersonStore'
+1565969593054	Rename type 'Person'
+1565969618990	Rename type 'PersonMessageContainer'
+1565969704909	Rename type 'PersonController'
+1565969928329	Rename type 'PersonRequest'
+1565969946313	Rename type 'PersonResponse'
+1565970010066	Rename type 'PersonType'
+1565970690604	Rename type 'Gender'
+1565972125700	Delete element
+1565972133618	Delete element
+1565972159226	Delete elements
+1565972781191	Rename type 'ConfigProperties'
+1565974198389	Delete element
+1565974217194	Rename type 'XXXConfigPropertiesxxx'
+1565974452848	Move compilation unit
+1565974489391	Move compilation unit
+1565977617371	Move compilation unit
+1565977663641	Move compilation unit
+1565977717740	Move compilation unit
+1565977749056	Move compilation unit
+1565977760817	Move compilation unit
+1565977779460	Move compilation unit
+1565978054034	Delete element
+1565978132992	Move compilation unit
+1565978265029	Move compilation units
+1565978337504	Move compilation units
+1565978356752	Move compilation units
+1565978384355	Move compilation units
+1565978396954	Move compilation unit
+1565978414602	Move compilation units
+1565978434087	Move compilation unit
+1565978449251	Move compilation unit
+1565978623838	Delete element
+1565978697677	Delete element
+1565979582299	Move compilation units
+1565979704577	Move compilation unit
+1565979804244	Move compilation units
+1565979918970	Move compilation unit
+1565980001750	Move compilation unit
+1565980103104	Move compilation unit
+1565980322074	Move compilation unit
+1565980647224	Move compilation unit
+1565980720610	Move compilation unit
+1565985577454	Rename type 'Permission'
+1565985618072	Rename type 'Zulaessigkeiten'
+1565985873737	Move compilation units

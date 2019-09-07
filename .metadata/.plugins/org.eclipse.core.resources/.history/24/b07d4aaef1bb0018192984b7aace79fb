@@ -1,0 +1,32 @@
+package photocrm.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
+
+import external.wsdl.GetPersonsByParentResponse;
+import photocrm.ConfigProperties;
+import services.photocrm.soap_soap_service.FindPersonByIdRequest;
+import services.photocrm.soap_soap_service.FindPersonByIdResponse;
+
+public class PersonClient extends WebServiceGatewaySupport {
+
+	private static final Logger log = LoggerFactory.getLogger(PersonClient.class);
+	
+	public FindPersonByIdResponse findPersonById(FindPersonByIdRequest request) {
+		// Configuration
+		ConfigProperties config = new ConfigProperties();
+		try {
+			GetPersonsByParentResponse response = (GetPersonsByParentResponse) getWebServiceTemplate().marshalSendAndReceive(
+					"http://" + config.getPerson().getHost() + ":" + config.getPerson().getPort() + "/ws/persons", request,
+					new SoapActionCallback("http://photocrm.services/entity-service-person/GetPersonsByParentRequest"));
+			return null;
+		} catch (Exception ex) {
+			System.out.println("FEHLER " + ex);
+			log.error(ex.getMessage());
+			return null;
+		}
+	}
+}

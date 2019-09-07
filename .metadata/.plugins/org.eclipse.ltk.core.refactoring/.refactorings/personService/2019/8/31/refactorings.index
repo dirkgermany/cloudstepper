@@ -1,0 +1,10 @@
+1564762906700	Copy compilation unit
+1564762948390	Rename field 'person'
+1564762964687	Rename method 'getPerson'
+1564764593893	Encapsulate field 'userId'
+1564764603969	Encapsulate field 'personId'
+1564765506366	Copy compilation unit
+1564770748449	Rename type 'WrappedRequest'
+1564777442900	Delete element
+1564778121954	Encapsulate field 'userId'
+1564778129853	Encapsulate field 'personId'

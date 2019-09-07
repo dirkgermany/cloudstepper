@@ -1,0 +1,24 @@
+1538988316230	Copy compilation unit
+1538988679562	Copy compilation unit
+1538988746835	Rename type 'FilterEntity'
+1538989907199	Rename type 'PersonFilterEntity'
+1538990116114	Rename type 'EntityFilterEntity'
+1538990569654	Rename type 'PersonFilterModel'
+1538990585755	Rename field 'personFilterModel'
+1538994049216	Move compilation unit
+1538994059838	Move compilation unit
+1538995336361	Delete element
+1538995537427	Encapsulate field 'seperator'
+1539068881777	Rename field 'listItems'
+1539071445028	Encapsulate field 'filterType'
+1539156210981	Copy compilation units
+1539156999665	Rename method 'setPersonFilter'
+1539157013788	Rename method 'clearAllPersonFilter'
+1539157031153	Rename method 'clearPersonFilter'
+1539158207774	Copy compilation units
+1539159389647	Copy package
+1539162148611	Copy compilation unit
+1539162230180	Copy compilation unit
+1539162251988	Copy compilation unit
+1539162320207	Copy compilation unit
+1539162364719	Copy compilation unit

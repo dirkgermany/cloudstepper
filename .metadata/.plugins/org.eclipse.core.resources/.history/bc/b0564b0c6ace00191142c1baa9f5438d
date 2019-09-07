@@ -1,0 +1,5 @@
+package com.dam.exception;
+
+public class EntityNotFoundException {
+
+}

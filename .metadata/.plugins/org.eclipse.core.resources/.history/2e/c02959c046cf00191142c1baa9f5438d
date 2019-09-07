@@ -1,0 +1,115 @@
+package com.dam.portfolio;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.dam.exception.DamServiceException;
+import com.dam.exception.EntityNotFoundException;
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.model.entity.AssetClassToPortfolioConstructionMap;
+import com.dam.portfolio.model.entity.ConstructionMap;
+import com.dam.portfolio.model.entity.PortfolioConstruction;
+
+/**
+ * Wird für die Gesamtkonstruktion der Portfolios benötigt. Stellt die
+ * Konstrukte zusammen und liefert sie zurück. Greift auf die DB zu.
+ * 
+ * @author dirk
+ *
+ */
+public class MappedConstructionManager {
+
+	@Autowired
+	PortfolioConstructionStore portfolioConstructionStore;
+
+	@Autowired
+	AssetClassStore assetClassStore;
+
+	@Autowired
+	AssetClassToPortfolioConstructionMapStore mapStore;
+
+	public ConstructionMap getMappedConstruction(Long portfolioConstructionId) throws DamServiceException {
+		PortfolioConstruction construction = portfolioConstructionStore
+				.getPortfolioConstructionById(portfolioConstructionId);
+		if (null == construction) {
+			throw new DamServiceException(new Long(500), "Fehler bei Ermittlung MappedConstruction",
+					"MappedConstruction zur ID nicht gefunden.");
+		}
+
+		List<AssetClassToPortfolioConstructionMap> mapEntries = mapStore
+				.getMapsByPortfolioConstructionId(portfolioConstructionId);
+		if (null == mapEntries || mapEntries.isEmpty()) {
+			throw new DamServiceException(new Long(500), "Fehler bei Ermittlung MappedConstruction",
+					"Keine Mapping Einträge zur ID gefunden.");
+		}
+
+		List<AssetClass> assetClassList = new ArrayList<>();
+		Iterator<AssetClassToPortfolioConstructionMap> it = mapEntries.iterator();
+		while (it.hasNext()) {
+			AssetClassToPortfolioConstructionMap map = it.next();
+			assetClassList.add(assetClassStore.getAssetClassById(map.getAssetClassId()));
+		}
+
+		return new ConstructionMap(construction, assetClassList);
+	}
+
+	public ConstructionMap storeMappedConstruction(ConstructionMap constructionMap) throws DamServiceException {
+		if (null == constructionMap || null == constructionMap.getPortfolioConstruction()
+				|| null == constructionMap.getPortfolioConstruction().getPortfolioConstructionId()) {
+			throw new DamServiceException(new Long(500), "Fehler bei Speichern einer MappedConstruction",
+					"MappedConstruction ist null oder eines der Elemente ist null oder leer.");
+		}
+
+		if (null == constructionMap.getAssetClasses() || constructionMap.getAssetClasses().isEmpty()) {
+			throw new DamServiceException(new Long(500), "Fehler bei Speichern einer MappedConstruction",
+					"AssetClass Liste ist null oder leer.");
+		}
+
+		// entries still exist
+		if (null != mapStore.getMapsByPortfolioConstructionId(
+				constructionMap.getPortfolioConstruction().getPortfolioConstructionId())) {
+			mapStore.dropMapEntriesByConstructionId(
+					constructionMap.getPortfolioConstruction().getPortfolioConstructionId());
+		}
+		
+		ConstructionMap storedMappedConstruction = new ConstructionMap();
+		storedMappedConstruction.setPortfolioConstruction(constructionMap.getPortfolioConstruction());
+
+		Integer counter = new Integer(0);
+		Iterator<AssetClass> it = constructionMap.getAssetClasses().iterator();
+		while (it.hasNext()) {
+			AssetClassToPortfolioConstructionMap mapEntry = new AssetClassToPortfolioConstructionMap();
+			AssetClass assetClass = it.next();
+			Long assetClassId = assetClass.getAssetClassId();
+			mapEntry.setAssetClassId(assetClassId);
+			mapEntry.setPortfolioConstructionId(
+					constructionMap.getPortfolioConstruction().getPortfolioConstructionId());
+
+			storedMappedConstruction.addAssetClass(assetClass);
+			mapStore.createMapEntry(mapEntry);
+			counter++;
+		}
+
+		return storedMappedConstruction;
+	}
+
+	public AssetClassToPortfolioConstructionMap addAssetClassToPortfolioConstruction(Long assetClassId,
+			Long portfolioConstructionId) throws DamServiceException {
+
+		AssetClassToPortfolioConstructionMap mapEntry;
+		try {
+			mapEntry = mapStore.findMapByAssetClassIdAndPortfolioConstructionId(assetClassId, portfolioConstructionId);
+		} catch (DamServiceException e) {
+			if (e.getClass().isInstance(EntityNotFoundException.class)) {
+				// okay, create
+				return mapStore.createMapEntry(new AssetClassToPortfolioConstructionMap());
+			}
+		}
+
+		// Entry exists, it makes no sense to create it again
+		throw new DamServiceException(new Long(500), "Map Entriy couldn't be stored", "Error while trying to save to database");
+	}
+}

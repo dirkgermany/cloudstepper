@@ -1,0 +1,161 @@
+package photocrm.meta;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import external.wsdl.DeleteOrganizationRequest;
+import external.wsdl.DeleteOrganizationResponse;
+import external.wsdl.DeletePersonRequest;
+import external.wsdl.DeletePersonResponse;
+import external.wsdl.GetOrganizationRequest;
+import external.wsdl.GetOrganizationResponse;
+import external.wsdl.GetPersonRequest;
+import external.wsdl.GetPersonResponse;
+import external.wsdl.GetPersonsByParentRequest;
+import external.wsdl.GetPersonsByParentResponse;
+import external.wsdl.InsertOrganizationRequest;
+import external.wsdl.InsertOrganizationResponse;
+import external.wsdl.InsertPersonRelationRequest;
+import external.wsdl.InsertPersonRelationResponse;
+import external.wsdl.InsertPersonRequest;
+import external.wsdl.InsertPersonResponse;
+import external.wsdl.PersonChildXml;
+import external.wsdl.UpdateOrganizationRequest;
+import external.wsdl.UpdateOrganizationResponse;
+import external.wsdl.UpdatePersonRequest;
+import external.wsdl.UpdatePersonResponse;
+import photocrm.client.OrganizationClient;
+import photocrm.client.PersonClient;
+import photocrm.mapping.OrganizationMapper;
+import services.photocrm.soap_soap_service.AddPersonToOrganizationRequest;
+import services.photocrm.soap_soap_service.AddPersonToOrganizationResponse;
+import services.photocrm.soap_soap_service.CreateOrganizationRequest;
+import services.photocrm.soap_soap_service.CreateOrganizationResponse;
+import services.photocrm.soap_soap_service.CreatePersonRequest;
+import services.photocrm.soap_soap_service.CreatePersonResponse;
+import services.photocrm.soap_soap_service.DropOrganizationRequest;
+import services.photocrm.soap_soap_service.DropOrganizationResponse;
+import services.photocrm.soap_soap_service.DropPersonRequest;
+import services.photocrm.soap_soap_service.DropPersonResponse;
+import services.photocrm.soap_soap_service.FindPersonsByOrganizationRequest;
+import services.photocrm.soap_soap_service.FindPersonsByOrganizationResponse;
+import services.photocrm.soap_soap_service.ModifyOrganizationRequest;
+import services.photocrm.soap_soap_service.FindOrganizationRequest;
+import services.photocrm.soap_soap_service.FindOrganizationResponse;
+import services.photocrm.soap_soap_service.FindPersonRequest;
+import services.photocrm.soap_soap_service.FindPersonResponse;
+import services.photocrm.soap_soap_service.ModifyOrganizationResponse;
+import services.photocrm.soap_soap_service.ModifyPersonRequest;
+import services.photocrm.soap_soap_service.ModifyPersonResponse;
+import services.photocrm.soap_soap_service.Person;
+import services.photocrm.soap_soap_service.PersonChild;
+import services.photocrm.soap_soap_service.PersonSex;
+import services.photocrm.soap_soap_service.Salutation;
+
+/**
+ * This class is the bridge between this domain service and the used
+ * microservices. Incoming requests are mapped and sent to the underlying
+ * microservices. The received responses then will be returned to the calling
+ * method.
+ * 
+ * @author dirk
+ *
+ */
+
+@Component
+public class WebClientLayerCommunication {
+
+	// The used services are called by service clients
+	@Autowired
+	AddressClient addressClient;
+
+	public CreateAddressResponse createAddress(CreateAddressRequest incomingRequest) {
+		InsertAddressRequest outgoingRequest = new InsertAddressRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		InsertAddressResponse outgoingResponse = addressClient.insertAddress(outgoingRequest);
+		CreateAddressResponse incomingResponse = new CreateAddressResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public FindAddressResponse findAddress(FindAddressRequest incomingRequest) {
+		// Prepare Request which will be sent to the Entity-Service
+		GetAddressRequest outgoingRequest = new GetAddressRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		GetAddressResponse outgoingResponse = addressClient.getAddress(outgoingRequest);
+		FindAddressResponse incomingResponse = new FindAddressResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public AddAddressToOrganizationResponse addAddressToOrganization(AddAddressToOrganizationRequest incomingRequest) {
+		InsertAddressRelationRequest outgoingRequest = new InsertAddressRelationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		InsertAddressRelationResponse outgoingResponse = addressClient.insertAddressRelation(outgoingRequest);
+		AddAddressToOrganizationResponse incomingResponse = new AddAddressToOrganizationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public FindAddressesByOrganizationResponse findAddressesByOrganization(
+			FindAddressesByOrganizationRequest incomingRequest) {
+		GetAddressesByParentRequest outgoingRequest = new GetAddressesByParentRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		GetAddressesByParentResponse outgoingResponse = addressClient.getAddressByParent(outgoingRequest);
+		FindAddressesByOrganizationResponse incomingResponse = new FindAddressesByOrganizationResponse();
+
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		// die externe Klasse AddressChildXml kann Dozer nicht auflösen.
+		// Daher wird das Mapping der Liste von Hand gemacht.
+
+		List<AddressChildXml> childsXml = outgoingResponse.getAddressChildXml();
+		if (null != childsXml) {
+			for (AddressChildXml childXml : childsXml) {
+				if (null != childXml) {
+					AddressChild child = new AddressChild();
+					Address address = new Address();
+					address.setId(childXml.getAddress().getId());
+					address.setClientId(childXml.getAddress().getClientId());
+					address.setForeName(childXml.getAddress().getForeName());
+					address.setSurName(childXml.getAddress().getSurName());
+					if (null!= childXml.getPerson().getPersonSex()) {
+						person.setPersonSex(PersonSex.valueOf(childXml.getPerson().getPersonSex().toString()));
+					}
+					address.setBirthDate(childXml.getPerson().getBirthDate());
+					if (null != childXml.getPerson().getSalutation()) {
+						address.setSalutation(Salutation.valueOf(childXml.getPerson().getSalutation().toString()));
+					}
+					
+					child.setAddress(address);
+					incomingResponse.getAddressChild().add(child);
+				}
+			}
+		}
+
+		System.out.println(incomingResponse.getClientId());
+		System.out.println(incomingResponse.getParentEntity());
+		System.out.println(incomingResponse.getParentId());
+		System.out.println(incomingResponse.getAddressChild());
+		return incomingResponse;
+	}
+
+	public DropAddressResponse dropAddress(DropAddressRequest incomingRequest) {
+		DeleteAddressRequest outgoingRequest = new DeleteAddressRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		DeleteAddressResponse outgoingResponse = addressClient.deleteAddress(outgoingRequest);
+		DropAddressResponse incomingResponse = new DropAddressResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public ModifyAddressResponse modifyAddress(ModifyAddressRequest incomingRequest) {
+		UpdateAddressRequest outgoingRequest = new UpdateAddressRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		UpdateAddressResponse outgoingResponse = personAddress.updateAddress(outgoingRequest);
+		ModifyAddressResponse incomingResponse = new ModifyAddressResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+}

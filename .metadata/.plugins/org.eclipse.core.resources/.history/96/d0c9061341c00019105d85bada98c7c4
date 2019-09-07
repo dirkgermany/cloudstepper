@@ -1,0 +1,21 @@
+package com.dam.authentication.rest.message;
+
+import com.dam.authentication.model.entity.Permission;
+
+public abstract class WriteResponse extends RestResponse{
+    private Permission permission;
+	
+	public WriteResponse(Long result, String shortStatus, String longStatus, Permission permission) {
+		super(result, shortStatus, longStatus);
+		setPerson(permission);
+	}
+
+	private void setPerson(Permission permission) {
+		this.permission = permission;
+	}
+	
+	public Permission getPerson() {
+		return permission;
+	}
+	
+}

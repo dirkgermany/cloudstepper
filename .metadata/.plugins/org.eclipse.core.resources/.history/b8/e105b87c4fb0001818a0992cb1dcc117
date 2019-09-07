@@ -1,0 +1,21 @@
+package com.photocrm.bus;
+
+public class QueueProducer {
+
+	public void produce(String queueURL, String queueName, String message) {
+	//	BlaBlaClass bla = new BlaBlaClass("hmmmmm");
+	//	bla.exit();
+		
+		TheProducer producer = new TheProducer();
+		producer.setConnectionData(queueURL, queueName, message);
+		thread(producer, false);
+		producer.run();
+
+	}
+	
+	public static void thread(Runnable runnable, boolean daemon) {
+		Thread broker = new Thread(runnable);
+		broker.setDaemon(daemon);
+		broker.start();
+	}
+}

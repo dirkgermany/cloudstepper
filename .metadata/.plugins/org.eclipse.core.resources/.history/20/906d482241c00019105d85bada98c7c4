@@ -1,0 +1,11 @@
+package com.dam.authentication.rest.message;
+
+import com.dam.authentication.model.entity.Permission;
+
+public class CreateRequest extends WriteRequest {
+
+    public CreateRequest(Long requestorUserId, Permission permission) {
+		super(requestorUserId, permission);
+    }
+    
+}

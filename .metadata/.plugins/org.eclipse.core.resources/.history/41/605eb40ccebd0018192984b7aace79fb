@@ -1,0 +1,101 @@
+//
+// Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.11 generiert 
+// Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2018.09.21 um 08:41:23 PM CEST 
+//
+
+
+package external.wsdl;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java-Klasse für anonymous complex type.
+ * 
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * 
+ * <pre>
+ * &lt;complexType&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="operationResult" type="{http://photocrm.services/entity-service-person}operationResult"/&gt;
+ *         &lt;element name="person" type="{http://photocrm.services/entity-service-person}personXml"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "operationResult",
+    "person"
+})
+@XmlRootElement(name = "insertPersonResponse")
+public class InsertPersonResponse {
+
+    @XmlElement(required = true)
+    @XmlSchemaType(name = "string")
+    protected OperationResult operationResult;
+    @XmlElement(required = true)
+    protected PersonXml person;
+
+    /**
+     * Ruft den Wert der operationResult-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link OperationResult }
+     *     
+     */
+    public OperationResult getOperationResult() {
+        return operationResult;
+    }
+
+    /**
+     * Legt den Wert der operationResult-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link OperationResult }
+     *     
+     */
+    public void setOperationResult(OperationResult value) {
+        this.operationResult = value;
+    }
+
+    /**
+     * Ruft den Wert der person-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link PersonXml }
+     *     
+     */
+    public PersonXml getPerson() {
+        return person;
+    }
+
+    /**
+     * Legt den Wert der person-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link PersonXml }
+     *     
+     */
+    public void setPerson(PersonXml value) {
+        this.person = value;
+    }
+
+}

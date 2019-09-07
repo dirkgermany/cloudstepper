@@ -1,0 +1,388 @@
+
+/**
+ *  Layer between WebService and Database.
+ *  Knows classes of both sides (e.g. requests and entities).
+ * 
+ *  Makes it transparent to the WebService part how data is persisted.
+ */
+
+package photocrm.meta;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import photocrm.exception.ServiceException;
+import photocrm.exception.ServiceFault;
+import photocrm.filter.FilterEntity;
+import photocrm.mapping.PersonMapper;
+import photocrm.model.PersonEntity;
+import photocrm.model.PersonFacade;
+import photocrm.model.PersonRelationEntity;
+import services.photocrm.entity_service_person.ClearAllPersonFilterRequest;
+import services.photocrm.entity_service_person.ClearAllPersonFilterResponse;
+import services.photocrm.entity_service_person.ClearPersonFilterRequest;
+import services.photocrm.entity_service_person.ClearPersonFilterResponse;
+import services.photocrm.entity_service_person.ClearPersonRelationRequest;
+import services.photocrm.entity_service_person.ClearPersonRelationResponse;
+import services.photocrm.entity_service_person.DeletePersonRelationRequest;
+import services.photocrm.entity_service_person.DeletePersonRelationResponse;
+import services.photocrm.entity_service_person.DeletePersonRequest;
+import services.photocrm.entity_service_person.DeletePersonResponse;
+import services.photocrm.entity_service_person.GetPersonRequest;
+import services.photocrm.entity_service_person.GetPersonResponse;
+import services.photocrm.entity_service_person.GetPersonsByClientRequest;
+import services.photocrm.entity_service_person.GetPersonsByClientResponse;
+import services.photocrm.entity_service_person.GetPersonByIdRequest;
+import services.photocrm.entity_service_person.GetPersonByIdResponse;
+import services.photocrm.entity_service_person.InsertPersonRequest;
+import services.photocrm.entity_service_person.InsertPersonResponse;
+import services.photocrm.entity_service_person.PersonChildXml;
+import services.photocrm.entity_service_person.PersonXml;
+import services.photocrm.entity_service_person.SetPersonFilterRequest;
+import services.photocrm.entity_service_person.SetPersonFilterResponse;
+import services.photocrm.entity_service_person.UpdatePersonRequest;
+import services.photocrm.entity_service_person.UpdatePersonResponse;
+import services.photocrm.entity_service_person.GetPersonsByParentRequest;
+import services.photocrm.entity_service_person.GetPersonsByParentResponse;
+import services.photocrm.entity_service_person.InsertPersonRelationRequest;
+import services.photocrm.entity_service_person.InsertPersonRelationResponse;
+
+@Component
+public class DatabaseLayer {
+	private static final Logger log = LoggerFactory.getLogger(PersonFacade.class);
+
+	@Autowired
+	private PersonFacade personFacade;
+
+	public InsertPersonResponse insertPerson(InsertPersonRequest request) {
+		PersonEntity personEntity = new PersonEntity();
+		PersonMapper.mapObjects(request, personEntity);
+		PersonEntity entityReturned = null;
+		try {
+			entityReturned = personFacade.insertPerson(personEntity);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION INSERT ", "entity: " + personEntity));
+		}
+
+		if (null == entityReturned) {
+			log.error("Entity not inserted ", "entity: " + personEntity);
+			throw new ServiceException("ERROR INSERT",
+					new ServiceFault("Entity not inserted ", "entity: " + personEntity));
+		}
+
+		InsertPersonResponse response = new InsertPersonResponse();
+		PersonXml xml = new PersonXml();
+		PersonMapper.mapObjects(entityReturned, xml);
+		response.setPerson(xml);
+		return response;
+	}
+
+	public GetPersonByIdResponse getPersonById(GetPersonByIdRequest request) throws ServiceException {
+		PersonEntity entityReturned = null;
+		try {
+			entityReturned = personFacade.getPersonById(request.getId());
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(), new ServiceFault("EXCEPTION FIND ", "id: " + request.getId()));
+		}
+
+		if (null == entityReturned) {
+			throw new ServiceException("ERROR: No Entity",
+					new ServiceFault("EXCEPTION FIND ", "id: " + request.getId()));
+		}
+		GetPersonByIdResponse response = new GetPersonByIdResponse();
+		PersonXml xml = new PersonXml();
+		PersonMapper.mapObjects(entityReturned, xml);
+		response.setPerson(xml);
+
+		return response;
+	}
+	
+	public GetPersonsByClientResponse getPersonsByClient(GetPersonsByClientRequest request) throws ServiceException {
+		GetPersonsByClientResponse response = new GetPersonsByClientResponse();
+		try {
+			List<PersonEntity> personList = personFacade.findByClient(request.getClientId());
+			for (PersonEntity personEntity : personList) {
+				if (null != personEntity) {
+					PersonChildXml personChild = new PersonChildXml();
+					PersonXml person = new PersonXml();
+					PersonMapper.mapObjects(personEntity, person);
+					personChild.setPerson(person);
+					response.getPersonChildXml().add(personChild);
+				}
+			}
+			response.setClientId(request.getClientId());
+
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION FINDBYCLIENT ", "entity: Person"));
+		}
+
+		return response;
+	}
+	
+
+	public GetPersonResponse getPerson(GetPersonRequest request) throws ServiceException {
+		// Exception Handling happens in subCall
+		PersonEntity personEntityReturned = getPerson(request.getClientId(), request.getId());
+		GetPersonResponse response = new GetPersonResponse();
+		PersonXml xml = new PersonXml();
+		PersonMapper.mapObjects(personEntityReturned, xml);
+		response.setPerson(xml);
+		return response;
+	}
+
+	private PersonEntity getPerson(int clientId, int id) throws ServiceException {
+		PersonEntity personEntityReturned = null;
+		try {
+			personEntityReturned = personFacade.getPerson(clientId, id);
+			System.out.println(personEntityReturned);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION FIND ", "clientid: " + clientId + "; id: " + id));
+		}
+
+		if (null == personEntityReturned || 0 == personEntityReturned.getClientId()
+				|| 0 == personEntityReturned.getId()) {
+			log.error("EXCEPTION FIND clientid: " + clientId + "; id: " + id);
+			throw new ServiceException("ERROR: No Entity",
+					new ServiceFault("EXCEPTION FIND ", "clientid: " + clientId + "; id: " + id));
+		}
+
+		return personEntityReturned;
+	}
+
+	private PersonEntity getPerson(PersonEntity entity) throws ServiceException {
+		// Exception Handling happens in subCall
+		return getPerson(entity.getClientId(), entity.getId());
+	}
+
+	public UpdatePersonResponse updatePerson(UpdatePersonRequest request) throws ServiceException {
+		PersonEntity personEntity = new PersonEntity();
+		PersonMapper.mapObjects(request, personEntity);
+
+		// update and get actual data object from database
+		try {
+			personEntity = personFacade.updatePerson(personEntity);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION UPDATE ", "new Values: " + personEntity));
+		}
+
+		if (null == personEntity) {
+			log.error("EXCEPTION UPDATE ", "new Values: " + personEntity);
+			throw new ServiceException("ERROR: No Updated Entity",
+					new ServiceFault("EXCEPTION UPDATE ", "new Values: " + personEntity));
+		}
+
+		UpdatePersonResponse response = new UpdatePersonResponse();
+		PersonXml xml = new PersonXml();
+		PersonMapper.mapObjects(personEntity, xml);
+		response.setPerson(xml);
+
+		return response;
+	}
+
+	public DeletePersonResponse deletePerson(DeletePersonRequest request) throws ServiceException {
+		PersonEntity personEntity = new PersonEntity();
+		PersonMapper.mapObjects(request, personEntity);
+		
+		// Deletion only if entity exists
+		personEntity = getPerson(personEntity);
+
+		// delete
+		try {
+			getPerson(personEntity);
+			personFacade.deletePerson(personEntity);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION DELETE ", "entity: " + personEntity));
+		}
+
+		boolean deleted = false;
+		try {
+			getPerson(personEntity);
+		} catch (Exception ex) {
+			deleted = true;
+		}
+
+		if (!deleted) {
+			log.error("ERROR DELETE", new ServiceFault("Entity Not Empty", "entity: " + personEntity));
+			throw new ServiceException("ERROR DELETE", new ServiceFault("Entity Not Empty", "entity: " + personEntity));
+		}
+
+		DeletePersonResponse response = new DeletePersonResponse();
+		response.setOperationInformation("Person deleted");
+		return response;
+	}
+
+	private PersonRelationEntity getPersonRelationById(int id) throws ServiceException {
+		PersonRelationEntity entityReturned = null;
+		try {
+			entityReturned = personFacade.getPersonRelationById(id);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(), new ServiceFault("EXCEPTION FIND ", "id: " + id));
+		}
+
+		if (null == entityReturned || 0 == entityReturned.getClientId() || 0 == entityReturned.getId()) {
+			log.warn("ERROR: No Entity", new ServiceFault("EXCEPTION FIND ", "id: " + id));
+			throw new ServiceException("ERROR: No Entity", new ServiceFault("EXCEPTION FIND ", "id: " + id));
+		}
+
+		return entityReturned;
+	}
+
+	public DeletePersonRelationResponse deletePersonRelation(DeletePersonRelationRequest request)
+			throws ServiceException {
+		PersonRelationEntity personRelationEntity = new PersonRelationEntity();
+		PersonMapper.mapObjects(request, personRelationEntity);
+		
+		// Check if entity exists
+		// Otherwise a ServiceException is thrown
+		personFacade.getPersonRelationByClientAndId(personRelationEntity.getClientId(), personRelationEntity.getId());
+
+		// delete
+		try {
+			personFacade.deletePersonRelation(personRelationEntity);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION DELETE ", "entity: " + personRelationEntity));
+		}
+
+		boolean deleted = false;
+		try {
+			getPersonRelationById(personRelationEntity.getId());
+
+		} catch (Exception ex) {
+			deleted = true;
+		}
+
+		if (!deleted) {
+			throw new ServiceException("ERROR DELETE",
+					new ServiceFault("Entity Not Empty", "entity: " + personRelationEntity));
+		}
+
+		DeletePersonRelationResponse response = new DeletePersonRelationResponse();
+		response.setOperationInformation("Person relation deleted");
+		return response;
+	}
+
+	public GetPersonsByParentResponse getPersonsByParent(GetPersonsByParentRequest request) throws ServiceException {
+		GetPersonsByParentResponse response = new GetPersonsByParentResponse();
+		PersonRelationEntity relationEntity = new PersonRelationEntity();
+		PersonMapper.mapObjects(request, relationEntity);
+
+		try {
+			List<PersonEntity> personList = personFacade.findByParent(relationEntity);
+			System.out.println("personList.size = " + personList.size());
+			for (PersonEntity personEntity : personList) {
+				if (null != personEntity) {
+					PersonChildXml personChild = new PersonChildXml();
+					System.out.println("personEntity... " + personEntity);
+					PersonXml person = new PersonXml();
+					PersonMapper.mapObjects(personEntity, person);
+					personChild.setPerson(person);
+					response.getPersonChildXml().add(personChild);
+				}
+			}
+			response.setParentId(relationEntity.getParentId());
+			response.setClientId(relationEntity.getClientId());
+			response.setParentEntity(relationEntity.getParentEntity());
+
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION FINDBYPARENT ", "entity: " + relationEntity));
+		}
+
+		return response;
+	}
+
+	public InsertPersonRelationResponse insertPersonRelation(InsertPersonRelationRequest request) {
+		PersonRelationEntity relationEntity = new PersonRelationEntity();
+		PersonMapper.mapObjects(request, relationEntity);
+		PersonRelationEntity entityReturned = null;
+
+		try {
+			entityReturned = personFacade.insertPersonRelation(relationEntity);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION INSERT ", "entity: " + relationEntity));
+		}
+
+		if (null == entityReturned) {
+			throw new ServiceException("ERROR INSERT",
+					new ServiceFault("Entity not inserted ", "entity: " + relationEntity));
+		}
+
+		InsertPersonRelationResponse response = new InsertPersonRelationResponse();
+		PersonMapper.mapObjects(entityReturned, response);
+		return response;
+	}
+
+	// When a parent was deleted before all relations to the parent must be removed also
+	public ClearPersonRelationResponse clearPersonRelation(ClearPersonRelationRequest request) {
+		PersonRelationEntity relationEntity = new PersonRelationEntity();
+		PersonMapper.mapObjects(request, relationEntity);
+
+		try {
+			personFacade.removeParentFromRelations(relationEntity);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION CLEAR RELATION ", "entity: " + relationEntity));
+		}
+		ClearPersonRelationResponse response = new ClearPersonRelationResponse();
+		response.setOperationInformation("Person relation cleared");
+		return response;		
+	}
+	
+	public SetPersonFilterResponse setFilter(SetPersonFilterRequest request) {
+		FilterEntity filterEntity = new FilterEntity();
+		PersonMapper.mapObjects(request, filterEntity);
+		// Entity Name is not part of the Web Action
+		filterEntity.setEntityName(PersonEntity.class.getSimpleName());
+		personFacade.setFilter(filterEntity);
+		SetPersonFilterResponse response = new SetPersonFilterResponse();
+		PersonMapper.mapObjects(request, response);
+		response.setOperationInformation("Person Filter set");
+		return response;
+	}
+	
+	public ClearAllPersonFilterResponse clearAllFilter (ClearAllPersonFilterRequest request) {
+		FilterEntity filterEntity = new FilterEntity();
+		PersonMapper.mapObjects(request, filterEntity);
+		// Entity Name is not part of the Web Action
+		filterEntity.setEntityName(PersonEntity.class.getSimpleName());
+		personFacade.clearAllFilter(filterEntity);
+		ClearAllPersonFilterResponse response = new ClearAllPersonFilterResponse();
+		response.setClientId(request.getClientId());
+		response.setOperationInformation("All Person filter cleared");
+		return response;
+	}
+
+	public ClearPersonFilterResponse clearFilter (ClearPersonFilterRequest request) {
+		FilterEntity filterEntity = new FilterEntity();
+		PersonMapper.mapObjects(request, filterEntity);
+		// Entity Name is not part of the Web Action
+		filterEntity.setEntityName(PersonEntity.class.getSimpleName());
+		personFacade.clearFilter(filterEntity);
+		ClearPersonFilterResponse response = new ClearPersonFilterResponse();
+		response.setClientId(request.getClientId());
+		response.setOperationInformation("Person filter cleared");
+		return response;
+	}
+}

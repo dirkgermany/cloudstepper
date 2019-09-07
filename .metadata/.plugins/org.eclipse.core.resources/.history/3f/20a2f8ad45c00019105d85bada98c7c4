@@ -1,0 +1,14 @@
+package com.dam.authentication.types;
+
+import java.lang.String;
+
+public enum Role {
+	
+	INVESTOR,
+	USER,
+	ADMIN,
+	ROOT_ADMIN,
+	CONTROLLER;
+	
+	
+}

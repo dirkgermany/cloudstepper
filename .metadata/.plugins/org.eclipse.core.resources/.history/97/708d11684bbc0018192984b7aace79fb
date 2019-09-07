@@ -1,0 +1,39 @@
+package photocrm.meta;
+
+import external.wsdl.GetOrganizationByClientAndIdRequest;
+import external.wsdl.InsertOrganizationRequest;
+import external.wsdl.InsertOrganizationResponse;
+import services.photocrm.soap_soap_service.CreateOrganizationRequest;
+import services.photocrm.soap_soap_service.CreateOrganizationResponse;
+import services.photocrm.soap_soap_service.Organization;
+import services.photocrm.soap_soap_service.OrganizationType;
+
+public class OrganizationMapper {
+
+	public static InsertOrganizationRequest incomingRequestToOutgoingRequest (CreateOrganizationRequest incomingRequest) {
+		InsertOrganizationRequest outgoingRequest = new InsertOrganizationRequest();
+		outgoingRequest.setClientId(incomingRequest.getClientId());
+		outgoingRequest.setName(incomingRequest.getName());
+		outgoingRequest.setOrganizationTypeString(incomingRequest.getOrganizationTypeString());
+		return outgoingRequest;
+	}
+	
+	public static CreateOrganizationResponse outgoingResponseToIncomingResponse (InsertOrganizationResponse outgoingResponse) {
+		CreateOrganizationResponse incomingResponse = new CreateOrganizationResponse();
+		Organization organization = new Organization();
+		organization.setClientId(outgoingResponse.getOrganization().getClientId());
+		organization.setId(outgoingResponse.getOrganization().getId());
+		organization.setName(outgoingResponse.getOrganization().getName());
+		organization.setOrganizationType(OrganizationType.valueOf(outgoingResponse.getOrganization().getOrganizationType().toString()));
+		incomingResponse.setOrganization(organization);
+		return incomingResponse;
+	}
+	
+	public static String toString(InsertOrganizationRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; clientId: " + outgoingRequest.getClientId() + "; name: " + outgoingRequest.getName() + "; organizationType: " + outgoingRequest.getOrganizationTypeString();
+	}
+	
+	public static String toString(GetOrganizationByClientAndIdRequest outgoingRequest)  {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; clientId: " + outgoingRequest.getClientId() + "; id: " + outgoingRequest.getId();
+	}
+}

@@ -1,0 +1,12 @@
+1537716718639	Rename type 'PersonEndpoint'
+1537716845873	Rename type 'PersonMapper'
+1537717565154	Rename type 'PersonEntity'
+1537718057637	Rename type 'PersonFacade'
+1537718137051	Rename type 'PersonModel'
+1537718367554	Rename type 'PersonRelationEntity'
+1537718440377	Rename type 'PersonRelationModel'
+1537718507214	Rename resource 'person.xsd'
+1537718619557	Rename field 'doSomething'
+1537724122758	Delete element
+1537735686174	Delete element
+1537736465648	Delete element

@@ -1,0 +1,104 @@
+package com.dam.portfolio.model.entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import com.dam.portfolio.types.AssetClassType;
+
+import org.springframework.stereotype.Component;
+
+
+@Entity
+@Component
+@Table(name = "AssetClass")
+public class RelationAssetClassToPortfolioConstruction {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long assetClassId;
+	
+	@Column(nullable=false)
+	private String assetClassName;
+	
+	@Column
+	private Long providerId;
+	
+	@Column
+	private String providerName;
+	
+	@Column
+	@Enumerated(EnumType.STRING)
+	private AssetClassType assetClassType;
+	
+	@Column
+	@Lob
+	private String description;
+
+	public RelationAssetClassToPortfolioConstruction () {	
+	}
+	
+	public RelationAssetClassToPortfolioConstruction updateEntity (RelationAssetClassToPortfolioConstruction container) {
+		setDescription(container.getDescription());
+		setAssetClassName(container.getAssetClassName());
+		setAssetClassType(container.getAssetClassType());
+		setProviderId(container.getProviderId());
+		setProviderName(container.getProviderName());
+		
+		return this;
+	}
+
+	public String getAssetClassName() {
+		return assetClassName;
+	}
+
+	public void setAssetClassName(String assetClassName) {
+		this.assetClassName = assetClassName;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Long getAssetClassId() {
+		return assetClassId;
+	}
+
+	public void setAssetClassId(Long assetClassId) {
+		this.assetClassId = assetClassId;
+	}
+
+	public Long getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(Long providerId) {
+		this.providerId = providerId;
+	}
+
+	public String getProviderName() {
+		return providerName;
+	}
+
+	public void setProviderName(String providerName) {
+		this.providerName = providerName;
+	}
+
+	public AssetClassType getAssetClassType() {
+		return assetClassType;
+	}
+
+	public void setAssetClassType(AssetClassType assetClassType) {
+		this.assetClassType = assetClassType;
+	}
+	
+}

@@ -1,0 +1,52 @@
+package photocrm.model;
+
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
+
+import photocrm.mapping.OrganizationMapper;
+import photocrm.mapping.PersonMapper;
+
+@Controller
+@ComponentScan
+public class OrganizationFacade {
+
+	@Autowired
+	private OrganizationModel organizationQueryModel;
+
+	public OrganizationEntity insertOrganization(OrganizationEntity entityToInsert) {
+		return organizationQueryModel.save(entityToInsert);
+	}
+
+	public OrganizationEntity getOrganizationById(int id) {
+		OrganizationEntity organizationEntity = null;
+		Optional<OrganizationEntity> optional = organizationQueryModel.findById(id);
+		System.out.println("OPTIONAL : " + optional);
+		if (optional.isPresent()) {
+			organizationEntity = optional.get();
+		}
+		return organizationEntity;
+	}
+
+	public OrganizationEntity getOrganizationByClientAndId(int clientId, int id) {
+		return organizationQueryModel.findOrganizationByClientAndId(clientId, id);
+	}
+
+	@Transactional
+	public void deleteOrganization(OrganizationEntity entityToDelete) {
+		organizationQueryModel.delete(entityToDelete);
+	}
+
+	@Transactional
+	public OrganizationEntity updateOrganization(OrganizationEntity entityToUpdate) {
+		
+		OrganizationEntity originalEntity = organizationQueryModel.findOrganizationByClientAndId(entityToUpdate.getClientId(), entityToUpdate.getId());
+		OrganizationMapper.mapObjects(entityToUpdate, originalEntity);
+		return organizationQueryModel.save(entityToUpdate);
+	}
+
+}

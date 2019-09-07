@@ -1,0 +1,23 @@
+package com.dam.authentication.types;
+
+public enum ServiceDomain {
+	
+	MALE ("male"),
+	FEMALE ("female"),
+	INTER ("inter");
+	
+	private String term;
+	
+	ServiceDomain() {
+		
+	}
+	
+	ServiceDomain (String term) {
+		this.term = term;
+	}
+	
+	public String getTerm() {
+		return term;
+	}
+
+}

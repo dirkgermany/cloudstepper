@@ -1,0 +1,27 @@
+package photocrm;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ConfigurationProperties (prefix = "webclient")
+public class ConfigProperties {
+
+	public static class Person {
+		
+		private String port;
+        private String host; 
+    }
+    private String host;
+    private int port;
+    private String from;
+    private Credentials credentials;
+    private List<String> defaultRecipients;
+    private Map<String, String> additionalHeaders;
+  
+		
+	}
+}

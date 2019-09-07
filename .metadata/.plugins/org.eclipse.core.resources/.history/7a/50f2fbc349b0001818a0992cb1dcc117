@@ -1,0 +1,21 @@
+package com.photocrm.services;
+
+import com.photocrm.bus.QueueProducer;
+
+// import com.photocrm.bus.BlaBlaClass;
+
+public class ESBCheck {
+	
+	public String esbTest() {
+		
+//		BlaBlaClass bla = new BlaBlaClass("aöasfdöljkafdlöj");
+//		bla.exit();
+		
+		QueueProducer producer = new QueueProducer();
+		producer.produce("tcp://localhost:61616", "testQueue", "jup");
+	
+		
+		return "ok";
+	}
+
+}

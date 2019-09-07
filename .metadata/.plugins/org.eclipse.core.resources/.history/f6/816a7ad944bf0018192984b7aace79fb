@@ -1,0 +1,367 @@
+//
+// Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.11 generiert 
+// Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2018.09.23 um 05:22:09 PM CEST 
+//
+
+
+package external.wsdl;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+
+/**
+ * <p>Java-Klasse für anonymous complex type.
+ * 
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * 
+ * <pre>
+ * &lt;complexType&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="clientId" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="foreName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="surName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="salutation" type="{http://photocrm.services/entity-service-person}salutationXml"/&gt;
+ *         &lt;element name="title" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="primaryPhone" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="secondaryPhone" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="primaryEmail" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="secondaryEmail" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="personSexString" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="birthDate" type="{http://www.w3.org/2001/XMLSchema}date"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "id",
+    "clientId",
+    "foreName",
+    "surName",
+    "salutation",
+    "title",
+    "primaryPhone",
+    "secondaryPhone",
+    "primaryEmail",
+    "secondaryEmail",
+    "personSexString",
+    "birthDate"
+})
+@XmlRootElement(name = "updatePersonRequest", namespace = "http://photocrm.services/entity-service-person")
+public class UpdatePersonRequest {
+
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person")
+    protected int id;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person")
+    protected int clientId;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String foreName;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String surName;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    @XmlSchemaType(name = "string")
+    protected SalutationXml salutation;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String title;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String primaryPhone;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String secondaryPhone;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String primaryEmail;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String secondaryEmail;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    protected String personSexString;
+    @XmlElement(namespace = "http://photocrm.services/entity-service-person", required = true)
+    @XmlSchemaType(name = "date")
+    protected XMLGregorianCalendar birthDate;
+
+    /**
+     * Ruft den Wert der id-Eigenschaft ab.
+     * 
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Legt den Wert der id-Eigenschaft fest.
+     * 
+     */
+    public void setId(int value) {
+        this.id = value;
+    }
+
+    /**
+     * Ruft den Wert der clientId-Eigenschaft ab.
+     * 
+     */
+    public int getClientId() {
+        return clientId;
+    }
+
+    /**
+     * Legt den Wert der clientId-Eigenschaft fest.
+     * 
+     */
+    public void setClientId(int value) {
+        this.clientId = value;
+    }
+
+    /**
+     * Ruft den Wert der foreName-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getForeName() {
+        return foreName;
+    }
+
+    /**
+     * Legt den Wert der foreName-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setForeName(String value) {
+        this.foreName = value;
+    }
+
+    /**
+     * Ruft den Wert der surName-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSurName() {
+        return surName;
+    }
+
+    /**
+     * Legt den Wert der surName-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSurName(String value) {
+        this.surName = value;
+    }
+
+    /**
+     * Ruft den Wert der salutation-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link SalutationXml }
+     *     
+     */
+    public SalutationXml getSalutation() {
+        return salutation;
+    }
+
+    /**
+     * Legt den Wert der salutation-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link SalutationXml }
+     *     
+     */
+    public void setSalutation(SalutationXml value) {
+        this.salutation = value;
+    }
+
+    /**
+     * Ruft den Wert der title-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Legt den Wert der title-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTitle(String value) {
+        this.title = value;
+    }
+
+    /**
+     * Ruft den Wert der primaryPhone-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPrimaryPhone() {
+        return primaryPhone;
+    }
+
+    /**
+     * Legt den Wert der primaryPhone-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPrimaryPhone(String value) {
+        this.primaryPhone = value;
+    }
+
+    /**
+     * Ruft den Wert der secondaryPhone-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSecondaryPhone() {
+        return secondaryPhone;
+    }
+
+    /**
+     * Legt den Wert der secondaryPhone-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSecondaryPhone(String value) {
+        this.secondaryPhone = value;
+    }
+
+    /**
+     * Ruft den Wert der primaryEmail-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPrimaryEmail() {
+        return primaryEmail;
+    }
+
+    /**
+     * Legt den Wert der primaryEmail-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPrimaryEmail(String value) {
+        this.primaryEmail = value;
+    }
+
+    /**
+     * Ruft den Wert der secondaryEmail-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSecondaryEmail() {
+        return secondaryEmail;
+    }
+
+    /**
+     * Legt den Wert der secondaryEmail-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSecondaryEmail(String value) {
+        this.secondaryEmail = value;
+    }
+
+    /**
+     * Ruft den Wert der personSexString-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPersonSexString() {
+        return personSexString;
+    }
+
+    /**
+     * Legt den Wert der personSexString-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPersonSexString(String value) {
+        this.personSexString = value;
+    }
+
+    /**
+     * Ruft den Wert der birthDate-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public XMLGregorianCalendar getBirthDate() {
+        return birthDate;
+    }
+
+    /**
+     * Legt den Wert der birthDate-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
+     */
+    public void setBirthDate(XMLGregorianCalendar value) {
+        this.birthDate = value;
+    }
+
+}

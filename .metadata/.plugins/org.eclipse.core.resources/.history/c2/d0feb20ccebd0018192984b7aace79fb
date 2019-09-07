@@ -1,0 +1,45 @@
+//
+// Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.11 generiert 
+// Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2018.09.21 um 08:41:23 PM CEST 
+//
+
+
+package external.wsdl;
+
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java-Klasse für operationResult.
+ * 
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * <p>
+ * <pre>
+ * &lt;simpleType name="operationResult"&gt;
+ *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
+ *     &lt;enumeration value="OK"/&gt;
+ *     &lt;enumeration value="ERR"/&gt;
+ *   &lt;/restriction&gt;
+ * &lt;/simpleType&gt;
+ * </pre>
+ * 
+ */
+@XmlType(name = "operationResult")
+@XmlEnum
+public enum OperationResult {
+
+    OK,
+    ERR;
+
+    public String value() {
+        return name();
+    }
+
+    public static OperationResult fromValue(String v) {
+        return valueOf(v);
+    }
+
+}

@@ -1,0 +1,117 @@
+{
+  "groups": [
+    {
+      "name": "service",
+      "type": "com.dam.serviceProvider.ConfigProperties",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.address-service",
+      "type": "com.dam.serviceProvider.ConfigProperties$AddressService",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties",
+      "sourceMethod": "public com.dam.serviceProvider.ConfigProperties.AddressService getAddressService() "
+    },
+    {
+      "name": "service.authentication-service",
+      "type": "com.dam.serviceProvider.ConfigProperties$AuthenticationService",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties",
+      "sourceMethod": "public com.dam.serviceProvider.ConfigProperties.AuthenticationService getAuthenticationService() "
+    },
+    {
+      "name": "service.person-service",
+      "type": "com.dam.serviceProvider.ConfigProperties$PersonService",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties",
+      "sourceMethod": "public com.dam.serviceProvider.ConfigProperties.PersonService getPersonService() "
+    },
+    {
+      "name": "service.portfolio-service",
+      "type": "com.dam.serviceProvider.ConfigProperties$PortfolioService",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties",
+      "sourceMethod": "public com.dam.serviceProvider.ConfigProperties.PortfolioService getPortfolioService() "
+    },
+    {
+      "name": "service.user-service",
+      "type": "com.dam.serviceProvider.ConfigProperties$UserService",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties",
+      "sourceMethod": "public com.dam.serviceProvider.ConfigProperties.UserService getUserService() "
+    }
+  ],
+  "properties": [
+    {
+      "name": "service.address-service.host",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$AddressService"
+    },
+    {
+      "name": "service.address-service.port",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$AddressService"
+    },
+    {
+      "name": "service.address-service.protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$AddressService"
+    },
+    {
+      "name": "service.authentication-service.host",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$AuthenticationService"
+    },
+    {
+      "name": "service.authentication-service.port",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$AuthenticationService"
+    },
+    {
+      "name": "service.authentication-service.protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$AuthenticationService"
+    },
+    {
+      "name": "service.person-service.host",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$PersonService"
+    },
+    {
+      "name": "service.person-service.port",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$PersonService"
+    },
+    {
+      "name": "service.person-service.protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$PersonService"
+    },
+    {
+      "name": "service.portfolio-service.host",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$PortfolioService"
+    },
+    {
+      "name": "service.portfolio-service.port",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$PortfolioService"
+    },
+    {
+      "name": "service.portfolio-service.protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$PortfolioService"
+    },
+    {
+      "name": "service.user-service.host",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$UserService"
+    },
+    {
+      "name": "service.user-service.port",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$UserService"
+    },
+    {
+      "name": "service.user-service.protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties$UserService"
+    }
+  ],
+  "hints": []
+}

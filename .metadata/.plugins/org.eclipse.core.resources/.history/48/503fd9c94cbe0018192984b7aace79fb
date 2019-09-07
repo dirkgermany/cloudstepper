@@ -1,0 +1,59 @@
+package photocrm.mapping;
+
+import external.wsdl.DeleteOrganizationRequest;
+import external.wsdl.GetOrganizationByClientAndIdRequest;
+import external.wsdl.GetOrganizationByIdRequest;
+import external.wsdl.GetPersonByIdRequest;
+import external.wsdl.GetPersonsByParentRequest;
+import external.wsdl.InsertOrganizationRequest;
+import external.wsdl.InsertPersonRelationRequest;
+import external.wsdl.UpdateOrganizationRequest;
+
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
+
+public class OrganizationMapper {
+
+	private static Mapper mapper = new DozerBeanMapper();
+
+	public static void mapObjects(Object source, Object destination) {
+		mapper.map(source, destination);
+	}
+
+	public static String toString(InsertOrganizationRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; clientId: " + outgoingRequest.getClientId()
+				+ "; name: " + outgoingRequest.getName() + "; organizationType: "
+				+ outgoingRequest.getOrganizationTypeString();
+	}
+
+	public static String toString(GetOrganizationByClientAndIdRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; clientId: " + outgoingRequest.getClientId()
+				+ "; id: " + outgoingRequest.getId();
+	}
+
+	public static String toString(GetOrganizationByIdRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; id: " + outgoingRequest.getId();
+	}
+
+	public static String toString(DeleteOrganizationRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; clientId: " + outgoingRequest.getClientId()
+				+ "; id: " + outgoingRequest.getId();
+	}
+	
+	public static String toString(InsertPersonRelationRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; clientId: " + outgoingRequest.getClientId()
+		+ "; childId: " + outgoingRequest.getChildId() + "; parentId: " + outgoingRequest.getParentId() + "; parentEntity: " + outgoingRequest.getParentEntity();		
+	}
+
+	public static String toString(GetPersonByIdRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; id: " + outgoingRequest.getId();		
+	}
+	
+	public static String toString(GetPersonsByParentRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; clientId: " + outgoingRequest.getClientId() + "; parentId: " + outgoingRequest.getParentId() + "; parentEntity: " + outgoingRequest.getParentEntity();		
+	}
+	
+	public static String toString(UpdateOrganizationRequest outgoingRequest) {
+		return "request: " + outgoingRequest.getClass().getSimpleName() + "; clientId: " + outgoingRequest.getClientId() + "; id: " + outgoingRequest.getId() + "; name: " + outgoingRequest.getName();
+	}
+}

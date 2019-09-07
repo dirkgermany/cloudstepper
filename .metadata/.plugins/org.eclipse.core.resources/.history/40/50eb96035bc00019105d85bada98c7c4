@@ -1,0 +1,74 @@
+package com.dam.authentication.model.entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.stereotype.Component;
+import com.dam.authentication.types.ServiceDomain;
+
+
+@Entity
+@Component
+@Table(name = "Permission")
+public class Permission {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long _id;
+	
+	@Column(nullable=false)
+	private ServiceDomain serviceDomain;
+
+	//TODO zwei Zeilen
+	@Column(nullable=false)
+	private Role role;
+	
+	@Column(nullable=false)
+	private String permission;
+	
+	//TODO Block
+//	public Permission (Role role, ServiceDomain serviceDomain, String permission) {
+//		setRole(role);
+//		setServiceDomain(serviceDomain);
+//		setPermission(permission);
+//	}
+	
+	public ServiceDomain getServiceDomain() {
+		return serviceDomain;
+	}
+	public void setServiceDomain(ServiceDomain serviceDomain) {
+		this.serviceDomain = serviceDomain;
+	}
+	
+	//TODO zwei Methoden
+//	public Role getRole() {
+//		return role;
+//	}
+	
+//	public void setRole(Role role) {
+//		this.role = role;
+//	}
+	
+	public String getPermission() {
+		return permission;
+	}
+	public void setPermission(String permission) {
+		this.permission = permission;
+	}
+
+	public Long get_id() {
+		return _id;
+	}
+	
+//	public void updateEntity (Permission updateRolePermission) {
+//		setServiceDomain(updateRolePermission.getServiceDomain());
+//		// TODO Zeile
+//		setRole(updateRolePermission.getRole());
+//		setPermission(updateRolePermission.getPermission());
+//	}
+
+}

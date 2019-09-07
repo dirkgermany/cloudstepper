@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="conditionHistory">
+	</section>
+	<section name="org.eclipse.jdt.debug.ui.MAIN_METHOD_SELECTION_DIALOG">
+		<item value="true" key="ShowStatusLine"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode&gt;&#x0A;&lt;infoNode&gt;=PhotoCRM/src&amp;lt;test{TestApp.java[TestApp&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=thread-test/src\/main\/java&amp;lt;broker{TestStarter.java[TestStarter&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=security/src\/main\/java&amp;lt;com.dam.rest.security{App.java[App&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=initial/src\/main\/java&amp;lt;hello{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=complete/\/home\/dirk\/.m2\/repository\/org\/apache\/tomcat\/embed\/tomcat-embed-core\/9.0.17\/tomcat-embed-core-9.0.17.jar&amp;lt;org.apache.catalina.startup(Tomcat$SimpleRealm.class[SimpleRealm&lt;/infoNode&gt;&#x0A;&lt;/historyRootNode&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<section name="DialogBoundsSettings">
+			<item value="600" key="DIALOG_WIDTH"/>
+			<item value="1|Cantarell|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+			<item value="500" key="DIALOG_HEIGHT"/>
+			<item value="26" key="DIALOG_X_ORIGIN"/>
+			<item value="23" key="DIALOG_Y_ORIGIN"/>
+		</section>
+	</section>
+	<section name="org.eclipse.jdt.internal.debug.ui.ExpressionInformationControlCreator$ExpressionInformationControl">
+		<item value="500" key="SashWeightTree"/>
+		<item value="500" key="SashWeightDetails"/>
+		<item value="706" key="WIDTH"/>
+		<item value="234" key="HEIGHT"/>
+	</section>
+</section>

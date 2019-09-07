@@ -1,0 +1,23 @@
+1560632503714	Delete element
+1560680982422	Rename type 'LoginResponse'
+1560683624382	Move compilation unit
+1560683961057	Move compilation unit
+1560684605241	Move compilation unit
+1560685339540	Copy compilation unit
+1560687360475	Rename type 'Token'
+1560687660831	Delete element
+1560687685474	Rename type 'Login'
+1560687719413	Rename type 'TokenValidationResponse'
+1560689127161	Copy compilation unit
+1560689270684	Rename type 'LoginController'
+1560690260986	Rename package 'com.dam.rest.authentication'
+1560690296954	Rename package 'com.dam.entity'
+1560690479894	Rename package 'com.dam.rest.message'
+1560690553871	Rename package 'com.dam.authentication.rest.message'
+1560690590801	Move compilation unit
+1560690601854	Move compilation units
+1560691637950	Delete element
+1560715421187	Copy compilation unit
+1560715463072	Rename type 'LoginRequest'
+1560726011161	Copy compilation unit
+1560726035131	Rename type 'TokenResponse'

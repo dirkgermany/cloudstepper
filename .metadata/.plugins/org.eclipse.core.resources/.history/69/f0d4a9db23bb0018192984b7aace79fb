@@ -1,0 +1,275 @@
+//
+// Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.7 generiert 
+// Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2018.09.18 um 11:15:55 AM CEST 
+//
+
+
+package services.photocrm.soap_soap_service;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java-Klasse für person complex type.
+ * 
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * 
+ * <pre>
+ * &lt;complexType name="person">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="clientId" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="foreName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="surName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="primaryPhone" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="secondaryPhone" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="primaryEmail" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="secondaryEmail" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="personSex" type="{http://photocrm.services/soap-soap-service}personSex"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "person", propOrder = {
+    "id",
+    "clientId",
+    "foreName",
+    "surName",
+    "primaryPhone",
+    "secondaryPhone",
+    "primaryEmail",
+    "secondaryEmail",
+    "personSex"
+})
+public class Person {
+
+    protected int id;
+    protected int clientId;
+    @XmlElement(required = true)
+    protected String foreName;
+    @XmlElement(required = true)
+    protected String surName;
+    @XmlElement(required = true)
+    protected String primaryPhone;
+    @XmlElement(required = true)
+    protected String secondaryPhone;
+    @XmlElement(required = true)
+    protected String primaryEmail;
+    @XmlElement(required = true)
+    protected String secondaryEmail;
+    @XmlElement(required = true)
+    protected PersonSex personSex;
+
+    /**
+     * Ruft den Wert der id-Eigenschaft ab.
+     * 
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Legt den Wert der id-Eigenschaft fest.
+     * 
+     */
+    public void setId(int value) {
+        this.id = value;
+    }
+
+    /**
+     * Ruft den Wert der clientId-Eigenschaft ab.
+     * 
+     */
+    public int getClientId() {
+        return clientId;
+    }
+
+    /**
+     * Legt den Wert der clientId-Eigenschaft fest.
+     * 
+     */
+    public void setClientId(int value) {
+        this.clientId = value;
+    }
+
+    /**
+     * Ruft den Wert der foreName-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getForeName() {
+        return foreName;
+    }
+
+    /**
+     * Legt den Wert der foreName-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setForeName(String value) {
+        this.foreName = value;
+    }
+
+    /**
+     * Ruft den Wert der surName-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSurName() {
+        return surName;
+    }
+
+    /**
+     * Legt den Wert der surName-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSurName(String value) {
+        this.surName = value;
+    }
+
+    /**
+     * Ruft den Wert der primaryPhone-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPrimaryPhone() {
+        return primaryPhone;
+    }
+
+    /**
+     * Legt den Wert der primaryPhone-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPrimaryPhone(String value) {
+        this.primaryPhone = value;
+    }
+
+    /**
+     * Ruft den Wert der secondaryPhone-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSecondaryPhone() {
+        return secondaryPhone;
+    }
+
+    /**
+     * Legt den Wert der secondaryPhone-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSecondaryPhone(String value) {
+        this.secondaryPhone = value;
+    }
+
+    /**
+     * Ruft den Wert der primaryEmail-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPrimaryEmail() {
+        return primaryEmail;
+    }
+
+    /**
+     * Legt den Wert der primaryEmail-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPrimaryEmail(String value) {
+        this.primaryEmail = value;
+    }
+
+    /**
+     * Ruft den Wert der secondaryEmail-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSecondaryEmail() {
+        return secondaryEmail;
+    }
+
+    /**
+     * Legt den Wert der secondaryEmail-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSecondaryEmail(String value) {
+        this.secondaryEmail = value;
+    }
+
+    /**
+     * Ruft den Wert der personSex-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link PersonSex }
+     *     
+     */
+    public PersonSex getPersonSex() {
+        return personSex;
+    }
+
+    /**
+     * Legt den Wert der personSex-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link PersonSex }
+     *     
+     */
+    public void setPersonSex(PersonSex value) {
+        this.personSex = value;
+    }
+
+}

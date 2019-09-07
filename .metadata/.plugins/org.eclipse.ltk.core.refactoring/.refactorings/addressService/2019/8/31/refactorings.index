@@ -1,0 +1,8 @@
+1564780666379	Rename package 'com.dam.person'
+1564780862629	Rename type 'PersonStore'
+1564780882733	Rename type 'PersonModel'
+1564780984770	Rename type 'Person'
+1564781069626	Delete element
+1564781086315	Rename type 'PersonController'
+1564781117190	Rename type 'PersonRequest'
+1564781140415	Rename type 'PersonResponse'

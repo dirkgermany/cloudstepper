@@ -1,0 +1,22 @@
+package com.dam.portfolio.rest.message;
+
+import com.dam.portfolio.model.entity.AssetClass;
+
+public class AssetClassResponse extends RestResponse{
+    private AssetClass construction;
+    	
+	public AssetClassResponse (AssetClass assetClass) {
+		super(new Long(200), "OK", "AssetClass found");
+		
+		setAssetClass(construction);
+	}  
+
+	private void setAssetClass(AssetClass user) {
+		this.construction = user;
+	}
+	
+	public AssetClass getAssetClass() {
+		return this.construction;
+	}
+	
+}

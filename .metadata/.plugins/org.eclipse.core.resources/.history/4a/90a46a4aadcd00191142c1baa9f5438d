@@ -1,0 +1,21 @@
+package com.dam.portfolio.rest.message.mapAssetClassToPortfolioConstruction;
+
+import com.dam.portfolio.rest.message.RestRequest;
+
+public class MapAssetClassToPortfolioConstructionRequest extends RestRequest {
+    private Long mapId;
+
+    public MapAssetClassToPortfolioConstructionRequest( Long requestorUserId, Long mapId) {
+		super("DAM 2.0");
+		setRequestorUserId(requestorUserId);
+	}
+
+	public Long getMapId() {
+		return mapId;
+	}
+
+	public void setAssetClassId(Long mapId) {
+		this.mapId = mapId;
+	}
+    
+}

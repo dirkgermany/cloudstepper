@@ -1,0 +1,79 @@
+1565808562056	Encapsulate field 'userType'
+1565810530403	Rename type 'UserType'
+1565810699133	Copy compilation unit
+1565810977038	Copy compilation unit
+1565815561677	Copy compilation unit
+1565815763581	Encapsulate field 'rights'
+1565816921186	Encapsulate field 'rights'
+1565817134702	Rename type 'RightEnricher'
+1565818470092	Encapsulate field 'userRoles'
+1565819868497	Rename type 'RightResponse'
+1565819904017	Rename type 'RightServiceConsumer'
+1565819976152	Rename type 'TokenAndRightsResponse'
+1565820517648	Rename type 'Right'
+1565820666188	Rename type 'RightManager'
+1565821342867	Rename type 'Component'
+1565822387518	Rename type 'UserStore'
+1565822505674	Rename type 'UserModel'
+1565899527774	Move compilation unit
+1565899699590	Move compilation unit
+1565899727376	Move compilation unit
+1565899792050	Move compilation unit
+1565900428835	Delete element
+1565900460213	Move compilation unit
+1565900481301	Move compilation unit
+1565900558200	Move compilation unit
+1565900626561	Move compilation unit
+1565900789206	Move compilation unit
+1565900810771	Move compilation unit
+1565900902043	Move compilation unit
+1565901075595	Move compilation unit
+1565901190948	Move compilation unit
+1565906931115	Move compilation unit
+1565906983898	Move compilation unit
+1565907103502	Move compilation unit
+1565907140168	Move compilation unit
+1565907177345	Move compilation unit
+1565907202529	Move compilation unit
+1565907223510	Move compilation unit
+1565907303080	Move compilation unit
+1565907483664	Move compilation unit
+1565907497438	Move compilation unit
+1565907526753	Move compilation unit
+1565908478818	Move compilation unit
+1565909144311	Move compilation unit
+1565909158024	Move compilation unit
+1565909170801	Move compilation unit
+1565909192799	Move compilation unit
+1565909250177	Move compilation unit
+1565909319007	Move compilation units
+1565909390333	Move compilation units
+1565909419054	Rename package 'com.dam.authentication'
+1565909445859	Move compilation unit
+1565909467405	Move compilation units
+1565909482625	Move compilation units
+1565909727559	Move compilation unit
+1565909786390	Move compilation units
+1565909813603	Move compilation unit
+1565909853298	Move compilation unit
+1565909873697	Move compilation unit
+1565909910601	Move compilation unit
+1565909931256	Move compilation unit
+1565909987309	Move compilation units
+1565910025713	Move compilation units
+1565910156501	Move compilation units
+1565910383412	Move compilation unit
+1565910418812	Move compilation unit
+1565911741337	Delete element
+1565912359547	Delete elements
+1565912373583	Delete element
+1565912382153	Delete element
+1565912408781	Delete element
+1565912519981	Delete element
+1565912671110	Delete element
+1565912685924	Delete element
+1566124608798	Copy compilation unit
+1566125829750	Rename field 'permissions'
+1566125861996	Rename method 'getPermissions'
+1566125876654	Rename method 'setPermissions'
+1566128296340	Rename field 'permisssionStore'

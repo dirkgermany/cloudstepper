@@ -1,0 +1,11 @@
+package com.dam.person.rest.message;
+
+import com.dam.authentication.model.entity.Person;
+
+public class UpdateResponse extends WriteResponse{
+    	
+	public UpdateResponse (Person person) {
+		super(new Long(0), "OK", "Person Updated", person);
+	}  
+
+}

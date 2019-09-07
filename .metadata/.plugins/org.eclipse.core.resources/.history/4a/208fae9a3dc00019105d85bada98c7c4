@@ -1,0 +1,211 @@
+package com.dam.authentication;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
+
+import com.dam.authentication.model.PermissionModel;
+import com.dam.authentication.model.entity.Permission;
+import com.dam.authentication.types.Gender;
+
+/**
+ * Handles active and non active Tokens
+ * 
+ * @author dirk
+ *
+ */
+@Controller
+@ComponentScan
+public class PermissionStore {
+
+	@Autowired
+	private PermissionModel permissionModel;
+
+	/**
+	 * Retrieves person by names. Attention! Many persons can have the same name.
+	 * 
+	 * @param givenName
+	 * @param lastName
+	 * @return
+	 */
+	public List<Permission> getPerson(String givenName, String lastName) {
+		return permissionModel.getPersonByNames(givenName, lastName);
+	}
+
+	/**
+	 * Save getter for Person. Checks requesting user
+	 * 
+	 * @param userId
+	 * @param person
+	 * @return
+	 */
+	public Permission getPersonSafe(Long requestorUserId, Long personId, Long userId) {
+		if (null == requestorUserId || (null == personId && null == userId)) {
+			return null;
+		}
+
+		Permission storedPerson = findPerson(personId, userId);
+
+		if (null != storedPerson && requestorUserId.longValue() == storedPerson.getUserId().longValue()) {
+			return storedPerson;
+		}
+
+		return null;
+	}
+
+	public Permission getPersonById(Long personId) {
+		Optional<Permission> optionalPerson = permissionModel.findById(personId);
+		if (null != optionalPerson && optionalPerson.isPresent()) {
+			return optionalPerson.get();
+		}
+		return null;
+	}
+
+	public Permission getPersonByUserId(Long userId) {
+		Optional<Permission> optionalPerson = permissionModel.findByUserId(userId);
+		if (null != optionalPerson && optionalPerson.isPresent()) {
+			return optionalPerson.get();
+		}
+		return null;
+	}
+
+	/**
+	 * Creation of person requests existing userId, givenName and lastName.
+	 * 
+	 * @param personContainer
+	 * @return
+	 */
+	public Permission createPersonSafe(Long requestorUserId, Permission personContainer) {
+		if (null == personContainer || null == personContainer.getGivenName()
+				|| personContainer.getGivenName().isEmpty() || null == personContainer.getLastName() || personContainer.getLastName().isEmpty()) {
+			return null;
+		}
+		// check if still exists
+		Permission existingPerson = findPerson(requestorUserId, personContainer.getPersonId());
+
+		if (null != existingPerson && requestorUserId.longValue() == existingPerson.getUserId().longValue()) {
+			return updatePerson(existingPerson, personContainer);
+		}
+		
+		personContainer.setUserId(requestorUserId); 
+
+		return permissionModel.save(personContainer);
+	}
+
+	/**
+	 * Creates a person. A person with the same userId mustn't exist
+	 * 
+	 * @return null if a person with the same userId still exists
+	 */
+	public Permission createPersonSafe(Long requestorUserId, String givenName, String lastName, Gender gender,
+			Date birthdate) {
+		if (null == requestorUserId || null == givenName || givenName.isEmpty() || null == lastName
+				|| lastName.isEmpty()) {
+			return null;
+		}
+
+		Permission personContainer = new Permission(requestorUserId, givenName, lastName);
+		personContainer.setGender(gender);
+		personContainer.setBirthdate(birthdate);
+		
+		return createPersonSafe(requestorUserId, personContainer);
+	}
+
+	private Permission findPerson(Long personId, Long userId) {
+		Permission permission = null;
+		if (null != personId) {
+			permission = getPersonById(personId);
+		} else if (null != userId) {
+			permission = getPersonByUserId(userId);
+		}
+
+		return permission;
+	}
+
+	/**
+	 * Save update; requesting user must be user in storage
+	 * 
+	 * @param userId
+	 * @param userStored
+	 * @param userUpdate
+	 * @return
+	 */
+	public Permission updatePersonSafe(Long requestorUserId, Long personId, Long userId, Permission personUpdate) {
+		if (null == requestorUserId || null == personUpdate || (null == personId && null == userId)) {
+			return null;
+		}
+
+		Permission personForUpdate = findPerson(personId, userId);
+
+		if (null != personForUpdate && requestorUserId.longValue() == personForUpdate.getUserId().longValue()) {
+			return updatePerson(personForUpdate, personUpdate);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Update person with changed values
+	 * 
+	 * @param personForUpdate
+	 * @param personContainer
+	 * @return
+	 */
+	private Permission updatePerson(Permission personForUpdate, Permission personContainer) {
+		if (null != personForUpdate && null != personContainer) {
+			personForUpdate.updateEntity(personContainer);
+			return permissionModel.save(personForUpdate);
+		}
+		return null;
+	}
+
+	public Long dropPerson(Long personId) {
+		Permission permission = getPersonById(personId);
+		return dropPerson(permission);
+	}
+
+	/**
+	 * Secure drop, user must be owner
+	 * 
+	 * @param userId
+	 * @param person
+	 * @return
+	 */
+	public Long dropPersonSafe(Long requestorUserId, Long personId, Long userId) {
+		if (null == requestorUserId || (null == personId && null == userId)) {
+			return null;
+		}
+
+		Permission personToDelete = null;
+
+		if (null != personId) {
+			personToDelete = getPersonById(personId);
+		} else if (null != userId) {
+			personToDelete = getPersonByUserId(userId);
+		}
+
+		if (null != personToDelete && requestorUserId.longValue() == personToDelete.getUserId()) {
+			return dropPerson(personToDelete);
+		}
+
+		return new Long(12);
+
+	}
+
+	private Long dropPerson(Permission permission) {
+		if (null != permission) {
+			permissionModel.deleteById(permission.getPersonId());
+			Permission deletedPerson = getPersonById(permission.getPersonId());
+			if (null == deletedPerson) {
+				return new Long(0);
+			}
+		}
+
+		return new Long(10);
+	}
+
+}

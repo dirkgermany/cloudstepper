@@ -1,0 +1,37 @@
+package com.dam.portfolio.rest.message.mapAssetClassToPortfolio;
+
+import java.util.List;
+
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.model.entity.Portfolio;
+import com.dam.portfolio.rest.message.RestRequest;
+
+public class AssetClassToPortfolioMapCreateRequest extends RestRequest {
+	
+	private Portfolio portfolio;
+	private List<AssetClass> assetClasses;
+
+    public AssetClassToPortfolioMapCreateRequest(Long requestorUserId, Portfolio portfolio, List<AssetClass> assetClasses) {
+		super("DAM 2.0");
+
+		setPortfolio(portfolio);
+		setAssetClasses(assetClasses);
+    }
+
+	public Portfolio getPortfolio() {
+		return portfolio;
+	}
+
+	public void setPortfolio(Portfolio portfolio) {
+		this.portfolio = portfolio;
+	}
+
+	public List<AssetClass> getAssetClasses() {
+		return assetClasses;
+	}
+
+	public void setAssetClasses(List<AssetClass> assetClasses) {
+		this.assetClasses = assetClasses;
+	}
+    
+}

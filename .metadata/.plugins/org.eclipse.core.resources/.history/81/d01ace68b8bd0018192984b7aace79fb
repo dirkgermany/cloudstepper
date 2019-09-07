@@ -1,0 +1,57 @@
+package photocrm.mapping;
+
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
+
+import photocrm.model.OrganizationEntity;
+import services.photocrm.entity_service_organization.InsertOrganizationRequest;
+import services.photocrm.entity_service_organization.OrganizationTypeXml;
+import services.photocrm.entity_service_organization.OrganizationXml;
+import services.photocrm.entity_service_organization.UpdateOrganizationRequest;
+
+public class OrganizationMapper {
+	
+	private static Mapper mapper = new DozerBeanMapper();
+	
+	public static void mapObjects(Object source, Object destination) {
+		mapper.map(source, destination);		
+	}
+
+	
+/**	
+	public static OrganizationXml entityToXml (OrganizationEntity entity) {
+		OrganizationXml organizationXml = new OrganizationXml();
+		organizationXml.setOrganizationType(entity.getOrganizationType());
+		organizationXml.setId(entity.getId());
+		organizationXml.setClientId(entity.getClientId());
+		organizationXml.setName(entity.getName());
+		return organizationXml;
+	}
+	
+	public static OrganizationEntity xmlToEntity (OrganizationXml xml) {
+		OrganizationEntity entity = new OrganizationEntity();
+		entity.setOrganizationType(xml.getOrganizationType());
+		entity.setId(xml.getId());
+		entity.setClientId(xml.getClientId());
+		entity.setName(xml.getName());
+		return entity;
+	}
+	
+	public static OrganizationEntity requestToEntity (InsertOrganizationRequest request) {
+		OrganizationEntity entity = new OrganizationEntity();
+		entity.setName(request.getName());
+		entity.setOrganizationType(OrganizationTypeXml.valueOf(request.getOrganizationTypeString()));
+		entity.setClientId(request.getClientId());
+		return entity;
+	}
+
+	public static OrganizationEntity requestToEntity (UpdateOrganizationRequest request) {
+		OrganizationEntity entity = new OrganizationEntity();
+		entity.setName(request.getName());
+		entity.setOrganizationType(OrganizationTypeXml.valueOf(request.getOrganizationTypeString()));
+		entity.setId(request.getId());
+		entity.setClientId(request.getClientId());
+		return entity;
+	}
+*/
+}

@@ -1,0 +1,33 @@
+package photocrm.model;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
+
+@Transactional
+public interface OrganizationModel extends Repository<OrganizationEntity, Long>, CrudRepository<OrganizationEntity, Long> {
+
+	List<OrganizationEntity> findByName(String name);
+	Optional<OrganizationEntity> findById(int id);
+
+//	@Query(value = "SELECT org.* FROM organization org where org.client_Id = :clientId "
+//			+ "AND org.id = :id", nativeQuery = true)
+	@Query("SELECT org FROM OrganizationEntity org where org.clientId = :clientId "
+			+ "AND org.id = :id")
+	OrganizationEntity findOrganizationByClientAndId(@Param("clientId") int clientId, @Param("id") int id);
+	
+	@Modifying
+	@Transactional
+	@Query("Update OrganizationEntity org set org.name = :#{#organization.name}, "
+			+ "org.organizationType = :#{#organization.organizationType} "
+			+ "Where org.id = :#{#organization.id} "
+			+ "And   org.clientId = :#{#organization.clientId}")
+	Integer updateOrganization(@Param("organization") OrganizationEntity organization);
+}

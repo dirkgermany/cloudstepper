@@ -1,0 +1,44 @@
+package com.dam.portfolio.model.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ConstructionMap {
+	
+	private List<AssetClass> assetClasses;
+	private PortfolioConstruction portfolioConstruction;
+	
+	public ConstructionMap () {
+		
+	}
+	
+	public void addAssetClass(AssetClass assetClass) {
+		if (null == assetClasses) {
+			assetClasses = new ArrayList<>();
+		}
+		getAssetClasses().add(assetClass);
+	}
+	
+	
+	public ConstructionMap (PortfolioConstruction portfolioConstruction, List<AssetClass> assetClasses) {
+		setAssetClasses(assetClasses);
+		setPortfolioConstruction(portfolioConstruction);
+	}
+
+	public List<AssetClass> getAssetClasses() {
+		return assetClasses;
+	}
+
+	public void setAssetClasses(List<AssetClass> assetClasses) {
+		this.assetClasses = assetClasses;
+	}
+
+	public PortfolioConstruction getPortfolioConstruction() {
+		return portfolioConstruction;
+	}
+
+	public void setPortfolioConstruction(PortfolioConstruction portfolioConstruction) {
+		this.portfolioConstruction = portfolioConstruction;
+	}
+
+}

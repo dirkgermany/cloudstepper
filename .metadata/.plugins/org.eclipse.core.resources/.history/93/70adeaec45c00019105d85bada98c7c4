@@ -1,0 +1,138 @@
+package com.dam.authentication.rest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dam.authentication.XXXConfigPropertiesxxx;
+import com.dam.authentication.ConfigProperties;
+import com.dam.authentication.JsonHelper;
+import com.dam.authentication.PermissionManager;
+import com.dam.authentication.TokenStore;
+import com.dam.authentication.model.entity.Token;
+import com.dam.authentication.model.entity.User;
+import com.dam.authentication.rest.message.LoginRequest;
+import com.dam.authentication.rest.message.LogoutRequest;
+import com.dam.authentication.rest.message.RestResponse;
+import com.dam.authentication.rest.message.TokenAndPermissionsResponse;
+import com.dam.authentication.rest.message.TokenValidationResponse;
+import com.dam.authentication.types.ServiceDomain;
+
+
+@RestController
+public class AuthenticationController {
+
+	@Autowired
+	TokenStore tokenStore;
+
+	@Autowired
+	UserServiceConsumer userServiceConsumer;
+
+	@Autowired
+	ConfigProperties config;
+
+	@PostMapping("/login")
+	public RestResponse loginResponse(@RequestBody LoginRequest loginRequest) {
+		User user = userServiceConsumer.readUser(loginRequest);
+
+		if (null != user) {
+			Token token = createToken(user);
+			if (null == token) {
+				return new RestResponse(new Long(3), "Request Invalid", "Missing values or format error");
+			}
+			return new TokenValidationResponse(token.getUser().getUserName(), token.getUser().getUserId(), token.getFormattedId());
+		}
+		return new RestResponse(new Long(1), "Login Failed", "User Unknown");
+	}
+	
+	@PostMapping("/logout")
+	public RestResponse logoutResponse(@RequestBody LogoutRequest logoutRequest) {
+		if (new Long(0).longValue() ==  tokenStore.logout(logoutRequest)) {
+			return new RestResponse(new Long(0), "Logout successfull", logoutRequest.getUserName());
+		}
+		return new RestResponse(new Long(7), "Logout Failed", "User Unknown or not logged in");
+	}
+
+	/**
+	 * Only for Internal Usage Response to the question if a Token for a qualified
+	 * User is correct and active
+	 * 
+	 * @param tokenRequest
+	 * @return
+	 */
+	@PostMapping("/validateToken")
+	public RestResponse validateTokenResponse(@RequestBody String tokenRequest) {
+		Token validatedToken = validateAndRefresh(tokenRequest);
+		if (null != validatedToken) {
+			TokenAndPermissionsResponse response = new TokenAndPermissionsResponse(validatedToken.getUser().getUserName(), validatedToken.getUser().getUserId(), validatedToken.getFormattedId(), validatedToken.getPermissions());
+			return response;
+		}
+
+		return new RestResponse(new Long(2), "Token Invalid",
+				"Requested Token could not be matched with a valid active Token");
+	}
+
+	/**
+	 * Only for Internal Usage Delivers the complete Token informations Used to get
+	 * the userId for accessing user related data
+	 * 
+	 * @param tokenRequest
+	 * @return
+	 */
+//	@PostMapping("/getToken")
+//	public RestResponse getTokenResponse(@RequestBody String tokenRequest) {				
+//		Token validatedToken = validateAndRefresh(tokenRequest);
+//		if (null != validatedToken) {
+//			TokenResponse response = new TokenResponse(validatedToken);
+//			return response;
+//		}
+//
+//		return new RestResponse(new Long(2), "Token Invalid",
+//				"Requested Token could not be matched with a valid active Token");
+//	}
+
+	private Token validateAndRefresh(String tokenRequest) {
+		JsonHelper jsonHelper = new JsonHelper();
+		
+		Long tokenId = jsonHelper.extractLongFromRequest(tokenRequest, "tokenId");
+		String userName = jsonHelper.extractStringFromRequest(tokenRequest, "userName");
+		Long userId = jsonHelper.extractLongFromRequest(tokenRequest, "userId");	
+		
+		User user = null;
+		Token token = tokenStore.getToken(tokenId);
+		
+		if (null == token) {
+			// Token with such tokenId doesn't exist
+			return null;
+		}
+		
+		user = token.getUser();
+		if (!user.getUserName().equals(userName) || !user.getUserId().equals(userId)) {
+			// Wrong user in request - doesn't match with token user
+			return null;
+		}
+
+		Token validationToken = new Token(tokenId, user, config.getTokenConfiguration().getMaxTokenAge() + System.currentTimeMillis());		
+		Token validatedToken = tokenStore.validateAndRefreshToken(validationToken);
+		
+		String componentName = jsonHelper.extractStringFromRequest(tokenRequest, "component");
+		ServiceDomain serviceDomain = ServiceDomain.valueOf(componentName);
+		String userPermissions = PermissionManager.getRolePermissions(user.getRole(), serviceDomain);
+		validatedToken.setPermissions(userPermissions);
+
+		return validatedToken;
+
+	}
+
+	/**
+	 * Validate User, create and store Token, create Response
+	 * 
+	 * @param loginRequest
+	 * @return
+	 */
+	private Token createToken(User user) {
+		return tokenStore.createNewToken(user);
+	}
+
+}

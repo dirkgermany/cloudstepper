@@ -1,0 +1,22 @@
+package com.dam.authentication.types;
+
+public enum Role {
+	
+	INVESTOR ("Investor"),
+	USER ("Any other user"),
+	ADMIN ("Administrator"),
+	ROOT_ADMIN ("Root Administrator"),
+	CONTROLLER ("Controller");
+	
+	private String description;
+
+	
+	Role (String description) {
+		this.description = description;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+}

@@ -1,0 +1,11 @@
+package com.dam.portfolio.rest.message.mappedConstruction;
+
+import com.dam.portfolio.model.entity.MappedConstruction;
+
+public class MappedConstructionCreateResponse extends MappedConstructionriteResponse{
+
+	public MappedConstructionCreateResponse(MapAssetClassToPortfolioConstruction mappedConstruction) {
+		super(new Long(200), "OK", "MappedConstruction Saved", mappedConstruction);
+	}
+    	
+}

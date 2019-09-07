@@ -1,0 +1,522 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://photocrm.services/soap-soap-service"
+	targetNamespace="http://photocrm.services/soap-soap-service"
+	elementFormDefault="qualified">
+
+	<xs:element name="createOrganizationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="name" type="xs:string" />
+				<xs:element name="organizationType"
+					type="tns:organizationType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="createOrganizationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="organization" type="tns:organization" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyOrganizationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="organization" type="tns:organization" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyOrganizationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:int" />
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="name" type="xs:string" />
+				<xs:element name="organizationType"
+					type="tns:organizationType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="findOrganizationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="id" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="findOrganizationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="organization" type="tns:organization" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="dropOrganizationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationInformation" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="dropOrganizationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:int" />
+				<xs:element name="clientId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="createPersonRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="foreName" type="xs:string" />
+				<xs:element name="surName" type="xs:string" />
+				<xs:element name="salutation" type="tns:salutation" />
+				<xs:element name="title" type="xs:string" />
+				<xs:element name="personSex" type="tns:personSex" />
+				<xs:element name="birthDate" type="xs:date" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="createPersonResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="person" type="tns:person" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyPersonResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="person" type="tns:person" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="modifyPersonRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:int" />
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="foreName" type="xs:string" />
+				<xs:element name="surName" type="xs:string" />
+				<xs:element name="salutation" type="tns:salutation" />
+				<xs:element name="title" type="xs:string" />
+				<xs:element name="personSex" type="tns:personSex" />
+				<xs:element name="birthDate" type="xs:date" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="dropPersonResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationInformation" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="dropPersonRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:int" />
+				<xs:element name="clientId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="addPersonToOrganizationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="personId" type="xs:int" />
+				<xs:element name="organizationId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="addPersonToOrganizationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="organization" type="tns:organization" />
+				<xs:element name="person" type="tns:person" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="findPersonRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="id" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="findPersonResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="person" type="tns:person" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="findPersonByIdRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="findPersonByIdResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="person" type="tns:person" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="findPersonsByOrganizationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="organizationId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Relation Person zu übergeordnetem Entity -->
+	<xs:element name="findPersonsByOrganizationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" minOccurs="1"
+					maxOccurs="1" />
+				<xs:element name="parentId" type="xs:int" minOccurs="1"
+					maxOccurs="1" />
+				<xs:element name="parentEntity" type="xs:string"
+					minOccurs="1" maxOccurs="1" />
+
+				<xs:element ref="tns:personChild" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="getAddressRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="id" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="getAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationResult"
+					type="tns:operationResult" />
+				<xs:element name="address" type="tns:address" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="getAddressByIdRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="getAddressByIdResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationResult"
+					type="tns:operationResult" />
+				<xs:element name="address" type="tns:address" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="updateAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationResult"
+					type="tns:operationResult" />
+				<xs:element name="address" type="tns:address" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="updateAddressRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:int" />
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="street" type="xs:string" />
+				<xs:element name="houseNr" type="xs:string" />
+				<xs:element name="addrAddOn" type="xs:string" />
+				<xs:element name="city" type="xs:string" />
+				<xs:element name="zip" type="xs:string" />
+				<xs:element name="postBox" type="xs:string" />
+				<xs:element name="country" type="xs:string" />
+				<xs:element name="isStreet" type="xs:boolean" />
+				<xs:element name="addressType" type="tns:addressType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="deleteAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationResult"
+					type="tns:operationResult" />
+				<xs:element name="operationInformation" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="deleteAddressRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:int" />
+				<xs:element name="clientId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="insertAddressRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="street" type="xs:string" />
+				<xs:element name="houseNr" type="xs:string" />
+				<xs:element name="addrAddOn" type="xs:string" />
+				<xs:element name="city" type="xs:string" />
+				<xs:element name="zip" type="xs:string" />
+				<xs:element name="postBox" type="xs:string" />
+				<xs:element name="country" type="xs:string" />
+				<xs:element name="isStreet" type="xs:boolean" />
+				<xs:element name="addressType" type="tns:addressType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="insertAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationResult"
+					type="tns:operationResult" />
+				<xs:element name="address" type="tns:address" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="addPersonToOrganizationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="personId" type="xs:int" />
+				<xs:element name="organizationId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="addPersonToOrganizationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="organization" type="tns:organization" />
+				<xs:element name="person" type="tns:person" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+
+	<xs:element name="addAddressToOrganizationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="addressId" type="xs:int" />
+				<xs:element name="organizationId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="addAddressToOrganizationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="organization" type="tns:organization" />
+				<xs:element name="address" type="tns:address" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="deleteAddressRelationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationInformation" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="deleteAddressRelationRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="parentEntity" type="xs:string" />
+				<xs:element name="parentId" type="xs:int" />
+				<xs:element name="childId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="getAddressesByParentRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientId" type="xs:int" />
+				<xs:element name="parentEntity" type="xs:string" />
+				<xs:element name="parentId" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Relation Address zu übergeordnetem Entity -->
+	<xs:element name="getAddressesByParentResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="operationResult"
+					type="tns:operationResult" />
+				<xs:element name="clientId" type="xs:int" minOccurs="1"
+					maxOccurs="1" />
+				<xs:element name="parentId" type="xs:int" minOccurs="1"
+					maxOccurs="1" />
+				<xs:element name="parentEntity" type="xs:string"
+					minOccurs="1" maxOccurs="1" />
+
+				<xs:element ref="tns:addressChild" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Basic data sructure -->
+	<xs:complexType name="organization">
+		<xs:sequence>
+			<xs:element name="id" type="xs:int" />
+			<xs:element name="clientId" type="xs:int" /> <!-- client (customer) of photocrm -->
+			<xs:element name="name" type="xs:string" /> <!-- name of company or whatever -->
+			<xs:element name="organizationType"
+				type="tns:organizationType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="person">
+		<xs:sequence>
+			<xs:element name="id" type="xs:int" />
+			<xs:element name="clientId" type="xs:int" />
+			<xs:element name="foreName" type="xs:string" />
+			<xs:element name="surName" type="xs:string" />
+			<xs:element name="salutation" type="tns:salutation" />
+			<xs:element name="title" type="xs:string" />
+			<xs:element name="personSex" type="tns:personSex" />
+			<xs:element name="birthDate" type="xs:date" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="address">
+		<xs:sequence>
+			<xs:element name="id" type="xs:int" />
+			<xs:element name="clientId" type="xs:int" />
+			<xs:element name="street" type="xs:string" />
+			<xs:element name="houseNr" type="xs:string" />
+			<xs:element name="addrAddOn" type="xs:string" />
+			<xs:element name="city" type="xs:string" />
+			<xs:element name="zip" type="xs:string" />
+			<xs:element name="postBox" type="xs:string" />
+			<xs:element name="country" type="xs:string" />
+			<xs:element name="isStreet" type="xs:boolean" />
+			<xs:element name="addressType" type="tns:addressType" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="addressChild">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:element name="address" type="tns:address" />
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	
+
+	<xs:element name="personChild">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:element name="person" type="tns:person" />
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Types to identify persons -->
+	<xs:simpleType name="personSex">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MALE" />
+			<xs:enumeration value="FEMALE" />
+			<xs:enumeration value="INTER" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="salutation">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MR" />
+			<xs:enumeration value="MRS" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Types to identify organizations -->
+	<xs:simpleType name="organizationType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GENERIC" />
+			<xs:enumeration value="VENDOR" />
+			<xs:enumeration value="CUSTOMER" />
+			<xs:enumeration value="AUTHORITY" />
+			<xs:enumeration value="BRIDAL_COUPLE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="addressType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PRIVATE" />
+			<xs:enumeration value="PRIMARY" />
+			<xs:enumeration value="SECONDARY" />
+			<xs:enumeration value="CENTRAL_OFFICE" />
+			<xs:enumeration value="HOME_OFFICE" />
+			<xs:enumeration value="POSTBOX" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+
+
+</xs:schema>

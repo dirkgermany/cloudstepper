@@ -1,0 +1,51 @@
+package photocrm.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
+
+import external.wsdl.GetOrganizationByIdResponse;
+import external.wsdl.InsertOrganizationRequest;
+import external.wsdl.InsertOrganizationResponse;
+import photocrm.ConfigProperties;
+import photocrm.exception.ServiceException;
+import photocrm.exception.ServiceFault;
+import photocrm.meta.OrganizationMapper;
+
+public class OrganizationClient extends WebServiceGatewaySupport {
+	// Configuration
+	ConfigProperties config = new ConfigProperties();
+
+	private static final Logger log = LoggerFactory.getLogger(OrganizationClient.class);
+	
+	private String createExternalUriString () {
+		System.out.println("http://" + config.getOrganization().getHost() + ":" + config.getOrganization().getPort() + "/ws/organizations");
+
+		return "http://" + config.getOrganization().getHost() + ":" + config.getOrganization().getPort() + "/ws/organizations";
+	}
+	
+	private String createExternalEndpoingString (Class clazz) {
+		System.out.println("http://photocrm.services/entity-service-organization/" + clazz.getName());
+		return "http://photocrm.services/entity-service-organization/" + clazz.getName();
+	}
+
+	public InsertOrganizationResponse insertOrganization(InsertOrganizationRequest request) throws ServiceException {
+		createExternalUriString();
+		createExternalEndpoingString(request.getClass());
+		try {
+			InsertOrganizationResponse response = (InsertOrganizationResponse) getWebServiceTemplate()
+					.marshalSendAndReceive(
+							"http://" + config.getOrganization().getHost() + ":" + config.getOrganization().getPort()
+									+ "/ws/organizations",
+							request, new SoapActionCallback(
+									"http://photocrm.services/entity-service-organization/InsertOrganizationRequest"));
+			return response;
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION INSERT ", "request: " + OrganizationMapper.toString(request)));
+		}
+	}
+}

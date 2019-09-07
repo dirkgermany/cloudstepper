@@ -1,0 +1,262 @@
+package com.dam.portfolio;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
+
+import com.dam.exception.DamServiceException;
+import com.dam.exception.PermissionCheckException;
+import com.dam.portfolio.model.PortfolioModel;
+import com.dam.portfolio.model.entity.Portfolio;
+import com.dam.portfolio.rest.message.RestRequest;
+import com.dam.portfolio.rest.message.portfolio.PortfolioCreateRequest;
+import com.dam.portfolio.rest.message.portfolio.ConstructionDropRequest;
+import com.dam.portfolio.rest.message.portfolio.ConstructionRequest;
+import com.dam.portfolio.rest.message.portfolio.ConstructionUpdateRequest;
+
+/**
+ * Handles active and non active Tokens
+ * 
+ * @author dirk
+ *
+ */
+@Controller
+@ComponentScan
+public class PortfolioStore {
+
+	@Autowired
+	private PortfolioModel portfolioModel;
+
+	/**
+	 * Save getter for PortfolioConstruction. Checks requesting user
+	 * 
+	 * @param portfolioConstruction
+	 * @return
+	 */
+	public Portfolio getPortfolioConstructionSafe(ConstructionRequest constructionRequest)
+			throws DamServiceException {
+		checkRequestedParamsRequest_Id_Rights(constructionRequest, constructionRequest.getRequestorUserId(),
+				constructionRequest.getRights());
+
+		if (null == constructionRequest.getPortfolioConstructionId()) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "portfolioConstructionId is not set.");
+		}
+
+		// Check if the permissions is set
+		PermissionCheck.isReadPermissionSet(constructionRequest.getRequestorUserId(), null,
+				constructionRequest.getRights());
+
+		Portfolio portfolio = getPortfolioConstructionById(
+				constructionRequest.getPortfolioConstructionId());
+
+		if (null == portfolio) {
+			throw new DamServiceException(new Long(404), "PortfolioConstruction Unknown",
+					"PortfolioConstruction not found or invalid request");
+		}
+
+		return portfolio;
+	}
+
+	/**
+	 * Creation of portfolioConstruction requests existing userId, givenName and
+	 * lastName. userId in Entity Container mustn't be null
+	 * 
+	 * @param portfolioConstructionContainer
+	 * @return
+	 * @throws PermissionCheckException
+	 */
+	public Portfolio createPortfolioConstructionSafe(PortfolioCreateRequest portfolioCreateRequest)
+			throws DamServiceException {
+		checkRequestedParamsRequest_Id_Rights(portfolioCreateRequest, portfolioCreateRequest.getRequestorUserId(),
+				portfolioCreateRequest.getRights());
+
+		checkRequestedParamsPortfolioConstruction(portfolioCreateRequest.getPortfolioConstruction());
+
+		// Save database requests
+		PermissionCheck.isWritePermissionSet(portfolioCreateRequest.getRequestorUserId(), null,
+				portfolioCreateRequest.getRights());
+
+		if (null == portfolioCreateRequest.getPortfolioConstruction().getRisc()
+				|| null == portfolioCreateRequest.getPortfolioConstruction().getCallMoneyPct()
+				|| null == portfolioCreateRequest.getPortfolioConstruction().getGoldPct()
+				|| null == portfolioCreateRequest.getPortfolioConstruction().getLoanPct()
+				|| null == portfolioCreateRequest.getPortfolioConstruction().getSharePct()
+				|| null == portfolioCreateRequest.getPortfolioConstruction().getValidFrom()
+				|| null == portfolioCreateRequest.getPortfolioConstruction().getValidUntil()) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "PortfolioConstruction data not complete");
+		}
+
+		// check if still exists
+		// direct by portfolioConstructionId
+		Portfolio existingPortfolioConstruction = getPortfolioConstructionById(
+				portfolioCreateRequest.getPortfolioConstruction().getPortfolioConstructionId());
+		
+		if (null == existingPortfolioConstruction) {
+			existingPortfolioConstruction = getPortfolioConstructionByName(portfolioCreateRequest.getPortfolioConstruction().getConstructionName());
+		}
+
+		if (null != existingPortfolioConstruction) {
+			return updatePortfolioConstruction(existingPortfolioConstruction,
+					portfolioCreateRequest.getPortfolioConstruction());
+		}
+
+		Portfolio portfolio;
+		
+		try {
+		// save if all checks are ok and the portfolioConstruction doesn't exist
+		portfolio = portfolioModel
+				.save(portfolioCreateRequest.getPortfolioConstruction());
+		} catch (Exception e) {
+			throw new DamServiceException(new Long(500), "Portfolioconstruction could not be stored", e.getMessage());
+		}
+
+		if (null == portfolio) {
+			throw new DamServiceException(new Long(422), "PortfolioConstruction not created",
+					"PortfolioConstruction still exists, data invalid or not complete");
+		}
+		return portfolio;
+
+	}
+
+	/**
+	 * Save update; requesting user must be user in storage
+	 * 
+	 * @param userId
+	 * @param userStored
+	 * @param userUpdate
+	 * @return
+	 */
+	public Portfolio updatePortfolioConstructionSafe(ConstructionUpdateRequest constructionUpdateRequest)
+			throws DamServiceException {
+		checkRequestedParamsRequest_Id_Rights(constructionUpdateRequest, constructionUpdateRequest.getRequestorUserId(),
+				constructionUpdateRequest.getRights());
+
+		checkRequestedParamsPortfolioConstruction(constructionUpdateRequest.getPortfolioConstruction());
+
+		// Check if the permissions is set
+		PermissionCheck.isWritePermissionSet(constructionUpdateRequest.getRequestorUserId(),
+				null,
+				constructionUpdateRequest.getRights());
+
+		// check if still exists
+		Portfolio existingPortfolioConstruction = getPortfolioConstructionById(
+				constructionUpdateRequest.getPortfolioConstruction().getPortfolioConstructionId());
+
+		// PortfolioConstruction must exist and userId ist not permutable
+		if (null == existingPortfolioConstruction) {
+			throw new DamServiceException(new Long(404), "PortfolioConstruction for update not found",
+					"PortfolioConstruction with portfolioConstructionId doesn't exist.");
+		}
+
+		return updatePortfolioConstruction(existingPortfolioConstruction,
+				constructionUpdateRequest.getPortfolioConstruction());
+	}
+
+	/**
+	 * Secure drop, user must be owner
+	 * 
+	 * @param userId
+	 * @param portfolioConstruction
+	 * @return
+	 */
+	public Long dropPortfolioConstructionSafe(ConstructionDropRequest constructionDropRequest) throws DamServiceException {
+		checkRequestedParamsRequest_Id_Rights(constructionDropRequest, constructionDropRequest.getRequestorUserId(), constructionDropRequest.getRights());
+		checkRequestedParamsPortfolioConstruction(constructionDropRequest.getPortfolioConstruction());
+
+		// Save database requests
+		PermissionCheck.isDeletePermissionSet(constructionDropRequest.getRequestorUserId(),	null, constructionDropRequest.getRights());
+
+		Portfolio existingPortfolioConstruction = getPortfolioConstructionById(
+				constructionDropRequest.getPortfolioConstruction().getPortfolioConstructionId());
+
+		if (null == existingPortfolioConstruction) {
+			throw new DamServiceException(new Long(404), "PortfolioConstruction could not be dropped",
+					"PortfolioConstruction does not exist or could not be found in database.");
+		}
+
+		return dropPortfolioConstruction(existingPortfolioConstruction);
+
+	}
+	
+	private Portfolio getPortfolioConstructionByName(String constructionName) {
+		return portfolioModel.findByConstructionName(constructionName);
+	}
+
+	public Portfolio getPortfolioConstructionById(Long portfolioConstructionId) {
+		if (null == portfolioConstructionId) {
+			return null;
+		}
+
+		Optional<Portfolio> optionalPortfolioConstruction = portfolioModel
+				.findById(portfolioConstructionId);
+		if (null != optionalPortfolioConstruction && optionalPortfolioConstruction.isPresent()) {
+			return optionalPortfolioConstruction.get();
+		}
+		return null;
+	}
+
+
+	/**
+	 * Update portfolioConstruction with changed values
+	 * 
+	 * @param portfolioConstructionForUpdate
+	 * @param portfolioConstructionContainer
+	 * @return
+	 */
+	private Portfolio updatePortfolioConstruction(Portfolio portfolioConstructionForUpdate,
+			Portfolio portfolioConstructionContainer) throws DamServiceException {
+		
+		if (null != portfolioConstructionForUpdate && null != portfolioConstructionContainer) {
+			portfolioConstructionForUpdate.updateEntity(portfolioConstructionContainer);
+			try {
+				return portfolioModel.save(portfolioConstructionForUpdate);
+			} catch (Exception e) {
+				throw new DamServiceException(new Long(409),
+						"PortfolioConstruction could not be saved. Perhaps duplicate keys.", e.getMessage());
+			}
+		}
+		throw new DamServiceException(new Long(404), "PortfolioConstruction could not be saved",
+				"Check PortfolioConstruction data in request.");
+	}
+
+	private Long dropPortfolioConstruction(Portfolio portfolio) {
+		if (null != portfolio) {
+			portfolioModel.deleteById(portfolio.getPortfolioConstructionId());
+			Portfolio deletedPortfolioConstruction = getPortfolioConstructionById(
+					portfolio.getPortfolioConstructionId());
+			if (null == deletedPortfolioConstruction) {
+				return new Long(200);
+			}
+		}
+
+		return new Long(10);
+	}
+
+	private void checkRequestedParamsRequest_Id_Rights(RestRequest request, Long requestorUserId, String rights)
+			throws DamServiceException {
+		if (null == request) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
+		}
+		if (null == requestorUserId) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"requestorUserId is recommended but not set.");
+		}
+		if (null == rights || rights.isEmpty()) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"User rights are recommended but are null or empty.");
+		}
+	}
+
+	private void checkRequestedParamsPortfolioConstruction(Portfolio portfolio)
+			throws DamServiceException {
+		if (null == portfolio) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"PortfolioConstruction is null.");
+		}
+	}
+
+}

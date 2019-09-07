@@ -1,0 +1,108 @@
+package com.dam.portfolio;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
+
+import com.dam.exception.DamServiceException;
+import com.dam.exception.PermissionCheckException;
+import com.dam.portfolio.model.AssetClassModel;
+import com.dam.portfolio.model.MapAssetClassToPortfolioConstructionModel;
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.model.entity.MapAssetClassToPortfolioConstruction;
+import com.dam.portfolio.rest.message.RestRequest;
+import com.dam.portfolio.rest.message.assetClass.AssetClassCreateRequest;
+import com.dam.portfolio.rest.message.assetClass.AssetClassDropRequest;
+import com.dam.portfolio.rest.message.assetClass.AssetClassRequest;
+import com.dam.portfolio.rest.message.assetClass.AssetClassUpdateRequest;
+
+/**
+ * Handles active and non active Tokens
+ * 
+ * @author dirk
+ *
+ */
+@Controller
+@ComponentScan
+public class MapAssetClassToPortfolioConstructionStore {
+
+	@Autowired
+	private MapAssetClassToPortfolioConstructionModel mapModel;
+
+	/**
+	 * 
+	 * @return
+	 */
+	
+	public MapAssetClassToPortfolioConstruction getMapById(Long mapId) {
+		Optional<MapAssetClassToPortfolioConstruction> map = mapModel.findById(mapId);
+		if (null != map && map.isPresent()) {
+			return map.get();
+		}
+		return null;
+	}
+	
+	public List<Long> getPortfolioConstructionIdsByAssetId(Long assetId) {
+		return mapModel.findAllPortfolioConstructionIdsByAssetId(assetId);
+	}
+
+	public List<Long> getAssetIdsByPortfolioConstructionId(Long portfolioConstructionId) {
+		return mapModel.findAllAssetIdsByPortfolioConstructionId(portfolioConstructionId);
+	}
+
+	/**
+	 */
+	public Long createMapEntry (Long assetClassId, Long portfolioConstructionId) throws DamServiceException {
+		
+		if (null != assetClassForUpdate && null != assetClassContainer) {
+			assetClassForUpdate.updateEntity(assetClassContainer);
+			try {
+				return assetClassModel.save(assetClassForUpdate);
+			} catch (Exception e) {
+				throw new DamServiceException(new Long(409),
+						"AssetClass could not be saved. Perhaps duplicate keys.", e.getMessage());
+			}
+		}
+		throw new DamServiceException(new Long(404), "AssetClass could not be saved",
+				"Check AssetClass data in request.");
+	}
+
+	private Long dropAssetClass(AssetClass assetClass) {
+		if (null != assetClass) {
+			assetClassModel.deleteById(assetClass.getAssetClassId());
+			AssetClass deletedAssetClass = getAssetClassById(
+					assetClass.getAssetClassId());
+			if (null == deletedAssetClass) {
+				return new Long(200);
+			}
+		}
+
+		return new Long(10);
+	}
+
+	private void checkRequestedParamsRequest_Id_Rights(RestRequest request, Long requestorUserId, String rights)
+			throws DamServiceException {
+		if (null == request) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
+		}
+		if (null == requestorUserId) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"requestorUserId is recommended but not set.");
+		}
+		if (null == rights || rights.isEmpty()) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"User rights are recommended but are null or empty.");
+		}
+	}
+
+	private void checkRequestedParamsAssetClass(AssetClass assetClass)
+			throws DamServiceException {
+		if (null == assetClass) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"AssetClass is null.");
+		}
+	}
+
+}

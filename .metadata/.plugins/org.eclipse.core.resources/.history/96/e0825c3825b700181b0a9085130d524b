@@ -1,0 +1,71 @@
+//
+// Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.7 generiert 
+// Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2018.09.11 um 11:06:53 AM CEST 
+//
+
+
+package services.photocrm.soap_soap_service;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java-Klasse für anonymous complex type.
+ * 
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * 
+ * <pre>
+ * &lt;complexType>
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="complexCountry" type="{http://photocrm.services/soap-soap-service}complexCountry"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "complexCountry"
+})
+@XmlRootElement(name = "createCountryResponse")
+public class CreateCountryResponse {
+
+    @XmlElement(required = true)
+    protected ComplexCountry complexCountry;
+
+    /**
+     * Ruft den Wert der complexCountry-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ComplexCountry }
+     *     
+     */
+    public ComplexCountry getComplexCountry() {
+        return complexCountry;
+    }
+
+    /**
+     * Legt den Wert der complexCountry-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ComplexCountry }
+     *     
+     */
+    public void setComplexCountry(ComplexCountry value) {
+        this.complexCountry = value;
+    }
+
+}

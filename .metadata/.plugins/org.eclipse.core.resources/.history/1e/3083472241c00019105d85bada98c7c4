@@ -1,0 +1,8 @@
+package com.dam.authentication.rest.message;
+
+public class DropResponse extends RestResponse{
+    	
+	public DropResponse (Long result) {
+		super(result, "OK", "Person dropped");
+	}  
+}

@@ -1,0 +1,53 @@
+package com.dam.portfolio;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.model.entity.MapAssetClassToPortfolioConstruction;
+import com.dam.portfolio.model.entity.MappedConstruction;
+import com.dam.portfolio.model.entity.PortfolioConstruction;
+
+/**
+ * Wird für die Gesamtkonstruktion der Portfolios benötigt.
+ * Stellt die Konstrukte zusammen und liefert sie zurück.
+ * Greift auf die DB zu. 
+ * @author dirk
+ *
+ */
+public class PortfolioStorageManager {
+	
+	@Autowired
+	PortfolioConstructionStore portfolioConstructionStore;
+	
+	@Autowired
+	AssetClassStore assetClassStore;
+	
+	@Autowired
+	MapAssetClassToPortfolioConstructionStore mapStore;
+	
+	public MappedConstruction getMappedConstruct(Long portfolioConstructionId) {
+		PortfolioConstruction construction = portfolioConstructionStore.getPortfolioConstructionById(portfolioConstructionId); 
+		if (null == construction) {
+			return null;
+		}
+		
+		List<MapAssetClassToPortfolioConstruction> mapEntries = mapStore.getMapsByPortfolioConstructionId(portfolioConstructionId);
+		if (null == mapEntries || mapEntries.isEmpty()) {
+			return null;
+		}
+				
+		List<AssetClass> assetClassList = new ArrayList<>();
+		Iterator<MapAssetClassToPortfolioConstruction> it = mapEntries.iterator();
+		while (it.hasNext()) {
+			MapAssetClassToPortfolioConstruction map = it.next();
+			assetClassList.add(assetClassStore.getAssetClassById(map.getAssetClassId());
+		}
+		
+		MappedConstruction mappedConstruction = new  MappedConstruction(construction, assetClassList);
+
+	}
+}

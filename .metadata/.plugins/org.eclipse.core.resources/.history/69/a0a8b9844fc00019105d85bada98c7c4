@@ -1,0 +1,40 @@
+package com.dam;
+
+import com.dam.authentication.model.User;
+import com.dam.authentication.rest.message.RestRequest;
+
+/**
+ * LoginRequest is the typical request to authenticate the user against the system.
+ * 
+ * Response: TokenResponse
+ * 
+ * Scope: External Calls
+ * 
+ * @author dirk
+ *
+ */
+
+public class LoginRequest extends RestRequest {
+
+    private String ipAddress;
+    private User user = new User();
+
+    public LoginRequest(String userName, String password, String ipAddress) {
+		super("DAM 2.0");
+        this.ipAddress = ipAddress;
+        user.setUserName(userName);
+        user.setPassword(password);
+    }
+
+    public String getUserName() {
+        return user.getUserName();
+    }
+
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+}

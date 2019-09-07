@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;ConfigProperties.java&apos; to &apos;authentication/src/main/java/com.dam.authentication&apos;&#x0A;- Original project: &apos;domain-service-organization&apos;&#x0A;- Destination element: &apos;authentication/src/main/java/com.dam.authentication&apos;&#x0A;- Original element: &apos;photocrm.ConfigProperties.java&apos;" description="Copy compilation unit" destination="=authentication/src\/main\/java&lt;com.dam.authentication" element1="/src\/main\/java&lt;photocrm{ConfigProperties.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1560872403751" units="1" version="1.0"/>
+</session>

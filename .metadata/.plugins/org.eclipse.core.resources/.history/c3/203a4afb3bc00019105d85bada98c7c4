@@ -1,0 +1,22 @@
+package com.dam.authentication.rest.message;
+
+import com.dam.authentication.model.entity.Permission;
+
+public class PersonResponse extends RestResponse{
+    private Permission user;
+    	
+	public PersonResponse (Permission user) {
+		super(new Long(0), "OK", "User exists");
+		
+		setUser(user);
+	}  
+
+	private void setUser(Permission user) {
+		this.user = user;
+	}
+	
+	public Permission getUser() {
+		return this.user;
+	}
+	
+}

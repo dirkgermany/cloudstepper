@@ -1,0 +1,23 @@
+package com.dam.portfolio.rest.message;
+
+import com.dam.portfolio.model.entity.PortfolioConstruction;
+
+public abstract class AssetClassWriteRequest extends RestRequest {
+
+	private PortfolioConstruction portfolioConstruction = new PortfolioConstruction();	
+
+    public AssetClassWriteRequest(Long requestorUserId, PortfolioConstruction portfolioConstruction) {
+		super("DAM 2.0");
+		setPortfolioConstruction(portfolioConstruction);
+		setRequestorUserId(requestorUserId);
+    }
+        
+    public PortfolioConstruction getPortfolioConstruction() {
+    	return portfolioConstruction;
+    }
+
+	public void setPortfolioConstruction(PortfolioConstruction portfolioConstruction) {
+		this.portfolioConstruction = portfolioConstruction;
+	}
+    
+}

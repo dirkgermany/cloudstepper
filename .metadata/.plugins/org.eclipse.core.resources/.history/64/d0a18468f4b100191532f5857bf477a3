@@ -1,0 +1,121 @@
+package com.dam.serviceProvider.rest.consumer;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import com.dam.serviceProvider.ConfigProperties;
+import com.dam.serviceProvider.JsonHelper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+@Component
+public class Consumer {
+	@Autowired
+	ConfigProperties config;
+	
+
+	/**
+	 * Send Request to any service
+	 * 
+	 * @param request
+	 * @param url
+	 * @param action
+	 * @return
+	 */
+	public JsonNode retrieveResponse(String request, String url, String action) {
+
+		String URI = url + "/" + action;
+		String tokenId = null;
+
+		if (null != request && !request.isEmpty() ) {
+			tokenId = new JsonHelper().extractStringFromRequest(request, "tokenId");
+		}
+		String serviceResponse = sendMessage(URI, request);
+		if (null != serviceResponse) {
+			String responseTokenId = new JsonHelper().extractStringFromRequest(serviceResponse, "tokenId");
+			if (null != responseTokenId && !responseTokenId.isEmpty()) {
+				tokenId = responseTokenId;
+			}
+		}
+		JsonNode responseTree = createJsonResponse(serviceResponse, tokenId);
+
+		return responseTree;
+	}
+	
+	public JsonNode retrieveAuthorizedResponse(String request, String serviceUrl, String action) {
+		JsonHelper jsonHelper = new JsonHelper();
+
+		// calls AuthenticationService
+		JsonNode validation = validateToken(request);
+		Long returnCode = jsonHelper.extractLongFromNode(validation, "returnCode");
+
+		if (null == returnCode || 0 != returnCode.longValue()) {
+			// token could not be validated
+			return validation;
+		}
+
+		// Lookup for logged in user id and enrich the request with the user id
+		request = enrichRequestWithUserIdFromToken (request);
+		JsonNode response = retrieveResponse(request, serviceUrl, action);
+
+		return response;
+	}
+	
+	/*
+	 * Validates if the userName with the tokenId is logged in. This check is done
+	 * by calling the Authentication Service.
+	 * @ToDo Later this should throw an exception to ensure that no caller can ignore unvalid Tokens
+	 */
+	private JsonNode validateToken(String request) {
+		JsonNode response = retrieveResponse(request, config.getAuthenticationService().getServiceUrl(), "validateToken");
+		return response;
+	}
+	
+	private String enrichRequestWithUserIdFromToken(String request) {
+		JsonHelper jsonHelper = new JsonHelper();
+		JsonNode tokenResponse = retrieveResponse(request, config.getAuthenticationService().getServiceUrl(), "getToken");
+		JsonNode userData = jsonHelper.extractNodeFromNode(tokenResponse, "token");
+		Long loggedInUserId = jsonHelper.extractLongFromNode(userData, "userId");
+
+		request = jsonHelper.putToJsonNode(request, "requestorUserId", loggedInUserId.toString());
+		return request;
+	}
+
+
+	private JsonNode createJsonResponse(String serviceResponse, String tokenId) {
+		JsonNode responseTree = null;
+		responseTree = new JsonHelper().convertStringToNode(serviceResponse);
+		((ObjectNode) responseTree).put("tokenId", tokenId);
+		return responseTree;
+	}
+
+	private String postMessage(String URI, String request) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> requestBody = new HttpEntity<String>(request, headers);
+		RestTemplate restTemplate = new RestTemplate();
+		String response = restTemplate.postForObject(URI, requestBody, String.class);
+
+		return response;
+	}
+	
+	private String getMessage (String URI) {
+		RestTemplate restTemplate = new RestTemplate();
+		String response = restTemplate.getForObject(URI, String.class);
+		return response;
+	}
+
+	private String sendMessage(String URI, String request) {
+		if (null == request || request.isEmpty()) {
+			return getMessage(URI);
+		}
+		else {
+			return postMessage(URI, request);
+		}
+	}
+}

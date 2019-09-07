@@ -1,0 +1,36 @@
+package hello.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
+
+import hello.ConfigProperties;
+import hello.wsdl.GetCountryRequest;
+import hello.wsdl.GetCountryResponse;
+import hello.wsdl.InsertCountryRequest;
+import hello.wsdl.InsertCountryResponse;
+
+public class CountryClient extends WebServiceGatewaySupport {
+
+	private static final Logger log = LoggerFactory.getLogger(CountryClient.class);
+	
+	public GetCountryResponse getPersonsByOrganization(GetCountryRequest request) {
+		log.info("Test bla " + request.getId());
+
+		// Configuration
+		ConfigProperties config = new ConfigProperties();
+		try {
+			GetPersonByIdResponse response = (GetPersonByIdPerson) getWebServiceTemplate().marshalSendAndReceive(
+					"http://" + config.getPerson().getHost() + ":" + config.getPerson().getPort() + "/ws/persons", request,
+					new SoapActionCallback("http://photocrm.services/soap-db-service/GetPersonByIdRequest"));
+			return response;
+		} catch (Exception ex) {
+			System.out.println("FEHLER " + ex);
+			log.error(ex.getMessage());
+			return null;
+		}
+	}
+
+}

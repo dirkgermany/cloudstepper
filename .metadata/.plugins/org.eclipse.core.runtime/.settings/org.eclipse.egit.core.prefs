@@ -1,0 +1,4 @@
+GitRepositoriesView.GitDirectories=/home/dirk/workspace/authenticationService_new/.git\:/home/dirk/workspace/photocrm/.git\:/home/dirk/workspace/personService/.git\:/home/dirk/workspace/blaService/.git\:/home/dirk/workspace/gs-securing-web/.git\:/home/dirk/workspace/portfolioService/.git\:/home/dirk/workspace/addressService/.git\:/home/dirk/workspace/authenticationService_backup/.git\:
+GitRepositoriesView.GitDirectories.relative=authenticationService_new/.git\:photocrm/.git\:personService/.git\:blaService/.git\:gs-securing-web/.git\:portfolioService/.git\:addressService/.git\:authenticationService_backup/.git\:
+core_autoIgnoreDerivedResources=false
+eclipse.preferences.version=1

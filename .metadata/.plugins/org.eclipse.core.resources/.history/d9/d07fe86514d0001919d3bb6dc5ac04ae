@@ -1,0 +1,21 @@
+package com.dam.portfolio.rest.message.construction;
+
+import com.dam.portfolio.rest.message.RestRequest;
+
+public class ConstructionRequest extends RestRequest {
+    private Long portfolioConstructionId;
+
+    public ConstructionRequest( Long requestorUserId, Long portfolioConstructionId) {
+		super("DAM 2.0");
+		setRequestorUserId(requestorUserId);
+	}
+
+	public Long getPortfolioConstructionId() {
+		return portfolioConstructionId;
+	}
+
+	public void setPortfolioConstructionId(Long portfolioConstructionId) {
+		this.portfolioConstructionId = portfolioConstructionId;
+	}
+    
+}

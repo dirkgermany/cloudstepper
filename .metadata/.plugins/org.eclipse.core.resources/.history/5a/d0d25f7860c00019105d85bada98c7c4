@@ -1,0 +1,22 @@
+package com.dam.authentication.rest.message;
+
+import com.dam.authentication.model.entity.Zulaessigkeiten;
+
+public class PermissionResponse extends RestResponse{
+    private Zulaessigkeiten user;
+    	
+	public PermissionResponse (Zulaessigkeiten user) {
+		super(new Long(0), "OK", "User exists");
+		
+		setUser(user);
+	}  
+
+	private void setUser(Zulaessigkeiten user) {
+		this.user = user;
+	}
+	
+	public Zulaessigkeiten getUser() {
+		return this.user;
+	}
+	
+}

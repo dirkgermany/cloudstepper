@@ -1,0 +1,65 @@
+package photocrm.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
+
+import external.wsdl.GetPersonByIdRequest;
+import external.wsdl.GetPersonByIdResponse;
+import external.wsdl.GetPersonsByParentRequest;
+import external.wsdl.GetPersonsByParentResponse;
+import external.wsdl.InsertOrganizationResponse;
+import photocrm.ConfigProperties;
+import photocrm.exception.ServiceException;
+import photocrm.exception.ServiceFault;
+import photocrm.mapping.OrganizationMapper;
+import services.photocrm.soap_soap_service.FindPersonByIdRequest;
+import services.photocrm.soap_soap_service.FindPersonByIdResponse;
+
+public class PersonClient extends WebServiceGatewaySupport {
+	// Configuration
+	@Autowired
+	ConfigProperties config;
+
+	private static final Logger log = LoggerFactory.getLogger(OrganizationClient.class);
+
+	private String getExternalUri() {
+		return "http://" + config.getPerson().getHost() + ":" + config.getPerson().getPort()
+				+ "/ws/persons";
+	}
+
+	private String getExternalEndpoint(Class clazz) {
+		return "http://photocrm.services/entity-service-persons/" + clazz.getName();
+	}
+
+		
+	public GetPersonByIdResponse getPersonById(GetPersonByIdRequest request) {
+		try {
+			GetPersonByIdResponse response = (GetPersonByIdResponse) getWebServiceTemplate()
+					.marshalSendAndReceive(getExternalUri(), request,
+							new SoapActionCallback(getExternalEndpoint(request.getClass())));
+			return response;
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION INSERT ", "request: " + OrganizationMapper.toString(request)));
+		}
+	}
+	
+	public GetPersonsByParentResponse getPersonsByParent(GetPersonsByParentRequest request) {
+		// Configuration
+		ConfigProperties config = new ConfigProperties();
+		try {
+			GetPersonsByParentResponse response = (GetPersonsByParentResponse) getWebServiceTemplate().marshalSendAndReceive(
+					"http://" + config.getPerson().getHost() + ":" + config.getPerson().getPort() + "/ws/persons", request,
+					new SoapActionCallback("http://photocrm.services/entity-service-person/GetPersonsByParentRequest"));
+			return null;
+		} catch (Exception ex) {
+			System.out.println("FEHLER " + ex);
+			log.error(ex.getMessage());
+			return null;
+		}
+	}
+}

@@ -1,0 +1,69 @@
+package com.dam.serviceProvider.rest;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.dam.exception.DamServiceException;
+import com.dam.serviceProvider.ConfigProperties;
+import com.dam.serviceProvider.rest.consumer.Consumer;
+import com.dam.serviceProvider.types.ServiceDomain;
+
+@RestController
+public class ServiceProviderPortfolio {
+	@Autowired
+	ConfigProperties config;
+	
+	@Autowired
+	Consumer consumer;
+	
+	private ServiceDomain serviceDomain = ServiceDomain.PORTFOLIO;
+	
+
+	/**
+	 * Retrieves portfolio data from portfolio repository.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@PostMapping("/portfolio/get")
+	public JsonNode getPortfolio(@RequestBody String request, HttpServletRequest servletRequest) throws DamServiceException{
+		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "getPortfolio", serviceDomain);		
+		return response;
+	}
+
+	@PostMapping("/portfolio/create")
+	public JsonNode createPortfolio(@RequestBody String request) throws DamServiceException{
+		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "createPortfolio", serviceDomain);
+		return response;
+	}
+	
+	@PostMapping("/portfolio/update")
+	public JsonNode updatePortfolio(@RequestBody String request) throws DamServiceException{
+		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "updatePortfolio", serviceDomain);
+		return response;
+	}
+	
+	@PostMapping("/portfolio/drop")
+	public JsonNode dropPortfolio(@RequestBody String request) throws DamServiceException{
+		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "dropPortfolio", serviceDomain);
+		return response;
+	}
+	
+	@PostMapping("/portfolio/createConstructionMap")
+	public JsonNode createConstructionMap(@RequestBody String request) throws DamServiceException{
+		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "createConstructionMap", serviceDomain);
+		return response;
+	}
+	
+	@PostMapping("/portfolio/test")
+	public JsonNode addAssetToPortfolio(@RequestBody String request) throws DamServiceException{
+		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "addAssetClassesToPortfolio", serviceDomain);
+		return response;
+	}
+	
+}

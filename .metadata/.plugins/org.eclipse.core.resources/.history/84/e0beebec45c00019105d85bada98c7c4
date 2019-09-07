@@ -1,0 +1,65 @@
+package com.dam.authentication.rest;
+
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import com.dam.authentication.XXXConfigPropertiesxxx;
+import com.dam.authentication.JsonHelper;
+import com.dam.authentication.model.entity.User;
+import com.dam.authentication.rest.message.GetUserResponse;
+import com.dam.authentication.rest.message.LoginRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Component
+public class UserServiceConsumer {
+	@Autowired
+	XXXConfigPropertiesxxx config;	
+
+	public User readUser(LoginRequest loginRequest) {		
+		RestTemplate restTemplate = new RestTemplate();
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		
+		String jsonUser = null;
+		try {
+			jsonUser = new ObjectMapper().writeValueAsString(loginRequest);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		HttpEntity<String> requestBody = new HttpEntity<String>(jsonUser, headers);		
+		String uri = config.getUserService().getServiceUrl() + "checkUser"; 
+		String response = restTemplate.postForObject(uri, requestBody, String.class);
+//		String response = restTemplate.postForObject(config.getUserAuthentication().getUri(), requestBody, String.class);
+		
+		Long returnCode = new JsonHelper().extractLongFromRequest(response, "returnCode");
+
+		if (null == returnCode || 0 != returnCode.longValue()){
+			// token could not be validated
+			return null;
+		}
+		
+		GetUserResponse userResponse = null;
+		User user = null;
+		try {			
+			userResponse = new ObjectMapper().readValue(response, GetUserResponse.class);
+			user = userResponse.getUser();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return user;
+	}
+
+
+}

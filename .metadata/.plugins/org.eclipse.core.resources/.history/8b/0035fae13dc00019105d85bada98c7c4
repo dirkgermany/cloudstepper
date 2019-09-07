@@ -1,0 +1,9 @@
+package com.dam.authenticationService.types;
+
+public enum ServiceDomain {
+	
+	PERSON (),
+	ADDRESS (),
+	ALL();
+	
+}

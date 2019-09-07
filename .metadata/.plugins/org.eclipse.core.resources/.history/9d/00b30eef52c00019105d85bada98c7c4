@@ -1,0 +1,21 @@
+package com.dam;
+
+public class TokenAndPermissionsResponse extends TokenValidationResponse {
+	
+	private String permissions;
+	
+	public TokenAndPermissionsResponse (String userName, Long userId, String tokenId, String permissions) {
+		super(userName, userId, tokenId);
+		setPermissions(permissions);
+
+	}
+
+	public String getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(String permissions) {
+		this.permissions = permissions;
+	}
+
+}

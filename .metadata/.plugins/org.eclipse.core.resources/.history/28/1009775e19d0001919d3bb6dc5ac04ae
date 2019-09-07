@@ -1,0 +1,11 @@
+package com.dam.portfolio.rest.message.mapAssetClassToPortfolio;
+
+import com.dam.portfolio.model.entity.AssetClassToPortfolioMap;
+
+public class AddAssetClassToPortfolioMapResponse extends AssetClassToPortfolioMapWriteResponse{
+
+	public AddAssetClassToPortfolioMapResponse(AssetClassToPortfolioMap map) {
+		super(new Long(200), "OK", "Map Saved", map);
+	}
+    	
+}

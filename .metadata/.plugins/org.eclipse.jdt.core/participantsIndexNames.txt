@@ -1,0 +1,11 @@
+INDEX VERSION 1.130
+/home/dirk/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/2162683489.index
+/Webservice/src/main/resources
+/home/dirk/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/140895217.index
+/Blubber/src/main/resources
+/home/dirk/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/1696089280.index
+/WebServices/src/main/resources
+/home/dirk/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/1837353289.index
+/WebConnection/src/main/resources
+/home/dirk/workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/880254242.index
+/WebServices/src/main/resources

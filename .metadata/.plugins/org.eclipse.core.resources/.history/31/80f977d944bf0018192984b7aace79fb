@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bindings version="2.1" xmlns="http://java.sun.com/xml/ns/jaxb">
+  <!--
+
+Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.11 generiert 
+Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+Generiert: 2018.09.23 um 05:22:09 PM CEST 
+
+  -->
+  <bindings scd="x-schema::tns" xmlns:tns="http://photocrm.services/soap-soap-service">
+    <schemaBindings map="false">
+      <package name="external.wsdl"/>
+    </schemaBindings>
+    <bindings scd="tns:createOrganizationRequest">
+      <class ref="external.wsdl.CreateOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:createOrganizationResponse">
+      <class ref="external.wsdl.CreateOrganizationResponse"/>
+    </bindings>
+    <bindings scd="~tns:organization">
+      <class ref="external.wsdl.Organization"/>
+    </bindings>
+    <bindings scd="tns:modifyOrganizationResponse">
+      <class ref="external.wsdl.ModifyOrganizationResponse"/>
+    </bindings>
+    <bindings scd="tns:modifyOrganizationRequest">
+      <class ref="external.wsdl.ModifyOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:findOrganizationRequest">
+      <class ref="external.wsdl.FindOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:findOrganizationResponse">
+      <class ref="external.wsdl.FindOrganizationResponse"/>
+    </bindings>
+    <bindings scd="tns:dropOrganizationResponse">
+      <class ref="external.wsdl.DropOrganizationResponse"/>
+    </bindings>
+    <bindings scd="tns:dropOrganizationRequest">
+      <class ref="external.wsdl.DropOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:createPersonRequest">
+      <class ref="external.wsdl.CreatePersonRequest"/>
+    </bindings>
+    <bindings scd="tns:createPersonResponse">
+      <class ref="external.wsdl.CreatePersonResponse"/>
+    </bindings>
+    <bindings scd="~tns:person">
+      <class ref="external.wsdl.Person"/>
+    </bindings>
+    <bindings scd="tns:modifyPersonResponse">
+      <class ref="external.wsdl.ModifyPersonResponse"/>
+    </bindings>
+    <bindings scd="tns:modifyPersonRequest">
+      <class ref="external.wsdl.ModifyPersonRequest"/>
+    </bindings>
+    <bindings scd="tns:dropPersonResponse">
+      <class ref="external.wsdl.DropPersonResponse"/>
+    </bindings>
+    <bindings scd="tns:dropPersonRequest">
+      <class ref="external.wsdl.DropPersonRequest"/>
+    </bindings>
+    <bindings scd="tns:addPersonToOrganizationRequest">
+      <class ref="external.wsdl.AddPersonToOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:addPersonToOrganizationResponse">
+      <class ref="external.wsdl.AddPersonToOrganizationResponse"/>
+    </bindings>
+    <bindings scd="tns:findPersonRequest">
+      <class ref="external.wsdl.FindPersonRequest"/>
+    </bindings>
+    <bindings scd="tns:findPersonResponse">
+      <class ref="external.wsdl.FindPersonResponse"/>
+    </bindings>
+    <bindings scd="tns:findPersonByIdRequest">
+      <class ref="external.wsdl.FindPersonByIdRequest"/>
+    </bindings>
+    <bindings scd="tns:findPersonByIdResponse">
+      <class ref="external.wsdl.FindPersonByIdResponse"/>
+    </bindings>
+    <bindings scd="tns:findPersonsByOrganizationRequest">
+      <class ref="external.wsdl.FindPersonsByOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:findPersonsByOrganizationResponse">
+      <class ref="external.wsdl.FindPersonsByOrganizationResponse"/>
+    </bindings>
+    <bindings scd="tns:personChild">
+      <class ref="external.wsdl.PersonChild"/>
+    </bindings>
+    <bindings scd="~tns:salutation">
+      <typesafeEnumClass ref="external.wsdl.Salutation"/>
+    </bindings>
+    <bindings scd="~tns:organizationType">
+      <typesafeEnumClass ref="external.wsdl.OrganizationType"/>
+    </bindings>
+    <bindings scd="~tns:personSex">
+      <typesafeEnumClass ref="external.wsdl.PersonSex"/>
+    </bindings>
+  </bindings>
+  <bindings scd="x-schema::tns" xmlns:tns="http://photocrm.services/entity-service-organization">
+    <schemaBindings map="false">
+      <package name="external.wsdl"/>
+    </schemaBindings>
+    <bindings scd="tns:getOrganizationRequest">
+      <class ref="external.wsdl.GetOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:getOrganizationResponse">
+      <class ref="external.wsdl.GetOrganizationResponse"/>
+    </bindings>
+    <bindings scd="~tns:organizationXml">
+      <class ref="external.wsdl.OrganizationXml"/>
+    </bindings>
+    <bindings scd="tns:getOrganizationByIdRequest">
+      <class ref="external.wsdl.GetOrganizationByIdRequest"/>
+    </bindings>
+    <bindings scd="tns:getOrganizationByIdResponse">
+      <class ref="external.wsdl.GetOrganizationByIdResponse"/>
+    </bindings>
+    <bindings scd="tns:updateOrganizationResponse">
+      <class ref="external.wsdl.UpdateOrganizationResponse"/>
+    </bindings>
+    <bindings scd="tns:updateOrganizationRequest">
+      <class ref="external.wsdl.UpdateOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:insertOrganizationRequest">
+      <class ref="external.wsdl.InsertOrganizationRequest"/>
+    </bindings>
+    <bindings scd="tns:insertOrganizationResponse">
+      <class ref="external.wsdl.InsertOrganizationResponse"/>
+    </bindings>
+    <bindings scd="tns:deleteOrganizationResponse">
+      <class ref="external.wsdl.DeleteOrganizationResponse"/>
+    </bindings>
+    <bindings scd="tns:deleteOrganizationRequest">
+      <class ref="external.wsdl.DeleteOrganizationRequest"/>
+    </bindings>
+    <bindings scd="~tns:organizationOperationResult">
+      <typesafeEnumClass ref="external.wsdl.OrganizationOperationResult"/>
+    </bindings>
+    <bindings scd="~tns:organizationTypeXml">
+      <typesafeEnumClass ref="external.wsdl.OrganizationTypeXml"/>
+    </bindings>
+  </bindings>
+  <bindings scd="x-schema::tns" xmlns:tns="http://photocrm.services/entity-service-person">
+    <schemaBindings map="false">
+      <package name="external.wsdl"/>
+    </schemaBindings>
+    <bindings scd="tns:getPersonRequest">
+      <class ref="external.wsdl.GetPersonRequest"/>
+    </bindings>
+    <bindings scd="tns:getPersonResponse">
+      <class ref="external.wsdl.GetPersonResponse"/>
+    </bindings>
+    <bindings scd="~tns:personXml">
+      <class ref="external.wsdl.PersonXml"/>
+    </bindings>
+    <bindings scd="tns:getPersonByIdRequest">
+      <class ref="external.wsdl.GetPersonByIdRequest"/>
+    </bindings>
+    <bindings scd="tns:getPersonByIdResponse">
+      <class ref="external.wsdl.GetPersonByIdResponse"/>
+    </bindings>
+    <bindings scd="tns:updatePersonResponse">
+      <class ref="external.wsdl.UpdatePersonResponse"/>
+    </bindings>
+    <bindings scd="tns:updatePersonRequest">
+      <class ref="external.wsdl.UpdatePersonRequest"/>
+    </bindings>
+    <bindings scd="tns:deletePersonResponse">
+      <class ref="external.wsdl.DeletePersonResponse"/>
+    </bindings>
+    <bindings scd="tns:deletePersonRequest">
+      <class ref="external.wsdl.DeletePersonRequest"/>
+    </bindings>
+    <bindings scd="tns:insertPersonRequest">
+      <class ref="external.wsdl.InsertPersonRequest"/>
+    </bindings>
+    <bindings scd="tns:insertPersonResponse">
+      <class ref="external.wsdl.InsertPersonResponse"/>
+    </bindings>
+    <bindings scd="tns:insertPersonRelationRequest">
+      <class ref="external.wsdl.InsertPersonRelationRequest"/>
+    </bindings>
+    <bindings scd="tns:insertPersonRelationResponse">
+      <class ref="external.wsdl.InsertPersonRelationResponse"/>
+    </bindings>
+    <bindings scd="tns:deletePersonRelationResponse">
+      <class ref="external.wsdl.DeletePersonRelationResponse"/>
+    </bindings>
+    <bindings scd="tns:deletePersonRelationRequest">
+      <class ref="external.wsdl.DeletePersonRelationRequest"/>
+    </bindings>
+    <bindings scd="tns:getPersonsByParentRequest">
+      <class ref="external.wsdl.GetPersonsByParentRequest"/>
+    </bindings>
+    <bindings scd="tns:getPersonsByParentResponse">
+      <class ref="external.wsdl.GetPersonsByParentResponse"/>
+    </bindings>
+    <bindings scd="tns:personChildXml">
+      <class ref="external.wsdl.PersonChildXml"/>
+    </bindings>
+    <bindings scd="~tns:operationResult">
+      <typesafeEnumClass ref="external.wsdl.OperationResult"/>
+    </bindings>
+    <bindings scd="~tns:salutationXml">
+      <typesafeEnumClass ref="external.wsdl.SalutationXml"/>
+    </bindings>
+    <bindings scd="~tns:personSexXml">
+      <typesafeEnumClass ref="external.wsdl.PersonSexXml"/>
+    </bindings>
+  </bindings>
+</bindings>
+

@@ -1,0 +1,27 @@
+1560867470100	Delete element
+1560867519407	Rename local variable 'jsonString'
+1560867610268	Move compilation unit
+1560867645195	Rename package 'com.dam.authentication.rest.message'
+1560868411239	Rename local variable 'userContainer'
+1560875041694	Rename type 'AuthenticationController'
+1560875072531	Rename type 'UserRepoConsumer'
+1560876092987	Delete element
+1560877358329	Copy compilation unit
+1560877674145	Copy compilation units
+1560880683244	Copy compilation units
+1560880795143	Copy compilation unit
+1560882660535	Copy package
+1560947334192	Copy compilation unit
+1560965494679	Rename type 'Controller'
+1560979770832	Encapsulate field 'validation'
+1560980675451	Rename type 'ConfigProperties'
+1560981175519	Rename type 'ConfigProperties'
+1560981184508	Rename type 'ConfigPropertiesNew'
+1560982038795	Delete element
+1560982338838	Encapsulate field 'maxTokenAge'
+1561034077026	Encapsulate field 'uri'
+1561034096353	Encapsulate field 'userAuthentication'
+1561034478534	Encapsulate field 'userId'
+1561050048415	Encapsulate field 'userName'
+1561051178026	Rename field 'formattedTokenId'
+1561068822821	Encapsulate field 'userId'

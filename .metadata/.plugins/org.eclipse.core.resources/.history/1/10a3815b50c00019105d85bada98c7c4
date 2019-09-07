@@ -1,0 +1,73 @@
+package com.dam;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class PermissionManager {
+	
+	private static Map<Role, Map<ServiceDomain, String>> rightsAndRoles = new HashMap<>();
+//	private static Map<Long, Role> userRoles = new HashMap<>();
+	
+	/**
+	 * Add User and his Role
+	 * @param userId
+	 * @param role
+	 */
+//	public static synchronized void addUserRole(Long userId, Role role) {
+//		userRoles.put(userId, role);
+//	}
+	
+	/**
+	 * Delivers the Permissions of a user related to a component
+	 * @param userId
+	 * @param serviceDomain
+	 * @return
+	 */
+//	public static synchronized String getUserPermissions(Long userId, ServiceDomain serviceDomain) {
+//		Role role = userRoles.get(userId);
+		
+		// Super User?
+//		String permissions = getRolePermissions(role, ServiceDomain.ALL);
+//		if (null != permissions && !permissions.isEmpty()) {
+//			return permissions;
+//		}
+		
+//		return getRolePermissions(role, serviceDomain);
+//	}
+	
+	
+	/**
+	 * Adds Components with Permissions to a dedicated Role
+	 * @param role
+	 * @param serviceDomain
+	 * @param rights
+	 */
+	public static synchronized void addRights(Role role, ServiceDomain serviceDomain, String permissions) {
+		Map<ServiceDomain, String> rightsForRole = rightsAndRoles.get(role);
+		if (null == rightsForRole) {
+			rightsForRole = new HashMap<>();
+		}
+		rightsForRole.put(serviceDomain, permissions);
+		rightsAndRoles.put(role, rightsForRole);
+	}
+	
+	/**
+	 * Delivers Components with Permissions for a Role
+	 * @param role
+	 * @return
+	 */
+	public static synchronized Map<ServiceDomain, String> getRightsForRole(Role role) {
+		return rightsAndRoles.get(role);
+	}
+	
+	/**
+	 * Delivers Permissions to Component for a Role
+	 * @param role
+	 * @param serviceDomain
+	 * @return
+	 */
+	public static synchronized String getRolePermissions(Role role, ServiceDomain serviceDomain) {
+		return rightsAndRoles.get(role).get(serviceDomain);
+	}
+}

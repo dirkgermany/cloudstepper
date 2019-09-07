@@ -1,0 +1,20 @@
+package com.dam.authentication.rest.message;
+
+public class PermissionResponse extends RestResponse{
+    private Permission user;
+    	
+	public PermissionResponse (Permission user) {
+		super(new Long(0), "OK", "User exists");
+		
+		setUser(user);
+	}  
+
+	private void setUser(Permission user) {
+		this.user = user;
+	}
+	
+	public Permission getUser() {
+		return this.user;
+	}
+	
+}

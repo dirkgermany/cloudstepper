@@ -1,0 +1,25 @@
+package com.dam;
+
+public class DamServiceException extends Exception{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9166254022620287445L;
+	
+	private Long errorId;
+	
+	public DamServiceException (Long errorId, String shortMsg, String description) {
+		super (description);
+		this.setErrorId(errorId);
+	}
+
+	public Long getErrorId() {
+		return errorId;
+	}
+
+	public void setErrorId(Long errorId) {
+		this.errorId = errorId;
+	}
+
+}

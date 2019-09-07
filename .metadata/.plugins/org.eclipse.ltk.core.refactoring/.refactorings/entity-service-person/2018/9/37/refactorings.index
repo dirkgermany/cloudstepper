@@ -1,0 +1,15 @@
+1536823869401	Delete element
+1536823885207	Delete elements
+1536825232423	Rename compilation unit 'OrganizationEndpoint.java'
+1536825390643	Rename type 'OrganizationMapper'
+1536825582872	Rename type 'OrganizationEntity'
+1536825593482	Rename type 'OrganizationFacade'
+1536825601602	Rename type 'OrganizationModel'
+1536825796217	Rename resource 'organization.xsd'
+1536827343617	Rename local variable 'PersonXml'
+1536843161293	Rename package 'photocrm.business'
+1536843184619	Rename type 'DoSomething'
+1536911383498	Rename field 'primaryEail'
+1536911406658	Rename field 'secondaryEMail'
+1536924047561	Delete element
+1536926010301	Delete element

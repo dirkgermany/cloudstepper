@@ -1,0 +1,16 @@
+package com.dam.portfolio.model;
+
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
+
+import com.dam.portfolio.model.entity.PortfolioConstruction;
+
+@Transactional
+public interface PortfolioConstructionModel extends Repository<PortfolioConstruction, Long>, CrudRepository<PortfolioConstruction, Long> {
+	
+	PortfolioConstruction findByConstructionName(String constructionName);
+
+}

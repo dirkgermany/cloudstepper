@@ -1,0 +1,166 @@
+package photocrm.meta;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import external.wsdl.DeleteOrganizationRequest;
+import external.wsdl.DeleteOrganizationResponse;
+import external.wsdl.DeletePersonRequest;
+import external.wsdl.DeletePersonResponse;
+import external.wsdl.GetOrganizationRequest;
+import external.wsdl.GetOrganizationResponse;
+import external.wsdl.GetPersonRequest;
+import external.wsdl.GetPersonResponse;
+import external.wsdl.GetPersonsByParentRequest;
+import external.wsdl.GetPersonsByParentResponse;
+import external.wsdl.InsertOrganizationRequest;
+import external.wsdl.InsertOrganizationResponse;
+import external.wsdl.InsertPersonRelationRequest;
+import external.wsdl.InsertPersonRelationResponse;
+import external.wsdl.InsertPersonRequest;
+import external.wsdl.InsertPersonResponse;
+import external.wsdl.UpdateOrganizationRequest;
+import external.wsdl.UpdateOrganizationResponse;
+import external.wsdl.UpdatePersonRequest;
+import external.wsdl.UpdatePersonResponse;
+import photocrm.client.OrganizationClient;
+import photocrm.client.PersonClient;
+import photocrm.mapping.OrganizationMapper;
+import services.photocrm.soap_soap_service.AddPersonToOrganizationRequest;
+import services.photocrm.soap_soap_service.AddPersonToOrganizationResponse;
+import services.photocrm.soap_soap_service.CreateOrganizationRequest;
+import services.photocrm.soap_soap_service.CreateOrganizationResponse;
+import services.photocrm.soap_soap_service.CreatePersonRequest;
+import services.photocrm.soap_soap_service.CreatePersonResponse;
+import services.photocrm.soap_soap_service.DropOrganizationRequest;
+import services.photocrm.soap_soap_service.DropOrganizationResponse;
+import services.photocrm.soap_soap_service.DropPersonRequest;
+import services.photocrm.soap_soap_service.DropPersonResponse;
+import services.photocrm.soap_soap_service.FindPersonsByOrganizationRequest;
+import services.photocrm.soap_soap_service.FindPersonsByOrganizationResponse;
+import services.photocrm.soap_soap_service.ModifyOrganizationRequest;
+import services.photocrm.soap_soap_service.FindOrganizationRequest;
+import services.photocrm.soap_soap_service.FindOrganizationResponse;
+import services.photocrm.soap_soap_service.FindPersonRequest;
+import services.photocrm.soap_soap_service.FindPersonResponse;
+import services.photocrm.soap_soap_service.ModifyOrganizationResponse;
+import services.photocrm.soap_soap_service.ModifyPersonRequest;
+import services.photocrm.soap_soap_service.ModifyPersonResponse;
+
+/**
+ * This class is the bridge between this domain service and the used microservices.
+ * Incoming requests are mapped and sent to the underlying microservices.
+ * The received responses then will be returned to the calling method.
+ * @author dirk
+ *
+ */
+
+@Component
+public class WebClientLayer {
+
+	// The used services are called by service clients
+	@Autowired
+	OrganizationClient organizationClient;
+	@Autowired
+	PersonClient personClient;
+
+	// --------------- Organization related ----------------------
+	public CreateOrganizationResponse createOrganization(CreateOrganizationRequest incomingRequest) {
+		// Prepare Request which will be sent to the Entity-Service
+		InsertOrganizationRequest outgoingRequest = new InsertOrganizationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		InsertOrganizationResponse outgoingResponse = organizationClient.insertOrganization(outgoingRequest);
+		CreateOrganizationResponse incomingResponse = new CreateOrganizationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+	
+	public FindOrganizationResponse findOrganization(FindOrganizationRequest incomingRequest) {
+		// Prepare Request which will be sent to the Entity-Service
+		GetOrganizationRequest outgoingRequest = new GetOrganizationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		GetOrganizationResponse outgoingResponse = organizationClient.getOrganization(outgoingRequest);
+		FindOrganizationResponse incomingResponse = new FindOrganizationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+	
+	public DropOrganizationResponse dropOrganization (DropOrganizationRequest incomingRequest) {
+		DeleteOrganizationRequest outgoingRequest = new DeleteOrganizationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		DeleteOrganizationResponse outgoingResponse = organizationClient.deleteOrganization(outgoingRequest);
+		DropOrganizationResponse incomingResponse = new DropOrganizationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public ModifyOrganizationResponse modifyOrganization (ModifyOrganizationRequest incomingRequest) {
+		UpdateOrganizationRequest outgoingRequest = new UpdateOrganizationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		UpdateOrganizationResponse outgoingResponse = organizationClient.updateOrganization(outgoingRequest);
+		ModifyOrganizationResponse incomingResponse = new ModifyOrganizationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+	
+	// --------------- Person related ----------------------
+	public CreatePersonResponse createPerson (CreatePersonRequest incomingRequest) {
+		InsertPersonRequest outgoingRequest = new InsertPersonRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		InsertPersonResponse outgoingResponse = personClient.insertPerson(outgoingRequest);
+		CreatePersonResponse incomingResponse = new CreatePersonResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public FindPersonResponse findPerson(FindPersonRequest incomingRequest) {
+		// Prepare Request which will be sent to the Entity-Service
+		GetPersonRequest outgoingRequest = new GetPersonRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		GetPersonResponse outgoingResponse = personClient.getPerson(outgoingRequest);
+		FindPersonResponse incomingResponse = new FindPersonResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public AddPersonToOrganizationResponse addPersonToOrganization (AddPersonToOrganizationRequest incomingRequest) {
+		InsertPersonRelationRequest outgoingRequest = new InsertPersonRelationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		InsertPersonRelationResponse outgoingResponse = personClient.insertPersonRelation(outgoingRequest);
+		AddPersonToOrganizationResponse incomingResponse = new AddPersonToOrganizationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public FindPersonsByOrganizationResponse findPersonsByOrganization (FindPersonsByOrganizationRequest incomingRequest) {
+		GetPersonsByParentRequest outgoingRequest = new GetPersonsByParentRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		GetPersonsByParentResponse outgoingResponse = personClient.getPersonsByParent(outgoingRequest);
+		FindPersonsByOrganizationResponse incomingResponse = new FindPersonsByOrganizationResponse();
+		System.out.println("....................................................");
+		System.out.println(outgoingResponse.getPersonChildXml().get(0).getPerson().getForeName());
+		System.out.println(outgoingResponse.getPersonChildXml().get(1).getPerson().getForeName());
+		System.out.println("....................................................");
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		System.out.println(incomingResponse.getPersonChild());
+		return incomingResponse;
+	}
+	
+	public DropPersonResponse dropPerson (DropPersonRequest incomingRequest) {
+		DeletePersonRequest outgoingRequest = new DeletePersonRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		DeletePersonResponse outgoingResponse = personClient.deletePerson(outgoingRequest);
+		DropPersonResponse incomingResponse = new DropPersonResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public ModifyPersonResponse modifyPerson (ModifyPersonRequest incomingRequest) {
+		UpdatePersonRequest outgoingRequest = new UpdatePersonRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		UpdatePersonResponse outgoingResponse = personClient.updatePerson(outgoingRequest);
+		ModifyPersonResponse incomingResponse = new ModifyPersonResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+}

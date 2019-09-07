@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="false" key="isRegEx"/>
+		<item value="MapAsset" key="selection"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="incremental"/>
+		<item value="false" key="wrap"/>
+		<item value="false" key="wholeword"/>
+		<list key="findhistory">
+			<item value="RelationAsset"/>
+			<item value="portfolio"/>
+			<item value="Construction"/>
+			<item value="construction"/>
+			<item value="portfolioConstruction"/>
+			<item value="PortfolioConstruction"/>
+			<item value="constructionRequest"/>
+			<item value="ConstructionRequest"/>
+			<item value="PersonSafe"/>
+			<item value="Person"/>
+			<item value="Portfolio"/>
+			<item value="person"/>
+			<item value="getAddressByType"/>
+			<item value="packaging"/>
+			<item value="permission"/>
+		</list>
+		<list key="replacehistory">
+			<item value="MapAsset"/>
+			<item value="AssetClass"/>
+			<item value="assetClass"/>
+			<item value="assetClassRequest"/>
+			<item value="AssetClassRequest"/>
+			<item value="ConstructionSafe"/>
+			<item value="PortfolioConstruction"/>
+			<item value="portfolioConstruction"/>
+			<item value="portfolio"/>
+			<item value="Portfolio"/>
+			<item value="Permission"/>
+			<item value="PermissionModel"/>
+			<item value="permissionModel"/>
+			<item value="serviceDomain"/>
+			<item value="ServiceDomain"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="341" key="DIALOG_WIDTH"/>
+		<item value="1|Cantarell|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+		<item value="458" key="DIALOG_HEIGHT"/>
+		<item value="26" key="DIALOG_X_ORIGIN"/>
+		<item value="23" key="DIALOG_Y_ORIGIN"/>
+	</section>
+</section>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="addressService"/>
+<aop-project name="portfolioService"/>
+<aop-project name="authenticationService"/>
+<aop-project name="personService"/>
+<aop-project name="serviceProvider"/>
+<aop-project name="userService"/>
+</aop-reference-model>

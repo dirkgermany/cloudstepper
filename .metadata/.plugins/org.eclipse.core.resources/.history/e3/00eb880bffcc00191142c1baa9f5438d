@@ -1,0 +1,8 @@
+package com.dam.portfolio.rest.message;
+
+public class AssetClassDropResponse extends RestResponse{
+    	
+	public AssetClassDropResponse (Long result) {
+		super(result, "OK", "AssetClass dropped");
+	}  
+}

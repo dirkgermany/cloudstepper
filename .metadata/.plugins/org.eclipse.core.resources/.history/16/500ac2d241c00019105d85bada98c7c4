@@ -1,0 +1,36 @@
+package com.dam.authentication.model;
+
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
+
+import com.dam.authentication.model.entity.Permission;
+import com.dam.authentication.types.Role;
+import com.dam.authentication.types.ServiceDomain;
+
+
+@ComponentScan
+@Transactional
+public interface PermissionModel extends Repository<Permission, Long>, CrudRepository<Permission, Long> {
+
+	Optional<Permission> findBy_id(Long id);
+	Permission findByRole(Role role);
+	Optional<Permission> findByServiceDomain(ServiceDomain domain);
+	
+	@Modifying
+	@Transactional
+	@Query("Update Permission permission set "
+	        + "permission.role = :#{#permission.role}, "
+	        + "permission.serviceDomain = :#{#permission.serviceDomain}, "
+			+ "rolePermission.permission = :#{#permission.permission} "
+			+ "Where permission._id = :#{#permission._id} ")
+	Integer update(@Param("rolePermission") Permission rolePermission);
+
+}

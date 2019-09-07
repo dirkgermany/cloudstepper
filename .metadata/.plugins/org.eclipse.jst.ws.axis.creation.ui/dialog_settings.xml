@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="org.eclipse.jst.ws.internal.axis.creation.ui.widgets.bean.BeanConfigWidget.wsdlFileText_">
+		<item value="ESBCheck.wsdl"/>
+		<item value="PingImpl.wsdl"/>
+		<item value="ESBTestImpl.wsdl"/>
+		<item value="BlaImpl.wsdl"/>
+		<item value="PingServiceImpl.wsdl"/>
+	</list>
+</section>

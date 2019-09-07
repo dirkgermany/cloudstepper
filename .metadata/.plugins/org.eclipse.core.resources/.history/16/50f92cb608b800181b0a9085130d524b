@@ -1,0 +1,94 @@
+package photocrm.model;
+
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
+
+import photocrm.exception.ServiceException;
+import photocrm.exception.ServiceFault;
+
+@Controller
+@ComponentScan
+public class OrganizationFacade {
+
+	private static final Logger log = LoggerFactory.getLogger(OrganizationFacade.class);
+
+	@Autowired
+	private OrganizationModel organizationQueryModel;
+
+	public OrganizationEntity insertOrganization(OrganizationEntity entityToInsert) {
+		return organizationQueryModel.save(entityToInsert);
+	}
+
+	public OrganizationEntity getOrganizationById(int id) {
+		OrganizationEntity organizationEntity = null;
+		Optional<OrganizationEntity> optional = organizationQueryModel.findById(id);
+		System.out.println("OPTIONAL : " + optional);
+		if (optional.isPresent()) {
+			organizationEntity = optional.get();
+		}
+		return organizationEntity;
+	}
+
+	public OrganizationEntity getOrganizationByClientAndId(int clientId, int id) {
+		OrganizationEntity organizationEntity = null;
+		try {
+			System.out.println("bis hierher");
+			organizationEntity = organizationQueryModel.findOrganizationByClientAndId(clientId, id);
+			System.out.println("JUCHHU : " + organizationEntity);
+		} catch (Exception ex) {
+			System.out.println(ex);
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION FIND ", "clientid: " + clientId + "; id: " + id));
+		}
+
+		if (null == organizationEntity) {
+			throw new ServiceException("ERROR: No Entity",
+					new ServiceFault("EXCEPTION FIND ", "clientid: " + clientId + "; id: " + id));
+		}
+
+		return organizationEntity;
+	}
+
+	@Transactional
+	public void deleteOrganization(OrganizationEntity entityToDelete) {
+		try {
+			organizationQueryModel.delete(entityToDelete);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION DELETE ", "entity: " + entityToDelete));
+		}
+	}
+
+	@Transactional
+	public OrganizationEntity updateOrganization(OrganizationEntity entityToUpdate) {
+		OrganizationEntity updatedEntity = null;
+		try {
+			Integer updateCount = organizationQueryModel.updateOrganization(entityToUpdate);
+			if (1 == updateCount) {
+				updatedEntity = organizationQueryModel.findOrganizationByClientAndId(entityToUpdate.getClientId(),
+						entityToUpdate.getId());
+			}
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION UPDATE ", "new Values: " + entityToUpdate));
+		}
+
+		if (null == updatedEntity) {
+			throw new ServiceException("ERROR: Entity Update",
+					new ServiceFault("ERROR UPDATE ", "updatedEntity is null; new Values: " + entityToUpdate));
+		}
+
+		return updatedEntity;
+	}
+
+}

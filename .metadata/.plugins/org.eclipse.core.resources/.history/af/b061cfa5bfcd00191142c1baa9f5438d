@@ -1,0 +1,13 @@
+package com.dam.portfolio.model;
+
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
+import com.dam.portfolio.model.entity.MapAssetClassToPortfolioConstruction;
+
+@Transactional
+public interface MapAssetClassToPortfolioConstructionModel extends Repository<MapAssetClassToPortfolioConstruction, Long>, CrudRepository<MapAssetClassToPortfolioConstruction, Long> {
+		
+}

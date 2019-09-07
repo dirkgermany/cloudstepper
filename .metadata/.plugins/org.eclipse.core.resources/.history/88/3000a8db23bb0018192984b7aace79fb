@@ -1,0 +1,146 @@
+//
+// Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.7 generiert 
+// Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2018.09.18 um 09:34:05 AM CEST 
+//
+
+
+package services.photocrm.soap_soap_service;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java-Klasse für anonymous complex type.
+ * 
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * 
+ * <pre>
+ * &lt;complexType>
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="population" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="capital" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="currencyString" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "name",
+    "population",
+    "capital",
+    "currencyString"
+})
+@XmlRootElement(name = "createCountryRequest")
+public class CreateCountryRequest {
+
+    @XmlElement(required = true)
+    protected String name;
+    protected int population;
+    @XmlElement(required = true)
+    protected String capital;
+    @XmlElement(required = true)
+    protected String currencyString;
+
+    /**
+     * Ruft den Wert der name-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Legt den Wert der name-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Ruft den Wert der population-Eigenschaft ab.
+     * 
+     */
+    public int getPopulation() {
+        return population;
+    }
+
+    /**
+     * Legt den Wert der population-Eigenschaft fest.
+     * 
+     */
+    public void setPopulation(int value) {
+        this.population = value;
+    }
+
+    /**
+     * Ruft den Wert der capital-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCapital() {
+        return capital;
+    }
+
+    /**
+     * Legt den Wert der capital-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCapital(String value) {
+        this.capital = value;
+    }
+
+    /**
+     * Ruft den Wert der currencyString-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCurrencyString() {
+        return currencyString;
+    }
+
+    /**
+     * Legt den Wert der currencyString-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCurrencyString(String value) {
+        this.currencyString = value;
+    }
+
+}

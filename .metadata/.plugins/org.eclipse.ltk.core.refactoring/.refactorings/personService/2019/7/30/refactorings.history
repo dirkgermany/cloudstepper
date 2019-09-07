@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Encapsulate field &apos;com.dam.exception.DamServiceException.errorId&apos; in &apos;com.dam.exception.DamServiceException&apos;&#x0A;- Original project: &apos;personService&apos;&#x0A;- Original element: &apos;com.dam.exception.DamServiceException.errorId&apos;&#x0A;- Getter method name: &apos;getErrorId&apos;&#x0A;- Setter method name: &apos;setErrorId&apos;&#x0A;- Field visibility: &apos;public&apos;&#x0A;- Use getter and setter methods in declaring type" comments="false" declaring="true" description="Encapsulate field &apos;errorId&apos;" flags="589830" getter="getErrorId" id="org.eclipse.jdt.ui.self.encapsulate" input="/src\/main\/java&lt;com.dam.exception{DamServiceException.java[DamServiceException^errorId" insertion="0" setter="setErrorId" stamp="1564319602197" version="1.0" visibility="1"/>
+</session>

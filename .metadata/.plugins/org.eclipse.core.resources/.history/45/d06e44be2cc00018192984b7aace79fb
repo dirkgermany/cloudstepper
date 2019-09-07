@@ -1,0 +1,145 @@
+package photocrm.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
+
+import external.wsdl.DeleteOrganizationRequest;
+import external.wsdl.DeleteOrganizationResponse;
+import external.wsdl.GetOrganizationRequest;
+import external.wsdl.GetOrganizationResponse;
+import external.wsdl.GetOrganizationByIdRequest;
+import external.wsdl.GetOrganizationByIdResponse;
+import external.wsdl.InsertOrganizationRequest;
+import external.wsdl.InsertOrganizationResponse;
+import external.wsdl.UpdateOrganizationRequest;
+import external.wsdl.UpdateOrganizationResponse;
+import photocrm.ConfigProperties;
+import photocrm.exception.ServiceException;
+import photocrm.exception.ServiceFault;
+import photocrm.mapping.OrganizationMapper;
+
+
+public class AddressClient extends WebServiceGatewaySupport {
+
+	// Configuration
+	@Autowired
+	ConfigProperties config;
+
+	private static final Logger log = LoggerFactory.getLogger(AddressClient.class); 
+
+	private String getExternalUri() {
+		return "http://" + config.getOrganization().getHost() + ":" + config.getOrganization().getPort()
+				+ "/ws/organizations";
+	}
+
+	private String getExternalEndpoint(String endpoint) {
+		System.out.println("........... Endpoint ...... " + "http://photocrm.services/entity-service-organization/" + endpoint);
+		return "http://photocrm.services/entity-service-organization/" + endpoint;
+	}
+
+	/**
+	 * Create new Organization
+	 * 
+	 * @param request
+	 * @return
+	 * @throws ServiceException
+	 */
+	public InsertOrganizationResponse insertOrganization(InsertOrganizationRequest request) throws ServiceException {
+		try {
+			InsertOrganizationResponse response = (InsertOrganizationResponse) getWebServiceTemplate()
+					.marshalSendAndReceive(getExternalUri(), request,
+							new SoapActionCallback(getExternalEndpoint("insertOrganization")));
+			return response;
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION INSERT ", "request: " + OrganizationMapper.toString(request)));
+		}
+	}
+
+	/**
+	 * Update Organization
+	 * 
+	 * @param request
+	 * @return
+	 * @throws ServiceException
+	 */
+	public UpdateOrganizationResponse updateOrganization(UpdateOrganizationRequest request) throws ServiceException {
+		try {
+			UpdateOrganizationResponse response = (UpdateOrganizationResponse) getWebServiceTemplate()
+					.marshalSendAndReceive(getExternalUri(), request,
+							new SoapActionCallback(getExternalEndpoint("updateOrganization")));
+			return response;
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION INSERT ", "request: " + OrganizationMapper.toString(request)));
+		}
+	}
+
+	/**
+	 * Find Organization by Client and ID
+	 * 
+	 * @param request
+	 * @return
+	 * @throws ServiceException
+	 */
+	public GetOrganizationResponse getOrganization(
+			GetOrganizationRequest request) throws ServiceException {
+		try {
+			GetOrganizationResponse response = (GetOrganizationResponse) getWebServiceTemplate()
+					.marshalSendAndReceive(getExternalUri(), request,
+							new SoapActionCallback(getExternalEndpoint("getOrganization")));
+			return response;
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION FIND ", "request: " + OrganizationMapper.toString(request)));
+		}
+	}
+
+	/**
+	 * Find Organization by ID
+	 * 
+	 * @param request
+	 * @return
+	 * @throws ServiceException
+	 */
+	public GetOrganizationByIdResponse getOrganizationById(GetOrganizationByIdRequest request) throws ServiceException {
+		try {
+			GetOrganizationByIdResponse response = (GetOrganizationByIdResponse) getWebServiceTemplate()
+					.marshalSendAndReceive(getExternalUri(), request,
+							new SoapActionCallback(getExternalEndpoint("getOrganizationById")));
+			return response;
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION FIND ", "request: " + OrganizationMapper.toString(request)));
+		}
+	}
+	
+
+	/**
+	 * Drop Organization by ID
+	 * 
+	 * @param request
+	 * @return
+	 * @throws ServiceException
+	 */
+	public DeleteOrganizationResponse deleteOrganization(DeleteOrganizationRequest request)
+			throws ServiceException {
+		try {
+			DeleteOrganizationResponse response = (DeleteOrganizationResponse) getWebServiceTemplate()
+					.marshalSendAndReceive(getExternalUri(), request,
+							new SoapActionCallback(getExternalEndpoint("deleteOrganization")));
+			return response;
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			throw new ServiceException(ex.getMessage(),
+					new ServiceFault("EXCEPTION FIND ", "request: " + OrganizationMapper.toString(request)));
+		}
+	}
+}

@@ -1,0 +1,5 @@
+package com.dam.portfolio.model.entity;
+
+public class MappedConstruction {
+
+}

@@ -1,0 +1,44 @@
+package photocrm.business;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import external.wsdl.InsertOrganizationRequest;
+import external.wsdl.InsertOrganizationResponse;
+import photocrm.client.OrganizationClient;
+import photocrm.client.PersonClient;
+import photocrm.meta.OrganizationMapper;
+import services.photocrm.soap_soap_service.CreateOrganizationRequest;
+import services.photocrm.soap_soap_service.CreateOrganizationResponse;
+
+@Component
+public class DoSomething {
+
+	@Autowired
+	OrganizationClient organizationClient;
+	@Autowired
+	PersonClient personClient;
+
+	public CreateOrganizationResponse createOrganization(CreateOrganizationRequest incomingRequest) {
+
+		System.out.println("AUFRUF DoSomething");
+		
+		CreateOrganizationResponse incomingResponse = new CreateOrganizationResponse();
+		
+		// Prepare Request which will be sent to the Entity-Service
+		InsertOrganizationRequest outgoingRequest = OrganizationMapper.incomingRequestToOutgoingRequest(incomingRequest);
+		InsertOrganizationResponse outgoingResponse = organizationClient.insertOrganization(outgoingRequest);
+		
+		CreateCountryResponse response = null;
+		try {
+			ComplexCountry countryToSet = new ComplexCountry();
+//			countryToSet = CountryMapper.simpleToComplex(insertCountryResponse.getCountry());
+			response = new CreateCountryResponse();
+			response.setComplexCountry(countryToSet);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return response;
+	}
+
+}

@@ -1,0 +1,256 @@
+package com.dam.portfolio;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
+
+import com.dam.exception.DamServiceException;
+import com.dam.exception.PermissionCheckException;
+import com.dam.portfolio.model.AssetClassModel;
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.rest.message.ConstructionCreateRequest;
+import com.dam.portfolio.rest.message.ConstructionDropRequest;
+import com.dam.portfolio.rest.message.AssetClassCreateRequest;
+import com.dam.portfolio.rest.message.AssetClassDropRequest;
+import com.dam.portfolio.rest.message.AssetClassRequest;
+import com.dam.portfolio.rest.message.AssetClassUpdateRequest;
+import com.dam.portfolio.rest.message.RestRequest;
+import com.dam.portfolio.rest.message.ConstructionUpdateRequest;
+
+/**
+ * Handles active and non active Tokens
+ * 
+ * @author dirk
+ *
+ */
+@Controller
+@ComponentScan
+public class AssetClassStore {
+
+	@Autowired
+	private AssetClassModel assetClassModel;
+
+	/**
+	 * Save getter for AssetClass. Checks requesting user
+	 * 
+	 * @param assetClass
+	 * @return
+	 */
+	public AssetClass getAssetClassSafe(AssetClassRequest assetClassRequest)
+			throws DamServiceException {
+		checkRequestedParamsRequest_Id_Rights(assetClassRequest, assetClassRequest.getRequestorUserId(),
+				assetClassRequest.getRights());
+
+		if (null == assetClassRequest.getAssetClassId()) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "assetClassId is not set.");
+		}
+
+		// Check if the permissions is set
+		PermissionCheck.isReadPermissionSet(assetClassRequest.getRequestorUserId(), null,
+				assetClassRequest.getRights());
+
+		AssetClass assetClass = getAssetClassById(
+				assetClassRequest.getAssetClassId());
+
+		if (null == assetClass) {
+			throw new DamServiceException(new Long(404), "AssetClass Unknown",
+					"AssetClass not found or invalid request");
+		}
+
+		return assetClass;
+	}
+
+	/**
+	 * Creation of assetClass requests existing userId, givenName and
+	 * lastName. userId in Entity Container mustn't be null
+	 * 
+	 * @param assetClassContainer
+	 * @return
+	 * @throws PermissionCheckException
+	 */
+	public AssetClass createAssetClassSafe(AssetClassCreateRequest assetClassCreateRequest)
+			throws DamServiceException {
+		checkRequestedParamsRequest_Id_Rights(assetClassCreateRequest, assetClassCreateRequest.getRequestorUserId(),
+				assetClassCreateRequest.getRights());
+
+		checkRequestedParamsAssetClass(assetClassCreateRequest.getAssetClass());
+
+		// Save database requests
+		PermissionCheck.isWritePermissionSet(assetClassCreateRequest.getRequestorUserId(), null,
+				assetClassCreateRequest.getRights());
+
+		if (null == assetClassCreateRequest.getAssetClass().getAssetClassName()) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "AssetClass data not complete");
+		}
+
+		// check if still exists
+		// direct by assetClassId
+		AssetClass existingAssetClass = getAssetClassById(
+				assetClassCreateRequest.getAssetClass().getAssetClassId());
+		
+		if (null == existingAssetClass) {
+			existingAssetClass = getAssetClassByName(assetClassCreateRequest.getAssetClass().getAssetClassName());
+		}
+
+		if (null != existingAssetClass) {
+			return updateAssetClass(existingAssetClass,
+					assetClassCreateRequest.getAssetClass());
+		}
+
+		AssetClass assetClass;
+		
+		try {
+		// save if all checks are ok and the assetClass doesn't exist
+		assetClass = assetClassModel
+				.save(assetClassCreateRequest.getAssetClass());
+		} catch (Exception e) {
+			throw new DamServiceException(new Long(500), "Portfolioconstruction could not be stored", e.getMessage());
+		}
+
+		if (null == assetClass) {
+			throw new DamServiceException(new Long(422), "AssetClass not created",
+					"AssetClass still exists, data invalid or not complete");
+		}
+		return assetClass;
+
+	}
+
+	/**
+	 * Save update; requesting user must be user in storage
+	 * 
+	 * @param userId
+	 * @param userStored
+	 * @param userUpdate
+	 * @return
+	 */
+	public AssetClass updateAssetClassSafe(AssetClassUpdateRequest assetClassUpdateRequest)
+			throws DamServiceException {
+		checkRequestedParamsRequest_Id_Rights(assetClassUpdateRequest, assetClassUpdateRequest.getRequestorUserId(),
+				assetClassUpdateRequest.getRights());
+
+		checkRequestedParamsAssetClass(assetClassUpdateRequest.getAssetClass());
+
+		// Check if the permissions is set
+		PermissionCheck.isWritePermissionSet(assetClassUpdateRequest.getRequestorUserId(),
+				null,
+				assetClassUpdateRequest.getRights());
+
+		// check if still exists
+		AssetClass existingAssetClass = getAssetClassById(
+				assetClassUpdateRequest.getAssetClass().getAssetClassId());
+
+		// AssetClass must exist and userId ist not permutable
+		if (null == existingAssetClass) {
+			throw new DamServiceException(new Long(404), "AssetClass for update not found",
+					"AssetClass with assetClassId doesn't exist.");
+		}
+
+		return updateAssetClass(existingAssetClass,
+				assetClassUpdateRequest.getAssetClass());
+	}
+
+	/**
+	 * Secure drop, user must be owner
+	 * 
+	 * @param userId
+	 * @param assetClass
+	 * @return
+	 */
+	public Long dropAssetClassSafe(AssetClassDropRequest assetClassDropRequest) throws DamServiceException {
+		checkRequestedParamsRequest_Id_Rights(assetClassDropRequest, assetClassDropRequest.getRequestorUserId(), assetClassDropRequest.getRights());
+		checkRequestedParamsAssetClass(assetClassDropRequest.getAssetClass());
+
+		// Save database requests
+		PermissionCheck.isDeletePermissionSet(assetClassDropRequest.getRequestorUserId(),	null, assetClassDropRequest.getRights());
+
+		AssetClass existingAssetClass = getAssetClassById(
+				assetClassDropRequest.getAssetClass().getAssetClassId());
+
+		if (null == existingAssetClass) {
+			throw new DamServiceException(new Long(404), "AssetClass could not be dropped",
+					"AssetClass does not exist or could not be found in database.");
+		}
+
+		return dropAssetClass(existingAssetClass);
+	}
+	
+	private AssetClass getAssetClassByName(String assetClassName) {
+		return assetClassModel.findByAssetClassName(assetClassName);
+	}
+
+	private AssetClass getAssetClassById(Long assetClassId) {
+		if (null == assetClassId) {
+			return null;
+		}
+
+		Optional<AssetClass> optionalAssetClass = assetClassModel
+				.findById(assetClassId);
+		if (null != optionalAssetClass && optionalAssetClass.isPresent()) {
+			return optionalAssetClass.get();
+		}
+		return null;
+	}
+
+
+	/**
+	 * Update assetClass with changed values
+	 * 
+	 * @param assetClassForUpdate
+	 * @param assetClassContainer
+	 * @return
+	 */
+	private AssetClass updateAssetClass(AssetClass assetClassForUpdate,
+			AssetClass assetClassContainer) throws DamServiceException {
+		
+		if (null != assetClassForUpdate && null != assetClassContainer) {
+			assetClassForUpdate.updateEntity(assetClassContainer);
+			try {
+				return assetClassModel.save(assetClassForUpdate);
+			} catch (Exception e) {
+				throw new DamServiceException(new Long(409),
+						"AssetClass could not be saved. Perhaps duplicate keys.", e.getMessage());
+			}
+		}
+		throw new DamServiceException(new Long(404), "AssetClass could not be saved",
+				"Check AssetClass data in request.");
+	}
+
+	private Long dropAssetClass(AssetClass assetClass) {
+		if (null != assetClass) {
+			assetClassModel.deleteById(assetClass.getAssetClassId());
+			AssetClass deletedAssetClass = getAssetClassById(
+					assetClass.getAssetClassId());
+			if (null == deletedAssetClass) {
+				return new Long(200);
+			}
+		}
+
+		return new Long(10);
+	}
+
+	private void checkRequestedParamsRequest_Id_Rights(RestRequest request, Long requestorUserId, String rights)
+			throws DamServiceException {
+		if (null == request) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
+		}
+		if (null == requestorUserId) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"requestorUserId is recommended but not set.");
+		}
+		if (null == rights || rights.isEmpty()) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"User rights are recommended but are null or empty.");
+		}
+	}
+
+	private void checkRequestedParamsAssetClass(AssetClass assetClass)
+			throws DamServiceException {
+		if (null == assetClass) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"AssetClass is null.");
+		}
+	}
+
+}

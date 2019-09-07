@@ -1,0 +1,171 @@
+package com.dam.authentication;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.stereotype.Component;
+
+import com.dam.authentication.model.entity.Token;
+import com.dam.authentication.model.entity.User;
+import com.dam.authentication.rest.message.LogoutRequest;
+
+/**
+ * Handles active and non active Tokens
+ * 
+ * @author dirk
+ *
+ */
+@Component
+@ImportAutoConfiguration
+public class TokenStore {
+	@Autowired
+	ConfigProperties config;
+
+	private static final AtomicLong tokenIds = new AtomicLong();
+	private Long lastStoreUpdate;
+
+	private static Map<Long, Token> activeTokenMap = new HashMap<Long, Token>();
+	private static Map<Long, Token> expiredTokenMap = new HashMap<Long, Token>();
+
+	public synchronized Token createNewToken(User user) {
+		if (null == user) {
+			return null;
+		}
+
+//		Token newToken = new Token(tokenIds.incrementAndGet(), user, null,
+//				config.getTokenConfiguration().getMaxTokenAge() + System.currentTimeMillis());
+//		activeTokenMap.put(newToken.getTokenId(), newToken);
+//		System.out.println("New Token expires: " + newToken.getExpireTime());
+//		return newToken;
+		return null;
+	}
+	
+	/**
+	 * Used to get a non valid container as helper instance
+	 * @param id
+	 * @return
+	 */
+	public synchronized Token createTokenContainer (Long id, User user) {
+		if (null == id || null == user) {
+			return null;
+		}
+		
+		return new Token(id, user);
+	}
+	
+	public synchronized Token getToken(Long tokenId) {
+		return activeTokenMap.get(tokenId);
+	}
+
+	public synchronized Long tokenIdToLong(String formattedTokenId) {
+		return Long.valueOf(formattedTokenId);
+	}
+
+	/**
+	 * Search Token, validate, refresh expireTime
+	 * 
+	 * @param validationToken
+	 * @return
+	 */
+	public synchronized Token validateAndRefreshToken(Token validationToken) {
+		refreshTokenStore();
+
+		Token storedToken = activeTokenMap.get(validationToken.getTokenId());
+		if (null == storedToken) {
+			return null;
+		}
+
+		// Check age of token
+		if (!tokenIsStillValid(storedToken)) {
+			archiveToken(storedToken);
+			return null;
+		}
+
+		// refresh expireTime
+		// update Map
+		// return Token
+		if (null != storedToken) {
+			if (tokenValidate(validationToken, storedToken)) {
+				storedToken.setExpireTime(System.currentTimeMillis() + getMaxTokenAge());
+				activeTokenMap.put(storedToken.getTokenId(), storedToken);
+				return storedToken;
+			}
+		}
+		return null;
+	}
+
+	private synchronized void archiveToken(Token tokenToArchive) {
+		activeTokenMap.remove(tokenToArchive.getTokenId());
+		expiredTokenMap.put(tokenToArchive.getTokenId(), tokenToArchive);
+	}
+
+	private synchronized Boolean tokenIsStillValid(Token validationToken) {
+		Long currentTime = System.currentTimeMillis();
+		System.out.println("currentTime: " + currentTime + "; expireTime: " + validationToken.getExpireTime()
+				+ "; diff: " + new Long(validationToken.getExpireTime() - currentTime));
+		if (null == validationToken || validationToken.getExpireTime() <= currentTime) {
+			return Boolean.FALSE;
+		}
+		return Boolean.TRUE;
+	}
+
+	/**
+	 * Validates age, userName and userId
+	 * 
+	 * @param validationToken
+	 * @param storedToken
+	 * @return
+	 */
+	private synchronized Boolean tokenValidate(Token validationToken, Token storedToken) {
+
+		if (null == validationToken || null == storedToken) {
+			return Boolean.FALSE;
+		}
+
+		if (storedToken.getUser().getUserName().equals(validationToken.getUser().getUserName())
+				&& storedToken.getTokenId().longValue() == validationToken.getTokenId().longValue()) {
+			return Boolean.TRUE;
+		}
+
+		return Boolean.FALSE;
+
+	}
+
+	public Long logout(LogoutRequest logoutRequest) {
+		Token storedToken = activeTokenMap.get(logoutRequest.getTokenId());
+		if (null != storedToken && logoutRequest.getUserName().equals(storedToken.getUser().getUserName())) {
+			archiveToken(storedToken);
+			return new Long(0);
+		}
+		return new Long(7);
+	}
+
+	private synchronized void refreshTokenStore() {
+		if (null == this.lastStoreUpdate) {
+			this.lastStoreUpdate = new Long(System.currentTimeMillis());
+			return;
+		}
+
+//		Long currentTime = System.currentTimeMillis();
+//		if (this.lastStoreUpdate + config.getTokenConfiguration().getCheckOldTokenInterval() < currentTime) {
+//			Iterator<Token> tokens = activeTokenMap.values().iterator();
+//			while (tokens.hasNext()) {
+//				Token nextToken = tokens.next();
+//				if (null != nextToken && nextToken.getExpireTime() < currentTime) {
+//					expiredTokenMap.put(nextToken.getTokenId(), nextToken);
+//					tokens.remove();
+//				}
+//			}
+//		}
+//		this.lastStoreUpdate = new Long(System.currentTimeMillis());
+	}
+
+	public synchronized Long getMaxTokenAge() {
+//		return config.getTokenConfiguration().getMaxTokenAge();
+		return null;
+	}
+
+}

@@ -1,0 +1,12 @@
+package com.dam.portfolio.rest.message.RelationAssetClassToPortfolioConstruction;
+
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.model.entity.RelationAssetClassToPortfolioConstruction;
+
+public class RelationAssetClassToPortfolioConstructionCreateRequest extends RelationAssetClassPortfolioConstructionWriteRequest {
+
+    public RelationAssetClassToPortfolioConstructionCreateRequest(Long requestorUserId, RelationAssetClassToPortfolioConstruction relation) {
+		super(requestorUserId, relation);
+    }
+    
+}

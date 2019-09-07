@@ -1,0 +1,63 @@
+package photocrm.model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.stereotype.Component;
+
+import services.photocrm.entity_service_organization.OrganizationType;
+import services.photocrm.entity_service_organization.OrganizationTypeXml;;
+
+@Entity
+@Component
+@Table(name = "Organization")
+public class OrganizationEntity {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+	private int clientId;
+	private String name;
+	private OrganizationTypeXml organizationType;
+
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getClientId() {
+		return this.clientId;
+	}
+
+	public void setClientId(int clientId) {
+		this.clientId = clientId;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String value) {
+		this.name = value;
+	}
+
+	public OrganizationTypeXml getOrganizationType() {
+		return this.organizationType;
+	}
+
+	public void setOrganizationType(OrganizationTypeXml organizationType) {
+		this.organizationType = organizationType;
+	}
+	
+    public String toString() {
+    	return "OrganizationEntity: " + "id: " + id + "; clientId: " + clientId + "; name: " + name;
+    }
+	
+}

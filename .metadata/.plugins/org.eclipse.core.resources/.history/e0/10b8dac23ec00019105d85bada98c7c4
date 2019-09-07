@@ -1,0 +1,120 @@
+package com.dam.authentication.rest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dam.authentication.PermissionStore;
+import com.dam.authentication.model.entity.Permission;
+import com.dam.authentication.rest.message.CreateRequest;
+import com.dam.authentication.rest.message.CreateResponse;
+import com.dam.authentication.rest.message.DropRequest;
+import com.dam.authentication.rest.message.DropResponse;
+import com.dam.authentication.rest.message.PermissionRequest;
+import com.dam.authentication.rest.message.PermissionResponse;
+import com.dam.authentication.rest.message.RestResponse;
+import com.dam.authentication.rest.message.UpdateRequest;
+import com.dam.authentication.rest.message.UpdateResponse;
+import com.dam.exception.DamServiceException;
+
+@RestController
+public class AuthenticationController {
+	@Autowired
+	private PermissionStore permissionStore;
+
+	/**
+	 * Retrieves a person
+	 * 
+	 * @param permissionRequest
+	 * @return
+	 */
+	@PostMapping("/getPerson")
+	public RestResponse getPersonResponse(@RequestBody PermissionRequest permissionRequest) throws DamServiceException {
+		if (null == permissionRequest.getRequestorUserId()
+				|| (null == permissionRequest.getPersonId() && null == permissionRequest.getUserId())) {
+			return null;
+		}
+
+		Permission permission = null;
+
+		// User must be owner of data
+		permission = permissionStore.getPersonSafe(permissionRequest.getRequestorUserId(), permissionRequest.getPersonId(),
+				permissionRequest.getUserId());
+
+		if (null != permission) {
+			return new PermissionResponse(permission);
+		}
+
+		throw new DamServiceException(new Long(1), "Person Unknown", "Person not found or invalid request");
+	}
+
+	/**
+	 * Retrieves a person
+	 * 
+	 * @param personRequest
+	 * @return
+	 */
+	@GetMapping("/getPersonDemo")
+	public RestResponse getPersonTest(Long personId) throws DamServiceException {
+		if (null == personId) {
+			return null;
+		}
+
+		Permission permission = permissionStore.getPersonById(personId);
+
+		if (null != permission) {
+			return new PermissionResponse(permission);
+		}
+
+		throw new DamServiceException(new Long(1), "Person Unknown", "Person not found or invalid request");
+	}
+
+	@PostMapping("/createPerson")
+	public RestResponse createPerson(@RequestBody CreateRequest createRequest) {
+		Permission permission = permissionStore.createPersonSafe(createRequest.getRequestorUserId(), createRequest.getPerson());
+
+		if (null != permission) {
+			return new CreateResponse(permission);
+		}
+
+		return new RestResponse(new Long(2), "User NOT created", "User still exists, data invalid or not complete");
+
+	}
+
+	@PostMapping("/dropPerson")
+	public RestResponse dropPerson(@RequestBody DropRequest dropRequest) {
+		if (null == dropRequest.getRequestorUserId()) {
+			return null;
+		}
+
+		Long result = permissionStore.dropPersonSafe(dropRequest.getRequestorUserId(), dropRequest.getPersonId(),
+				dropRequest.getUserId());
+
+		if (result.longValue() == new Long(0).longValue()) {
+			return new DropResponse(result);
+		}
+
+		return new RestResponse(result, "Person NOT dropped", "Person not found, or entity not ready for deletion");
+
+	}
+
+	@PostMapping("/updatePerson")
+	public RestResponse updatePerson(@RequestBody UpdateRequest updateRequest) {
+		if (null == updateRequest.getRequestorUserId()) {
+			return null;
+		}
+
+		Permission permission = permissionStore.updatePersonSafe(updateRequest.getRequestorUserId(), updateRequest.getPersonId(),
+				updateRequest.getUserId(), updateRequest.getPerson());
+		if (null != permission) {
+			return new UpdateResponse(permission);
+		}
+
+		return new RestResponse(new Long(11), "User NOT updated",
+				"User not found, no valid data or entity not ready for update");
+
+	}
+
+}

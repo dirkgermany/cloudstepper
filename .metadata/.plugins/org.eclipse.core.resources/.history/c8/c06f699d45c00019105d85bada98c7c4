@@ -1,0 +1,15 @@
+package com.dam.authentication.types;
+
+import org.springframework.context.annotation.ComponentScan;
+
+@ComponentScan
+public enum Role {
+	
+	INVESTOR,
+	USER,
+	ADMIN,
+	ROOT_ADMIN,
+	CONTROLLER;
+	
+	
+}

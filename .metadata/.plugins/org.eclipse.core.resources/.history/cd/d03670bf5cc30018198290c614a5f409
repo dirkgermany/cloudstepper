@@ -1,0 +1,235 @@
+package photocrm.meta;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import external.wsdl.AddressChildXml;
+import external.wsdl.CommunicationChildXml;
+import external.wsdl.DeleteCommunicationRequest;
+import external.wsdl.DeleteCommunicationResponse;
+import external.wsdl.GetAddressesByParentRequest;
+import external.wsdl.GetAddressesByParentResponse;
+import external.wsdl.GetCommunicationRequest;
+import external.wsdl.GetCommunicationResponse;
+import external.wsdl.GetCommunicationsByParentRequest;
+import external.wsdl.GetCommunicationsByParentResponse;
+import external.wsdl.InsertAddressRelationRequest;
+import external.wsdl.InsertAddressRelationResponse;
+import external.wsdl.InsertCommunicationRelationRequest;
+import external.wsdl.InsertCommunicationRelationResponse;
+import external.wsdl.InsertCommunicationRequest;
+import external.wsdl.InsertCommunicationResponse;
+import external.wsdl.UpdateCommunicationRequest;
+import external.wsdl.UpdateCommunicationResponse;
+import photocrm.client.CommunicationClient;
+import photocrm.mapping.OrganizationMapper;
+import services.photocrm.organization_domain_service.AddAddressToOrganizationRequest;
+import services.photocrm.organization_domain_service.AddAddressToOrganizationResponse;
+import services.photocrm.organization_domain_service.AddAddressToPersonRequest;
+import services.photocrm.organization_domain_service.AddAddressToPersonResponse;
+import services.photocrm.organization_domain_service.AddCommunicationToOrganizationRequest;
+import services.photocrm.organization_domain_service.AddCommunicationToOrganizationResponse;
+import services.photocrm.organization_domain_service.AddCommunicationToPersonRequest;
+import services.photocrm.organization_domain_service.AddCommunicationToPersonResponse;
+import services.photocrm.organization_domain_service.Address;
+import services.photocrm.organization_domain_service.AddressChild;
+import services.photocrm.organization_domain_service.AddressType;
+import services.photocrm.organization_domain_service.Communication;
+import services.photocrm.organization_domain_service.CommunicationChild;
+import services.photocrm.organization_domain_service.CommunicationType;
+import services.photocrm.organization_domain_service.CreateCommunicationRequest;
+import services.photocrm.organization_domain_service.CreateCommunicationResponse;
+import services.photocrm.organization_domain_service.DropCommunicationRequest;
+import services.photocrm.organization_domain_service.DropCommunicationResponse;
+import services.photocrm.organization_domain_service.FindAddressesByOrganizationRequest;
+import services.photocrm.organization_domain_service.FindAddressesByOrganizationResponse;
+import services.photocrm.organization_domain_service.FindAddressesByPersonRequest;
+import services.photocrm.organization_domain_service.FindAddressesByPersonResponse;
+import services.photocrm.organization_domain_service.FindCommunicationRequest;
+import services.photocrm.organization_domain_service.FindCommunicationResponse;
+import services.photocrm.organization_domain_service.FindCommunicationsByOrganizationRequest;
+import services.photocrm.organization_domain_service.FindCommunicationsByOrganizationResponse;
+import services.photocrm.organization_domain_service.FindCommunicationsByPersonRequest;
+import services.photocrm.organization_domain_service.FindCommunicationsByPersonResponse;
+import services.photocrm.organization_domain_service.ModifyCommunicationRequest;
+import services.photocrm.organization_domain_service.ModifyCommunicationResponse;
+import services.photocrm.organization_domain_service.Organization;
+import services.photocrm.organization_domain_service.Person;
+
+/**
+ * This class is the bridge between this domain service and the used
+ * microservices. Incoming requests are mapped and sent to the underlying
+ * microservices. The received responses then will be returned to the calling
+ * method.
+ * 
+ * @author dirk
+ *
+ */
+
+@Component
+public class WebClientLayerCommunication {
+
+	// The used services are called by service clients
+
+	@Autowired
+	CommunicationClient communicationClient;
+	
+	public CreateCommunicationResponse createCommunication(CreateCommunicationRequest incomingRequest) {
+		InsertCommunicationRequest outgoingRequest = new InsertCommunicationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		InsertCommunicationResponse outgoingResponse = communicationClient.insertCommunication(outgoingRequest);
+		CreateCommunicationResponse incomingResponse = new CreateCommunicationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public FindCommunicationResponse findCommunication(FindCommunicationRequest incomingRequest) {
+		// Prepare Request which will be sent to the Entity-Service
+		GetCommunicationRequest outgoingRequest = new GetCommunicationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		GetCommunicationResponse outgoingResponse = communicationClient.getCommunication(outgoingRequest);
+		FindCommunicationResponse incomingResponse = new FindCommunicationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public AddCommunicationToOrganizationResponse addCommunicationToOrganization(AddCommunicationToOrganizationRequest incomingRequest) {
+		InsertCommunicationRelationRequest outgoingRequest = new InsertCommunicationRelationRequest();
+
+		outgoingRequest.setClientId(incomingRequest.getClientId());
+		outgoingRequest.setChildId(incomingRequest.getCommunicationId());
+		outgoingRequest.setParentId(incomingRequest.getOrganizationId());
+		outgoingRequest.setParentEntity("organization");
+
+		InsertCommunicationRelationResponse outgoingResponse = communicationClient.insertCommunicationRelation(outgoingRequest);
+		AddCommunicationToOrganizationResponse incomingResponse = new AddCommunicationToOrganizationResponse();
+
+		Organization organization = new Organization();
+		organization.setClientId(outgoingResponse.getClientId());
+		organization.setId(outgoingResponse.getParentId());
+		Communication communication = new Communication();
+		communication.setClientId(outgoingResponse.getClientId());
+		communication.setId(outgoingResponse.getChildId());
+		incomingResponse.setOrganization(organization);
+		incomingResponse.setCommunication(communication);
+		return incomingResponse;
+	}
+
+	public AddCommunicationToPersonResponse addCommunicationToPerson(AddCommunicationToPersonRequest incomingRequest) {
+		InsertCommunicationRelationRequest outgoingRequest = new InsertCommunicationRelationRequest();
+
+		outgoingRequest.setClientId(incomingRequest.getClientId());
+		outgoingRequest.setChildId(incomingRequest.getCommunicationId());
+		outgoingRequest.setParentId(incomingRequest.getPersonId());
+		outgoingRequest.setParentEntity("person");
+
+		InsertCommunicationRelationResponse outgoingResponse = communicationClient.insertCommunicationRelation(outgoingRequest);
+		AddCommunicationToPersonResponse incomingResponse = new AddCommunicationToPersonResponse();
+
+		Person person = new Person();
+		person.setClientId(outgoingResponse.getClientId());
+		person.setId(outgoingResponse.getParentId());
+		Communication communication = new Communication();
+		communication.setClientId(outgoingResponse.getClientId());
+		communication.setId(outgoingResponse.getChildId());
+		incomingResponse.setPerson(person);
+		incomingResponse.setCommunication(communication);
+		return incomingResponse;
+	}
+
+	public FindCommunicationsByOrganizationResponse findCommunicationByOrganization(
+			FindCommunicationsByOrganizationRequest incomingRequest) {
+		GetCommunicationsByParentRequest outgoingRequest = new GetCommunicationsByParentRequest();
+
+		outgoingRequest.setClientId(incomingRequest.getClientId());
+		outgoingRequest.setParentId(incomingRequest.getOrganizationId());
+		outgoingRequest.setParentEntity("organization");
+
+		GetCommunicationsByParentResponse outgoingResponse = communicationClient.getCommunicationsByParent(outgoingRequest);
+		FindCommunicationsByOrganizationResponse incomingResponse = new FindCommunicationsByOrganizationResponse();
+
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		// die externe Klasse AddressChildXml kann Dozer nicht auflösen.
+		// Daher wird das Mapping der Liste von Hand gemacht.
+
+		List<CommunicationChildXml> childsXml = outgoingResponse.getCommunicationChildXml();
+		if (null != childsXml) {
+			for (CommunicationChildXml childXml : childsXml) {
+				if (null != childXml) {
+					CommunicationChild child = new CommunicationChild();
+					Communication communication = new Communication();
+					communication.setId(childXml.getCommunication().getId());
+					communication.setClientId(childXml.getCommunication().getClientId());
+					communication.setEMail(childXml.getCommunication().getEMail());
+					communication.setPhone(childXml.getCommunication().getPhone());
+					communication.setWebsite(childXml.getCommunication().getWebsite());
+					if (null != childXml.getCommunication().getCommunicationType()) {
+						communication.setCommunicationType(CommunicationType.valueOf(childXml.getCommunication().getCommunicationType().toString()));
+					}
+
+					child.setCommunication(communication);
+					incomingResponse.getCommunicationChild().add(child);
+				}
+			}
+		}
+
+		return incomingResponse;
+	}
+
+	public FindCommunicationsByPersonResponse findCommunicationsByPerson(FindCommunicationsByPersonRequest incomingRequest) {
+		GetCommunicationsByParentRequest outgoingRequest = new GetCommunicationsByParentRequest();
+
+		outgoingRequest.setClientId(incomingRequest.getClientId());
+		outgoingRequest.setParentId(incomingRequest.getPersonId());
+		outgoingRequest.setParentEntity("person");
+
+		GetCommunicationsByParentResponse outgoingResponse = communicationClient.getCommunicationsByParent(outgoingRequest);
+		FindCommunicationsByPersonResponse incomingResponse = new FindCommunicationsByPersonResponse();
+
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+
+		List<CommunicationChildXml> childsXml = outgoingResponse.getCommunicationChildXml();
+		if (null != childsXml) {
+			for (CommunicationChildXml childXml : childsXml) {
+				if (null != childXml) {
+					CommunicationChild child = new CommunicationChild();
+					Communication communication = new Communication();
+					communication.setId(childXml.getCommunication().getId());
+					communication.setClientId(childXml.getCommunication().getClientId());
+					communication.setEMail(childXml.getCommunication().getEMail());
+					communication.setPhone(childXml.getCommunication().getPhone());
+					communication.setWebsite(childXml.getCommunication().getWebsite());
+					if (null != childXml.getCommunication().getCommunicationType()) {
+						communication.setCommunicationType(CommunicationType.valueOf(childXml.getCommunication().getCommunicationType().toString()));
+					}
+
+					child.setCommunication(communication);
+					incomingResponse.getCommunicationChild().add(child);
+				}
+			}
+		}
+
+		return incomingResponse;
+	}
+
+	public DropCommunicationResponse dropCommunication(DropCommunicationRequest incomingRequest) {
+		DeleteCommunicationRequest outgoingRequest = new DeleteCommunicationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		DeleteCommunicationResponse outgoingResponse = communicationClient.deleteCommunication(outgoingRequest);
+		DropCommunicationResponse incomingResponse = new DropCommunicationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+
+	public ModifyCommunicationResponse modifyCommunication(ModifyCommunicationRequest incomingRequest) {
+		UpdateCommunicationRequest outgoingRequest = new UpdateCommunicationRequest();
+		OrganizationMapper.mapObjects(incomingRequest, outgoingRequest);
+		UpdateCommunicationResponse outgoingResponse = communicationClient.updateCommunication(outgoingRequest);
+		ModifyCommunicationResponse incomingResponse = new ModifyCommunicationResponse();
+		OrganizationMapper.mapObjects(outgoingResponse, incomingResponse);
+		return incomingResponse;
+	}
+	
+}

@@ -1,0 +1,68 @@
+package com.dam.portfolio.rest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dam.exception.DamServiceException;
+import com.dam.portfolio.PortfolioStore;
+import com.dam.portfolio.model.entity.Portfolio;
+import com.dam.portfolio.rest.message.RestResponse;
+import com.dam.portfolio.rest.message.portfolio.PortfolioCreateRequest;
+import com.dam.portfolio.rest.message.portfolio.PortfolioCreateResponse;
+import com.dam.portfolio.rest.message.portfolio.ConstructionDropRequest;
+import com.dam.portfolio.rest.message.portfolio.ConstructionDropResponse;
+import com.dam.portfolio.rest.message.portfolio.ConstructionRequest;
+import com.dam.portfolio.rest.message.portfolio.ConstructionResponse;
+import com.dam.portfolio.rest.message.portfolio.ConstructionUpdateRequest;
+import com.dam.portfolio.rest.message.portfolio.ConstructionUpdateResponse;
+
+@RestController
+public class PortfolioController {
+	@Autowired
+	private PortfolioStore portfolioStore;
+
+	/**
+	 * Retrieves a person
+	 * 
+	 * @param personRequest
+	 * @return
+	 */
+	@PostMapping("/getConstruction")
+	public RestResponse getConstruction(@RequestBody ConstructionRequest constructionRequest) throws DamServiceException {
+		try {
+			return new ConstructionResponse(portfolioStore.getPortfolioConstructionSafe(constructionRequest));
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
+
+	@PostMapping("/createConstruction")
+	public RestResponse createConstruction(@RequestBody PortfolioCreateRequest portfolioCreateRequest) throws DamServiceException {
+		try {
+			return new PortfolioCreateResponse(portfolioStore.createPortfolioConstructionSafe(portfolioCreateRequest));
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
+
+	@PostMapping("/dropConstruction")
+	public RestResponse dropConstruction(@RequestBody ConstructionDropRequest constructionDropRequest) throws DamServiceException {
+		try {
+			return new ConstructionDropResponse(portfolioStore.dropPortfolioConstructionSafe(constructionDropRequest));
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
+
+	@PostMapping("/updateConstruction")
+	public RestResponse updateConstruction(@RequestBody ConstructionUpdateRequest constructionUpdateRequest) throws DamServiceException {
+		try {
+			return new ConstructionUpdateResponse(portfolioStore.updatePortfolioConstructionSafe(constructionUpdateRequest));
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
+
+}

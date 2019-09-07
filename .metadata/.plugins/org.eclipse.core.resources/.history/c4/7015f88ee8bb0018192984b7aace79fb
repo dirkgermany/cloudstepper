@@ -1,0 +1,9 @@
+package photocrm.mapping;
+
+import services.photocrm.soap_soap_service.ComplexCountry;
+import services.photocrm.soap_soap_service.ComplexCurrency;
+import services.photocrm.soap_soap_service.CreateCountryRequest;
+
+public class CountryMapper {
+	
+}

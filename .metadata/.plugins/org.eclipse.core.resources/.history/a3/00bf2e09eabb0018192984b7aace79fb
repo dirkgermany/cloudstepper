@@ -1,0 +1,34 @@
+package photocrm.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
+
+import external.wsdl.GetOrganizationByIdResponse;
+import photocrm.ConfigProperties;
+import services.photocrm.soap_soap_service.CreateCountryRequest;
+import services.photocrm.soap_soap_service.CreateCountryResponse;
+
+
+public class OrganizationClient extends WebServiceGatewaySupport {
+
+	private static final Logger log = LoggerFactory.getLogger(OrganizationClient.class);
+	
+	public CreateCountryResponse getOrganizationById(CreateCountryRequest request) {
+		// Configuration
+		ConfigProperties config = new ConfigProperties();
+		try {
+			GetOrganizationByIdResponse response = (GetOrganizationByIdResponse) getWebServiceTemplate().marshalSendAndReceive(
+					"http://" + config.getOrganization().getHost() + ":" + config.getOrganization().getPort() + "/ws/organizations", request,
+					new SoapActionCallback("http://photocrm.services/entity-service-organization/GetOrganizationByIdRequest"));
+			return null;
+		} catch (Exception ex) {
+			System.out.println("FEHLER " + ex);
+			log.error(ex.getMessage());
+			return null;
+		}
+	}
+
+}

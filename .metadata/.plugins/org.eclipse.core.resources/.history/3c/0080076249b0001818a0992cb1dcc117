@@ -1,0 +1,5 @@
+package com.photocrm.bus;
+
+public class TheProducer {
+
+}
