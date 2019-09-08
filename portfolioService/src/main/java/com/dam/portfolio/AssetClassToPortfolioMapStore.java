@@ -1,5 +1,6 @@
 package com.dam.portfolio;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,8 @@ import com.dam.portfolio.model.AssetClassModel;
 import com.dam.portfolio.model.AssetClassToPortfolioMapModel;
 import com.dam.portfolio.model.entity.AssetClass;
 import com.dam.portfolio.model.entity.AssetClassToPortfolioMap;
+import com.dam.portfolio.model.entity.ConstructionMap;
+import com.dam.portfolio.model.entity.Portfolio;
 import com.dam.portfolio.rest.message.RestRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassCreateRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassDropRequest;
@@ -34,6 +37,12 @@ public class AssetClassToPortfolioMapStore {
 	@Autowired
 	private AssetClassToPortfolioMapModel mapModel;
 	
+	@Autowired
+	private PortfolioStore portfolioStore;
+	
+	@Autowired
+	private AssetClassStore assetClassStore;
+	
 	public void dropMapEntriesByConstructionId(Long constructionId) {
 		mapModel.deleteAllMapEntriesByConstructionId(constructionId);
 	}
@@ -49,6 +58,44 @@ public class AssetClassToPortfolioMapStore {
 		}
 		return mapEntry;
 	}
+	
+	public ConstructionMap addAssetClassesToPortfolio(Long portfolioId, List<Long> assetClassIds)
+			throws DamServiceException {
+		if (null == assetClassIds || assetClassIds.isEmpty()
+				|| null == portfolioId) {
+			throw new DamServiceException(500L, "Keine Zuordnung Asset Klassen zu Portfolio möglich.",
+					"Request Parameter nicht vollständig.");
+		}
+
+		Portfolio portfolio = portfolioStore.getPortfolioById(portfolioId);
+		if (null == portfolio) {
+			throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklassen an Portfolio",
+					"Portfolio mit angegebener Id existiert nicht");
+		}
+		
+		ConstructionMap constructionMap = new ConstructionMap();
+		constructionMap.setPortfolio(portfolio);
+
+		Iterator<Long> it = assetClassIds.iterator();
+		while (it.hasNext()) {
+			Long assetClassId = it.next();
+			AssetClass assetClass = assetClassStore.getAssetClassById(assetClassId);
+			if (null == assetClass) {
+				throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklasse an Portfolio",
+						"Asset Klasse mit Id " + assetClassId + " existiert nicht");
+			}
+			
+			AssetClassToPortfolioMap mapEntry = new AssetClassToPortfolioMap();
+			mapEntry.setAssetClassId(assetClassId);
+			mapEntry.setPortfolioId(portfolioId);
+			createMapEntry(mapEntry);
+			constructionMap.addAssetClass(assetClass);
+		}
+		
+		return constructionMap;
+
+	}
+
 
 
 	/**

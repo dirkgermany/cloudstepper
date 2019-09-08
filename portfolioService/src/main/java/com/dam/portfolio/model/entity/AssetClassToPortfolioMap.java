@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import com.dam.portfolio.types.AssetClassType;
 
 import org.springframework.stereotype.Component;
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Entity
 @Component
-@Table(name = "MapAssetClassToPortfolio")
+@Table(name = "MapAssetClassToPortfolio", uniqueConstraints= {@UniqueConstraint(columnNames = {"assetClassId", "portfolioId"})})
 public class AssetClassToPortfolioMap {
 	
 	@Id

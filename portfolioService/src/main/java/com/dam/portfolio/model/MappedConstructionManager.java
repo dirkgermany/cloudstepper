@@ -1,4 +1,4 @@
-package com.dam.portfolio;
+package com.dam.portfolio.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,6 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dam.exception.DamServiceException;
+import com.dam.portfolio.AssetClassStore;
+import com.dam.portfolio.AssetClassToPortfolioMapStore;
+import com.dam.portfolio.PortfolioStore;
 import com.dam.portfolio.model.entity.AssetClass;
 import com.dam.portfolio.model.entity.AssetClassToPortfolioMap;
 import com.dam.portfolio.model.entity.ConstructionMap;
@@ -95,40 +98,4 @@ public class MappedConstructionManager {
 		return storedMappedConstruction;
 	}
 
-	public ConstructionMap addAssetClassesToPortfolio(Long portfolioId, List<Long> assetClassIds)
-			throws DamServiceException {
-		if (null == assetClassIds || assetClassIds.isEmpty()
-				|| null == portfolioId) {
-			throw new DamServiceException(500L, "Keine Zuordnung Asset Klassen zu Portfolio möglich.",
-					"Request Parameter nicht vollständig.");
-		}
-
-		Portfolio portfolio = portfolioStore.getPortfolioById(portfolioId);
-		if (null == portfolio) {
-			throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklassen an Portfolio",
-					"Portfolio mit angegebener Id existiert nicht");
-		}
-		
-		ConstructionMap constructionMap = new ConstructionMap();
-		constructionMap.setPortfolio(portfolio);
-
-		Iterator<Long> it = assetClassIds.iterator();
-		while (it.hasNext()) {
-			Long assetClassId = it.next();
-			AssetClass assetClass = assetClassStore.getAssetClassById(assetClassId);
-			if (null == assetClass) {
-				throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklasse an Portfolio",
-						"Asset Klasse mit Id " + assetClassId + " existiert nicht");
-			}
-
-			AssetClassToPortfolioMap mapEntry = new AssetClassToPortfolioMap();
-			mapEntry.setAssetClassId(assetClassId);
-			mapEntry.setPortfolioId(portfolioId);
-			mapStore.createMapEntry(mapEntry);
-			constructionMap.getAssetClasses().add(assetClass);
-		}
-		
-		return constructionMap;
-
-	}
 }

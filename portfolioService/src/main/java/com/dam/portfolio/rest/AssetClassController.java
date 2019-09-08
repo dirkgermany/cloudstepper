@@ -25,8 +25,6 @@ public class AssetClassController {
 	@Autowired
 	private AssetClassStore assetClassStore;
 	
-
-
 	/**
 	 * @return
 	 */
