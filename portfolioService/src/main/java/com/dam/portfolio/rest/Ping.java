@@ -1,5 +1,6 @@
 package com.dam.portfolio.rest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,6 +9,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
 public class Ping {
+	
+	@Autowired
+	PingFactory pingFactory;
 
 	/**
 	 * Retrieves informations about service healthy.
@@ -17,7 +21,7 @@ public class Ping {
 	 */
 	@GetMapping("/ping")
 	public JsonNode ping() {
-		PingFactory pingFactory = new PingFactory("PortfolioService");			
+		pingFactory.init("PortfolioService");			
 		return pingFactory.getNode();
 	}
 	

@@ -28,7 +28,6 @@ import com.dam.portfolio.rest.message.assetClass.AssetClassUpdateRequest;
  *
  */
 @Controller
-@ComponentScan
 public class AssetClassStore {
 
 	@Autowired
@@ -78,6 +77,10 @@ public class AssetClassStore {
 //	}
 	
 
+	public long count() {
+		return assetClassModel.count();
+	}
+	
 	/**
 	 * Save getter for AssetClass. Checks requesting user
 	 * 

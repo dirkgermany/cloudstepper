@@ -42,6 +42,7 @@ public class ServiceProviderPing {
 		pingResponse = pingToService(pingResponse, config.getAuthenticationService().getServiceUrl(), "AuthenticationService");
 		pingResponse = pingToService(pingResponse, config.getPersonService().getServiceUrl(), "PersonService");
 		pingResponse = pingToService(pingResponse, config.getAddressService().getServiceUrl(), "AddressService");
+		pingResponse = pingToService(pingResponse, config.getPortfolioService().getServiceUrl(), "PortfolioService");
 
 		return pingResponse;
 	}

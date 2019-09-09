@@ -8,6 +8,7 @@ public class PingInfo {
 	private String systime;
 	private String hostname;
 	private String serverIp;
+	private String database;
 	
 	
 	public String getServiceName() {
@@ -33,6 +34,18 @@ public class PingInfo {
 	}
 	public void setSystime(String systime) {
 		this.systime = systime;
+	}
+	public String getHostname() {
+		return hostname;
+	}
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+	public String getDatabase() {
+		return database;
+	}
+	public void setDatabase(String database) {
+		this.database = database;
 	}
 	public String getServerName() {
 		return hostname;

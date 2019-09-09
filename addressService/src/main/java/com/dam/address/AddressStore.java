@@ -32,6 +32,10 @@ public class AddressStore {
 
 	@Autowired
 	private AddressModel addressModel;
+	
+	public long count() {
+		return addressModel.count();
+	}
 
 	/**
 	 * Retrieves addresses of a person.

@@ -15,19 +15,12 @@ import com.dam.person.model.entity.Person;
 @Transactional
 public interface PersonModel extends Repository<Person, Long>, CrudRepository<Person, Long> {
 
-//	List<User> findByUserName(String userName);
-//	Optional<Person> findByUserId(Long userId);
 	List<Person> findByUserId(Long userId);
-//	List<User> findByClientId(int clientId);
+	long count();
 
 	@Query("SELECT person FROM Person person where person.givenName = :givenName "
 			+ "AND person.lastName = :lastName")
 	List<Person> getPersonByNames(@Param("givenName") String givenName, @Param("lastName") String lastName);
-//	
-//	@Query("SELECT pers FROM PersonEntity pers where pers.clientId = :clientId "
-//			+ "AND UPPER(pers.foreName) = UPPER(:foreName) "
-//			+ "AND UPPER(pers.surName) = UPPER(:surName)")
-//	PersonEntity findPersonByNames(@Param("clientId") int clientId, @Param("foreName") String foreName, @Param("surName") String surName);
 	
 	@Modifying
 	@Transactional
@@ -39,4 +32,5 @@ public interface PersonModel extends Repository<Person, Long>, CrudRepository<Pe
 			+ "person.lastName = :#{#person.lastName} "
 			+ "Where person.personId = :#{#person.personId} ")
 	Integer updatePerson(@Param("person") Person person);
+
 }

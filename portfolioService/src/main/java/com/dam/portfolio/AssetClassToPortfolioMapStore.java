@@ -37,7 +37,6 @@ import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.RemoveAssetClasse
  *
  */
 @Controller
-@ComponentScan
 public class AssetClassToPortfolioMapStore {
 
 	@Autowired
@@ -48,6 +47,10 @@ public class AssetClassToPortfolioMapStore {
 
 	@Autowired
 	private AssetClassStore assetClassStore;
+	
+	public long count() {
+		return mapModel.count();
+	}
 
 	public void dropMapEntriesByConstructionId(Long constructionId) {
 		mapModel.deleteAllMapEntriesByConstructionId(constructionId);

@@ -22,6 +22,10 @@ public class UserStore {
 
 	@Autowired
 	private UserModel userModel;
+	
+	public long count() {
+		return userModel.count();
+	}
 
 	public User getUser(String userName, String password) {
 		return userModel.getUser(userName, password);

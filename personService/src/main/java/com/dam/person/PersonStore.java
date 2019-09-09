@@ -30,6 +30,10 @@ public class PersonStore {
 
 	@Autowired
 	private PersonModel personModel;
+	
+	public long count() {
+		return personModel.count();
+	}
 
 	/**
 	 * Save getter for Person. Checks requesting user

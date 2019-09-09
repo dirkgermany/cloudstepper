@@ -25,11 +25,14 @@ import com.dam.portfolio.rest.message.portfolio.PortfolioUpdateRequest;
  *
  */
 @Controller
-@ComponentScan
 public class PortfolioStore {
 
 	@Autowired
 	private PortfolioModel portfolioModel;
+	
+	public long count() {
+		return portfolioModel.count();
+	}
 
 	/**
 	 * Save getter for Portfolio. Checks requesting user

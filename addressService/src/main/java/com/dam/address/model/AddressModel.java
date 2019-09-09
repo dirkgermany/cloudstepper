@@ -19,6 +19,7 @@ public interface AddressModel extends Repository<Address, Long>, CrudRepository<
 
 	Optional<Address> findByPersonId(Long personId);
 	Optional<Address> findByUserId(Long userId);
+	long count();
 
 	@Query("SELECT address FROM Address address where address.personId = :personId")
 	List<Address> getAddressesByPersonId(@Param("personId") Long personId);

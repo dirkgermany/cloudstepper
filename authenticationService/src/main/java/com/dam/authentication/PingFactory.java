@@ -8,12 +8,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.dam.authentication.model.PermissionStore;
 import com.fasterxml.jackson.databind.JsonNode;
 
+@Component
 public class PingFactory {
+	@Autowired
+	PermissionStore permissionStore;
+	
 	private Map<String, String> pingInfo = new HashMap<String, String>();
+	
+	public PingFactory () {
+	}
 
-	public PingFactory(String serviceName) {
+	public void init(String serviceName) {
 
 		// Own app name
 		pingInfo.put("service", serviceName);
@@ -28,6 +39,10 @@ public class PingFactory {
 		RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
 		Long upTime = runtimeBean.getUptime();
 		pingInfo.put("uptime", upTime.toString() + "ms");
+
+		// Database
+		String records = String.valueOf(permissionStore.count());
+		pingInfo.put("database", "available: " + records + " records");
 
 		// Server
 		try {

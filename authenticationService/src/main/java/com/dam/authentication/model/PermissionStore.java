@@ -23,6 +23,10 @@ public class PermissionStore {
 
 	@Autowired
 	private PermissionModel permissionModel;
+	
+	public long count() {
+		return permissionModel.count();
+	}
 
 	public List<Permission> getPermissionList() {
 		List<Permission> rolePermissions = new ArrayList<Permission>();
