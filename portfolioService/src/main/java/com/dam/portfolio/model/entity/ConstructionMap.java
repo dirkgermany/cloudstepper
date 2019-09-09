@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ConstructionMap {
 	
-	private List<AssetClass> assetClasses;
+	private List<AssetClass> assetClasses = new ArrayList<>();
 	private Portfolio portfolio;
 	
 	public ConstructionMap () {
@@ -13,9 +13,6 @@ public class ConstructionMap {
 	}
 	
 	public void addAssetClass(AssetClass assetClass) {
-		if (null == assetClasses) {
-			assetClasses = new ArrayList<>();
-		}
 		getAssetClasses().add(assetClass);
 	}
 	

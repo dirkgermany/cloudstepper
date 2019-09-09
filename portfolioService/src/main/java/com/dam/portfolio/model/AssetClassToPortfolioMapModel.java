@@ -25,13 +25,16 @@ public interface AssetClassToPortfolioMapModel
 	List<AssetClassToPortfolioMap> findAllMapsByAssetId(@Param("assetClassId") Long assetClassId);
 
 	@Query("SELECT mapEntry FROM AssetClassToPortfolioMap mapEntry where mapEntry.portfolioId = :portfolioId ")
-	List<AssetClassToPortfolioMap> findAllMapsByPortfolioId(
-			@Param("portfolioId") Long portfolioId);
+	List<AssetClassToPortfolioMap> findAllMapsByPortfolioId(@Param("portfolioId") Long portfolioId);
 
 	@Query("DELETE from AssetClassToPortfolioMap mapEntry WHERE mapEntry.portfolioId = :portfolioId")
 	void deleteAllMapEntriesByConstructionId(@Param("portfolioId") Long portfolioId);
 
 	@Query("DELETE from AssetClassToPortfolioMap mapEntry WHERE mapEntry.assetClassId = :assetClassId")
 	void deleteAllMapEntriesByAssetClassId(@Param("assetClassId") Long assetClassId);
+	
+	@Query("DELETE from AssetClassToPortfolioMap mapEntry WHERE mapEntry.assetClassId = :assetClassId " +
+	        " AND mapEntry.portfolioId = :portfolioId")
+	void deleteByAssetClassIdAndPortfolioId(@Param("assetClassId") Long assetClassId, @Param("portfolioId") Long portfolioId);
 
 }

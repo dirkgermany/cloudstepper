@@ -23,13 +23,11 @@ public class ServiceProviderAssetClass {
 	
 	private ServiceDomain serviceDomain = ServiceDomain.PORTFOLIO;
 	
-	@PostMapping("/portfolio/assetClass/createII")
-	public JsonNode createAssetClassII(@RequestBody String request) throws DamServiceException{
+	@PostMapping("/portfolio/assetClass/addToPortfolio")
+	public JsonNode addAssetClassToPortfolio(@RequestBody String request) throws DamServiceException{
 		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "addAssetClassesToPortfolio", serviceDomain);
 		return response;
 	}
-	
-
 	
 
 	/**

@@ -39,7 +39,7 @@ public class PortfolioStore {
 	 */
 	public Portfolio getPortfolioSafe(PortfolioRequest portfolioRequest)
 			throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(portfolioRequest, portfolioRequest.getRequestorUserId(),
+		PermissionCheck.checkRequestedParams(portfolioRequest, portfolioRequest.getRequestorUserId(),
 				portfolioRequest.getRights());
 
 		if (null == portfolioRequest.getPortfolioId()) {
@@ -71,10 +71,10 @@ public class PortfolioStore {
 	 */
 	public Portfolio createPortfolioSafe(PortfolioCreateRequest portfolioCreateRequest)
 			throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(portfolioCreateRequest, portfolioCreateRequest.getRequestorUserId(),
+		PermissionCheck.checkRequestedParams(portfolioCreateRequest, portfolioCreateRequest.getRequestorUserId(),
 				portfolioCreateRequest.getRights());
 
-		checkRequestedParamsPortfolio(portfolioCreateRequest.getPortfolio());
+		PermissionCheck.checkRequestedEntity(portfolioCreateRequest.getPortfolio(), Portfolio.class, "Portfolio Class");
 
 		// Save database requests
 		PermissionCheck.isWritePermissionSet(portfolioCreateRequest.getRequestorUserId(), null,
@@ -132,10 +132,10 @@ public class PortfolioStore {
 	 */
 	public Portfolio updatePortfolioSafe(PortfolioUpdateRequest portfolioUpdateRequest)
 			throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(portfolioUpdateRequest, portfolioUpdateRequest.getRequestorUserId(),
+		PermissionCheck.checkRequestedParams(portfolioUpdateRequest, portfolioUpdateRequest.getRequestorUserId(),
 				portfolioUpdateRequest.getRights());
 
-		checkRequestedParamsPortfolio(portfolioUpdateRequest.getPortfolio());
+		PermissionCheck.checkRequestedEntity(portfolioUpdateRequest.getPortfolio(), Portfolio.class, "Portfolio Class");
 
 		// Check if the permissions is set
 		PermissionCheck.isWritePermissionSet(portfolioUpdateRequest.getRequestorUserId(),
@@ -164,8 +164,8 @@ public class PortfolioStore {
 	 * @return
 	 */
 	public Long dropPortfolioSafe(PortfolioDropRequest portfolioDropRequest) throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(portfolioDropRequest, portfolioDropRequest.getRequestorUserId(), portfolioDropRequest.getRights());
-		checkRequestedParamsPortfolio(portfolioDropRequest.getPortfolio());
+		PermissionCheck.checkRequestedParams(portfolioDropRequest, portfolioDropRequest.getRequestorUserId(), portfolioDropRequest.getRights());
+		PermissionCheck.checkRequestedEntity(portfolioDropRequest.getPortfolio(), Portfolio.class, "Portfolio Class");
 
 		// Save database requests
 		PermissionCheck.isDeletePermissionSet(portfolioDropRequest.getRequestorUserId(),	null, portfolioDropRequest.getRights());
@@ -234,29 +234,6 @@ public class PortfolioStore {
 		}
 
 		return new Long(10);
-	}
-
-	private void checkRequestedParamsRequest_Id_Rights(RestRequest request, Long requestorUserId, String rights)
-			throws DamServiceException {
-		if (null == request) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
-		}
-		if (null == requestorUserId) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
-					"requestorUserId is recommended but not set.");
-		}
-		if (null == rights || rights.isEmpty()) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
-					"User rights are recommended but are null or empty.");
-		}
-	}
-
-	private void checkRequestedParamsPortfolio(Portfolio portfolio)
-			throws DamServiceException {
-		if (null == portfolio) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
-					"Portfolio is null.");
-		}
 	}
 
 }

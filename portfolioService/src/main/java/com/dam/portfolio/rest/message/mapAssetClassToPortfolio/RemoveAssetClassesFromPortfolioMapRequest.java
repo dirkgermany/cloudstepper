@@ -4,17 +4,16 @@ import java.util.List;
 
 import com.dam.portfolio.rest.message.RestRequest;
 
-public class AddAssetClassesToPortfolioMapRequest extends RestRequest {
+public class RemoveAssetClassesFromPortfolioMapRequest extends RestRequest {
 	
 	private Long portfolioId;
 	private List<Long> assetClassIds;
 
-    public AddAssetClassesToPortfolioMapRequest(Long requestorUserId, Long portfolioId, List<Long> assetClassIds) {
+    public RemoveAssetClassesFromPortfolioMapRequest(Long requestorUserId, Long portfolioId, List<Long> assetClassIds) {
 		super("DAM 2.0");
 
 		setPortfolioId(portfolioId);
 		setAssetClassIds(assetClassIds);
-		super.setRequestorUserId(requestorUserId);
     }
 
 	public Long getPortfolioId() {

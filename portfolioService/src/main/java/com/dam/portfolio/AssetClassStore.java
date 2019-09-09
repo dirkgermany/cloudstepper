@@ -40,42 +40,42 @@ public class AssetClassStore {
 	@Autowired
 	private AssetClassToPortfolioMapStore mapStore;
 	
-	public ConstructionMap addAssetClassesToPortfolio(Long portfolioId, List<Long> assetClassIds)
-			throws DamServiceException {
-		if (null == assetClassIds || assetClassIds.isEmpty()
-				|| null == portfolioId) {
-			throw new DamServiceException(500L, "Keine Zuordnung Asset Klassen zu Portfolio möglich.",
-					"Request Parameter nicht vollständig.");
-		}
-
-		Portfolio portfolio = portfolioStore.getPortfolioById(portfolioId);
-		if (null == portfolio) {
-			throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklassen an Portfolio",
-					"Portfolio mit angegebener Id existiert nicht");
-		}
-		
-		ConstructionMap constructionMap = new ConstructionMap();
-		constructionMap.setPortfolio(portfolio);
-
-		Iterator<Long> it = assetClassIds.iterator();
-		while (it.hasNext()) {
-			Long assetClassId = it.next();
-			AssetClass assetClass = getAssetClassById(assetClassId);
-			if (null == assetClass) {
-				throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklasse an Portfolio",
-						"Asset Klasse mit Id " + assetClassId + " existiert nicht");
-			}
-			
-			AssetClassToPortfolioMap mapEntry = new AssetClassToPortfolioMap();
-			mapEntry.setAssetClassId(assetClassId);
-			mapEntry.setPortfolioId(portfolioId);
-			mapStore.createMapEntry(mapEntry);
-			constructionMap.addAssetClass(assetClass);
-		}
-		
-		return constructionMap;
-
-	}
+//	public ConstructionMap addAssetClassesToPortfolio(Long portfolioId, List<Long> assetClassIds)
+//			throws DamServiceException {
+//		if (null == assetClassIds || assetClassIds.isEmpty()
+//				|| null == portfolioId) {
+//			throw new DamServiceException(500L, "Keine Zuordnung Asset Klassen zu Portfolio möglich.",
+//					"Request Parameter nicht vollständig.");
+//		}
+//
+//		Portfolio portfolio = portfolioStore.getPortfolioById(portfolioId);
+//		if (null == portfolio) {
+//			throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklassen an Portfolio",
+//					"Portfolio mit angegebener Id existiert nicht");
+//		}
+//		
+//		ConstructionMap constructionMap = new ConstructionMap();
+//		constructionMap.setPortfolio(portfolio);
+//
+//		Iterator<Long> it = assetClassIds.iterator();
+//		while (it.hasNext()) {
+//			Long assetClassId = it.next();
+//			AssetClass assetClass = getAssetClassById(assetClassId);
+//			if (null == assetClass) {
+//				throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklasse an Portfolio",
+//						"Asset Klasse mit Id " + assetClassId + " existiert nicht");
+//			}
+//			
+//			AssetClassToPortfolioMap mapEntry = new AssetClassToPortfolioMap();
+//			mapEntry.setAssetClassId(assetClassId);
+//			mapEntry.setPortfolioId(portfolioId);
+//			mapStore.createMapEntry(mapEntry);
+//			constructionMap.addAssetClass(assetClass);
+//		}
+//		
+//		return constructionMap;
+//
+//	}
 	
 
 	/**
@@ -86,12 +86,11 @@ public class AssetClassStore {
 	 */
 	public AssetClass getAssetClassSafe(AssetClassRequest assetClassRequest)
 			throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(assetClassRequest, assetClassRequest.getRequestorUserId(),
+		
+		PermissionCheck.checkRequestedParams(assetClassRequest, assetClassRequest.getRequestorUserId(),
 				assetClassRequest.getRights());
+		PermissionCheck.checkRequestedEntity(assetClassRequest.getAssetClassId(), Long.class, "assetClass is not set");
 
-		if (null == assetClassRequest.getAssetClassId()) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "assetClassId is not set.");
-		}
 
 		// Check if the permissions is set
 		PermissionCheck.isReadPermissionSet(assetClassRequest.getRequestorUserId(), null,
@@ -117,10 +116,10 @@ public class AssetClassStore {
 	 */
 	public AssetClass createAssetClassSafe(AssetClassCreateRequest assetClassCreateRequest)
 			throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(assetClassCreateRequest, assetClassCreateRequest.getRequestorUserId(),
+		PermissionCheck.checkRequestedParams(assetClassCreateRequest, assetClassCreateRequest.getRequestorUserId(),
 				assetClassCreateRequest.getRights());
 
-		checkRequestedParamsAssetClass(assetClassCreateRequest.getAssetClass());
+		PermissionCheck.checkRequestedEntity(assetClassCreateRequest.getAssetClass(), AssetClass.class, "AssetClass");
 
 		// Save database requests
 		PermissionCheck.isWritePermissionSet(assetClassCreateRequest.getRequestorUserId(), null,
@@ -172,10 +171,10 @@ public class AssetClassStore {
 	 */
 	public AssetClass updateAssetClassSafe(AssetClassUpdateRequest assetClassUpdateRequest)
 			throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(assetClassUpdateRequest, assetClassUpdateRequest.getRequestorUserId(),
+		PermissionCheck.checkRequestedParams(assetClassUpdateRequest, assetClassUpdateRequest.getRequestorUserId(),
 				assetClassUpdateRequest.getRights());
 
-		checkRequestedParamsAssetClass(assetClassUpdateRequest.getAssetClass());
+		PermissionCheck.checkRequestedEntity(assetClassUpdateRequest.getAssetClass(), AssetClass.class, "Asset Class");
 
 		// Check if the permissions is set
 		PermissionCheck.isWritePermissionSet(assetClassUpdateRequest.getRequestorUserId(),
@@ -204,8 +203,8 @@ public class AssetClassStore {
 	 * @return
 	 */
 	public Long dropAssetClassSafe(AssetClassDropRequest assetClassDropRequest) throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(assetClassDropRequest, assetClassDropRequest.getRequestorUserId(), assetClassDropRequest.getRights());
-		checkRequestedParamsAssetClass(assetClassDropRequest.getAssetClass());
+		PermissionCheck.checkRequestedParams(assetClassDropRequest, assetClassDropRequest.getRequestorUserId(), assetClassDropRequest.getRights());
+		PermissionCheck.checkRequestedEntity(assetClassDropRequest.getAssetClass(), AssetClass.class, "Asset Class");
 
 		// Save database requests
 		PermissionCheck.isDeletePermissionSet(assetClassDropRequest.getRequestorUserId(),	null, assetClassDropRequest.getRights());
@@ -273,29 +272,6 @@ public class AssetClassStore {
 		}
 
 		return new Long(10);
-	}
-
-	private void checkRequestedParamsRequest_Id_Rights(RestRequest request, Long requestorUserId, String rights)
-			throws DamServiceException {
-		if (null == request) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
-		}
-		if (null == requestorUserId) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
-					"requestorUserId is recommended but not set.");
-		}
-		if (null == rights || rights.isEmpty()) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
-					"User rights are recommended but are null or empty.");
-		}
-	}
-
-	private void checkRequestedParamsAssetClass(AssetClass assetClass)
-			throws DamServiceException {
-		if (null == assetClass) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
-					"AssetClass is null.");
-		}
 	}
 
 }

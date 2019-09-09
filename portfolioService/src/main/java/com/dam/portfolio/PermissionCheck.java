@@ -1,8 +1,51 @@
 package com.dam.portfolio;
 
+import java.util.Optional;
+
+import com.dam.exception.DamServiceException;
 import com.dam.exception.PermissionCheckException;
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.rest.message.RestRequest;
 
 public class PermissionCheck {
+	
+	/**
+	 * Checks preconditions
+	 * @param request
+	 * @param requestorUserId
+	 * @param rights
+	 * @throws DamServiceException
+	 */
+	public static void checkRequestedParams(RestRequest request, Long requestorUserId, String rights)
+			throws DamServiceException {
+		if (null == request) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
+		}
+		if (null == requestorUserId) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"requestorUserId is recommended but not set.");
+		}
+		if (null == rights || rights.isEmpty()) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"User rights are recommended but are null or empty.");
+		}
+	}
+	
+	/**
+	 * Checks if a required object is existing
+	 * @param entity
+	 * @param theClass
+	 * @throws DamServiceException
+	 */
+	@SuppressWarnings("rawtypes")
+	public static void checkRequestedEntity(Object entity, Class theClass, String additionalInformation) 
+			throws DamServiceException {
+		if (null == entity) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "Required object " + theClass.getSimpleName() + " is null." + "; " + additionalInformation);
+		}
+	}
+
+
 
 	/**
 	 * Checks if the WRITE permission is set. TRUE, when requestor and owner are the
