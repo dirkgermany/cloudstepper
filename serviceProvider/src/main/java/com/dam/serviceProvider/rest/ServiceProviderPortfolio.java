@@ -54,16 +54,22 @@ public class ServiceProviderPortfolio {
 		return response;
 	}
 	
-	@PostMapping("/portfolio/createConstructionMap")
-	public JsonNode createConstructionMap(@RequestBody String request) throws DamServiceException{
+	@PostMapping("/portfolio/createPortfolioConstruction")
+	public JsonNode createPortfolioConstruction(@RequestBody String request) throws DamServiceException{
 		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "createConstructionMap", serviceDomain);
 		return response;
 	}
 	
 	@PostMapping("/portfolio/addAssetClassesToPortfolio")
-	public JsonNode addAssetToPortfolio(@RequestBody String request) throws DamServiceException{
+	public JsonNode addAssetClassesToPortfolio(@RequestBody String request) throws DamServiceException{
 		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "addAssetClassesToPortfolio", serviceDomain);
 		return response;
 	}
 	
+	@PostMapping("/portfolio/getPortfolioConstruction")
+	public JsonNode getPortfolioConstruction(@RequestBody String request) throws DamServiceException{
+		JsonNode response = consumer.retrieveAuthorizedResponse(request, config.getPortfolioService().getServiceUrl(), "getPortfolioConstruction", serviceDomain);
+		return response;
+	}
+		
 }

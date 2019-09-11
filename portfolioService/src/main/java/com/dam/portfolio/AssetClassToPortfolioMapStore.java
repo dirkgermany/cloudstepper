@@ -60,6 +60,12 @@ public class AssetClassToPortfolioMapStore {
 		mapModel.deleteAllMapEntriesByConstructionId(assetClassId);
 	}
 
+	/**
+	 * Returns complete Map with Portfolio and assigned AssetClasses
+	 * @param getRequest
+	 * @return
+	 * @throws DamServiceException
+	 */
 	public GetAssetClassesToPortfolioMapResponse getMapPortfolioSafe(GetAssetClassesToPortfolioMapRequest getRequest)
 			throws DamServiceException {
 		PermissionCheck.checkRequestedParams(getRequest, getRequest.getRequestorUserId(), getRequest.getRights());

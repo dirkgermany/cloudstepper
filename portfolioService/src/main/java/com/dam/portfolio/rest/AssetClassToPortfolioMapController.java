@@ -36,7 +36,7 @@ public class AssetClassToPortfolioMapController {
 	@PostMapping("getPortfolioConstruction")
 	public RestResponse getPortfolioConstructionSafe(@RequestBody GetAssetClassesToPortfolioMapRequest getRequest)  throws DamServiceException {
 		try {
-		return mapStore.getMapPortfolioSafe(getRequest);
+			return mapStore.getMapPortfolioSafe(getRequest);
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
