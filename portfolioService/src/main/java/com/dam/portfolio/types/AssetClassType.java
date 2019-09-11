@@ -2,9 +2,11 @@ package com.dam.portfolio.types;
 
 public enum AssetClassType {
 	
+	ETF,
 	SHARE,
 	LOAN,
-	GOLD;
+	GOLD,
+	CALL_MONEY;
 		
 	AssetClassType() {		
 	}

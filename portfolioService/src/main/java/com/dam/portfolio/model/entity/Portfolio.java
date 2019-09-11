@@ -46,18 +46,21 @@ public class Portfolio {
 	private Float loanPct;
 	
 	@Column(nullable=false)
+	private Float etfPct;
+
+	@Column(nullable=false)
 	private Float sharePct;
 
-	@Column(nullable=false)
+	@Column(nullable=true)
 	private Date validFrom;
 
-	@Column(nullable=false)
+	@Column(nullable=true)
 	private Date validUntil;
 
 	public Portfolio () {	
 	}
 	
-	public Portfolio (Risc risc, Float callMoneyPct, Float goldPct, Float loanPct, Float sharePct, Date validFrom, Date validUntil) {
+	public Portfolio (Risc risc, Float callMoneyPct, Float goldPct, Float loanPct, Float etfPct, Float sharePct, Date validFrom, Date validUntil) {
 	}
 
 	public Long getPortfolioId() {
@@ -130,6 +133,7 @@ public class Portfolio {
 		setCallMoneyPct(container.getCallMoneyPct());
 		setGoldPct(container.getGoldPct());
 		setLoanPct(container.getLoanPct());
+		setEtfPct(container.getEtfPct());
 		setRisc(container.getRisc());
 		setSharePct(container.getSharePct());
 		setValidFrom(container.getValidFrom());
@@ -152,6 +156,14 @@ public class Portfolio {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Float getEtfPct() {
+		return etfPct;
+	}
+
+	public void setEtfPct(Float etfPct) {
+		this.etfPct = etfPct;
 	}
 	
 }
