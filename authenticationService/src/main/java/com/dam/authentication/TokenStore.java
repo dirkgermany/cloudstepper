@@ -117,8 +117,6 @@ public class TokenStore {
 
 	private synchronized Boolean tokenIsStillValid(Token validationToken) {
 		Long currentTime = System.currentTimeMillis();
-		System.out.println("currentTime: " + currentTime + "; expireTime: " + validationToken.getExpireTime()
-				+ "; diff: " + new Long(validationToken.getExpireTime() - currentTime));
 		if (null == validationToken || validationToken.getExpireTime() <= currentTime) {
 			return Boolean.FALSE;
 		}
