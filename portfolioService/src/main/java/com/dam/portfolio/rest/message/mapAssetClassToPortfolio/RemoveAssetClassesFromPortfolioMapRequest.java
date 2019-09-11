@@ -11,7 +11,7 @@ public class RemoveAssetClassesFromPortfolioMapRequest extends RestRequest {
 
     public RemoveAssetClassesFromPortfolioMapRequest(Long requestorUserId, Long portfolioId, List<Long> assetClassIds) {
 		super("DAM 2.0");
-
+		setRequestorUserId(requestorUserId);
 		setPortfolioId(portfolioId);
 		setAssetClassIds(assetClassIds);
     }

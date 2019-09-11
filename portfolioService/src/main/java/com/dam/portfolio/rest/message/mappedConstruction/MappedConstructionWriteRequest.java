@@ -9,6 +9,8 @@ public abstract class MappedConstructionWriteRequest extends RestRequest {
 
     public MappedConstructionWriteRequest(Long requestorUserId, ConstructionMap constructionMap) {
 		super("DAM 2.0");
+		setRequestorUserId(requestorUserId);
+		setMapAssetClassToPortfolio(constructionMap);
     }
 
 	public ConstructionMap getMappedConstruction() {

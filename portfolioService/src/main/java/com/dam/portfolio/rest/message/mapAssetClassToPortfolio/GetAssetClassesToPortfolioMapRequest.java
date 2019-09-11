@@ -8,6 +8,7 @@ public class GetAssetClassesToPortfolioMapRequest extends RestRequest {
 
     public GetAssetClassesToPortfolioMapRequest(Long requestorUserId, Long portfolioId) {
 		super("DAM 2.0");
+		setRequestorUserId(requestorUserId);
 		setPortfolioId(portfolioId);
     }
 

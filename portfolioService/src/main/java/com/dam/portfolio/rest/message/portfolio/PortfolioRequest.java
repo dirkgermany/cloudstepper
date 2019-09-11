@@ -7,6 +7,7 @@ public class PortfolioRequest extends RestRequest {
 
     public PortfolioRequest( Long requestorUserId, Long portfolioId) {
 		super("DAM 2.0");
+		setPortfolioId(portfolioId);
 		setRequestorUserId(requestorUserId);
 	}
 

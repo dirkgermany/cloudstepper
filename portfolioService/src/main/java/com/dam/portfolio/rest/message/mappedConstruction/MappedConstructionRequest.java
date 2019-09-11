@@ -7,6 +7,7 @@ public class MappedConstructionRequest extends RestRequest {
 
     public MappedConstructionRequest( Long requestorUserId, Long mapId) {
 		super("DAM 2.0");
+		setMapId(mapId);
 		setRequestorUserId(requestorUserId);
 	}
 

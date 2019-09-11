@@ -9,6 +9,8 @@ public abstract class AssetClassToPortfolioMapWriteRequest extends RestRequest {
 
     public AssetClassToPortfolioMapWriteRequest(Long requestorUserId, AssetClassToPortfolioMap map) {
 		super("DAM 2.0");
+		setRequestorUserId(requestorUserId);
+		setMapAssetClassToPortfolio(map);
     }
 
 	public AssetClassToPortfolioMap getMapAssetClassToPortfolio() {
