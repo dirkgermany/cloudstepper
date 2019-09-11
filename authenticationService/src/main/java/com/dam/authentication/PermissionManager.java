@@ -5,10 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dam.authentication.ConfigProperties.Service;
 import com.dam.authentication.model.PermissionStore;
 import com.dam.authentication.model.entity.Permission;
 import com.dam.authentication.types.Role;
@@ -17,6 +18,9 @@ import com.dam.exception.PermissionCheckException;
 
 @Component
 public class PermissionManager {
+	
+    Logger logger = LogManager.getLogger(getClass());
+
 
 	@Autowired
 	PermissionStore permissionStore;
@@ -29,6 +33,8 @@ public class PermissionManager {
 		if (!isTimeForUpdate()) {
 			return;
 		}
+		
+		logger.debug("PermissionStore::updatePermissionMap");
 
 		List<Permission> permissions = permissionStore.getPermissionList();
 

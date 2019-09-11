@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,9 @@ import com.dam.exception.DamServiceException;
 @Component
 @Import({ ConfigProperties.class, ConfigProperties.class })
 public class TokenStore {
+	
+    Logger logger = LogManager.getLogger(getClass());
+
 	@Autowired
 	ConfigProperties config;
 
@@ -55,14 +60,6 @@ public class TokenStore {
 
 	public synchronized Token getToken(UUID tokenId) {
 		return activeTokenMap.get(tokenId);
-	}
-
-	public synchronized Long tokenIdToLong(String formattedTokenId) throws DamServiceException {
-		Long token = Long.valueOf(formattedTokenId);
-		if (null == token) {
-			throw new DamServiceException(new Long(500), "No valid Token", "Token not in TokenStore.");
-		}
-		return token;
 	}
 
 	/**
@@ -165,15 +162,16 @@ public class TokenStore {
 			return;
 		}
 
+		logger.debug("TokenStore::refreshTokenStore@activeTokenMap: ", activeTokenMap.entrySet());
 		Long currentTime = System.currentTimeMillis();
 		if (this.lastStoreUpdate + config.getTokenConfiguration().getCheckOldTokenInterval() < currentTime) {
 			Iterator<Token> tokens = activeTokenMap.values().iterator();
 			while (tokens.hasNext()) {
 				Token nextToken = tokens.next();
-				System.out.println("SysTime: " + currentTime + "; Token: " + nextToken.getTokenId() + " ;expireTime: "
+				logger.debug("SysTime: " + currentTime + "; Token: " + nextToken.getTokenId() + " ;expireTime: "
 						+ nextToken.getExpireTime());
 				if (null != nextToken && nextToken.getExpireTime() < currentTime) {
-					System.out.println("Token expired: " + nextToken.getTokenId());
+					logger.debug("Token expired: " + nextToken.getTokenId());
 					expiredTokenMap.put(nextToken.getTokenId(), nextToken);
 					tokens.remove();
 				}
