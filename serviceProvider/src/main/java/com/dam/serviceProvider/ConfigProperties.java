@@ -37,11 +37,11 @@ public class ConfigProperties {
 			Integer index = 0;
 			while (it.hasNext()) {
 				String name = it.next();
-				indexes.put(name, index);
+				indexes.put(name.toUpperCase(), index);
 				index++;
 			}
 		}
-		return indexes.get(domain);
+		return indexes.get(domain.toUpperCase());
 	}
 	
 	public String getServiceUrl(int index) {
