@@ -14,7 +14,6 @@ import com.dam.serviceProvider.JsonHelper;
 import com.dam.serviceProvider.PingFactory;
 import com.dam.serviceProvider.rest.consumer.Consumer;
 import com.dam.serviceProvider.rest.service.message.PingResponse;
-import com.dam.serviceProvider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
@@ -24,8 +23,6 @@ public class ServiceProviderPing {
 
 	@Autowired
 	Consumer consumer;
-
-	private static String serviceName = "serviceProvider";
 
 	/**
 	 * Retrieves informations about service healthy.

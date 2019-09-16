@@ -1,5 +1,7 @@
 package com.dam.serviceProvider.rest;
 
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.exception.DamServiceException;
 import com.dam.serviceProvider.ConfigProperties;
+import com.dam.serviceProvider.JsonHelper;
 import com.dam.serviceProvider.rest.consumer.Consumer;
+import com.dam.serviceProvider.rest.service.message.PingResponse;
 import com.dam.serviceProvider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -20,6 +24,9 @@ public class ServiceProviderAnyCall {
 
 	@Autowired
 	Consumer consumer;
+	
+	@Autowired
+	ServiceProviderPing serviceProviderPing;
 	
 	@PostMapping("/*/*")
 	public JsonNode doubleSlash(@RequestBody String requestBody, HttpServletRequest servletRequest)
@@ -52,6 +59,23 @@ public class ServiceProviderAnyCall {
 		}
 
 		String domain = pathParts[1];
+
+		// Ausnahmefälle - direkte interne Bearbeitung
+		if (domain.equalsIgnoreCase("login")) {
+			int index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
+			JsonNode response = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "login");
+
+			return response;			
+		}
+		
+		if (domain.equalsIgnoreCase("logout")) {
+			int index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
+			JsonNode response = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "logout");
+
+			return response;			
+		}
+				
+		
 		ServiceDomain serviceDomain = null;
 		try {
 			serviceDomain = ServiceDomain.valueOf(domain.toUpperCase());
