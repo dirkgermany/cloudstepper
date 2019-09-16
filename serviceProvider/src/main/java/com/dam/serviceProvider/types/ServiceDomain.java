@@ -7,6 +7,7 @@ public enum ServiceDomain {
 	ADDRESS (),
 	ANY (),
 	PORTFOLIO (),
+	AUTHENTICATION (),
 	UNKNOWN ();
 	
 }

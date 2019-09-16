@@ -13,7 +13,6 @@ import com.dam.serviceProvider.ConfigProperties;
 import com.dam.serviceProvider.JsonHelper;
 import com.dam.serviceProvider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Component
 public class Consumer {
@@ -46,10 +45,6 @@ public class Consumer {
 		}
 
 		if (null != serviceResponse) {
-//			String responseTokenId = jsonHelper.extractStringFromRequest(serviceResponse, "tokenId");
-//			if (null != responseTokenId && !responseTokenId.isEmpty()) {
-//				tokenId = responseTokenId;
-//			}
 			return createJsonResponse(serviceResponse, tokenId);
 		}
 
@@ -113,8 +108,9 @@ public class Consumer {
 		jsonHelper.addToJsonNode(node, "userId", userId);
 		jsonHelper.addToJsonNode(node, "serviceDomain", serviceDomain);
 
+		Integer index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
 		JsonNode response = retrieveResponse(jsonHelper.extractStringFromJsonNode(node),
-				config.getAuthenticationService().getServiceUrl(), "getUserPermission");
+				config.getServiceUrl(index), "getUserPermission");
 
 		if (null != response && !response.isMissingNode()) {
 			JsonNode permission = jsonHelper.extractNodeFromNode(response, "permission");
@@ -133,7 +129,8 @@ public class Consumer {
 	 * ignore invalid Tokens
 	 */
 	private JsonNode validateToken(String request) throws  DamServiceException {
-		JsonNode response = retrieveResponse(request, config.getAuthenticationService().getServiceUrl(),
+		Integer index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
+		JsonNode response = retrieveResponse(request, config.getServiceUrl(index),
 				"validateToken");
 		return response;
 	}
@@ -152,18 +149,8 @@ public class Consumer {
 	}
 
 	private JsonNode createJsonResponse(String serviceResponse, String tokenId) {
-		JsonNode responseTree = null;
 		return new JsonHelper().convertStringToNode(serviceResponse);
 
-//		// tokenId is empty, nothing to do
-//		if (null == tokenId || tokenId.isEmpty()) {
-//			return new JsonHelper().convertStringToNode(serviceResponse);
-//		}
-//		responseTree = new JsonHelper().convertStringToNode(serviceResponse);
-//		if (null == responseTree || null == tokenId || tokenId.isEmpty()) {
-//			return null;
-//		}
-//		return ((ObjectNode) responseTree).put("tokenId", tokenId);
 	}
 
 	private String postMessage(String URI, String request) {

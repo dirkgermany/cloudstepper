@@ -10,7 +10,7 @@ public class PingResponse extends RestResponse {
 	private List<JsonNode> serviceInfos = new ArrayList<JsonNode>();
 
 	public PingResponse() {
-		super(new Long(0), "OK", "Service Gateway Is Alive");
+		super(new Long(200), "OK", "Service Gateway Is Alive");
 	}
 
 	public List<JsonNode> getServiceInfos() {
