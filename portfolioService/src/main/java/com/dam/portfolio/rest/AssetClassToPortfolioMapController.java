@@ -20,7 +20,7 @@ public class AssetClassToPortfolioMapController {
 	@Autowired
 	private AssetClassToPortfolioMapStore mapStore;
 	
-	@PostMapping("addAssetClassesToPortfolio")
+	@PostMapping("/addAssetClassesToPortfolio")
 	public RestResponse addAssetClassesToPortfolio(@RequestBody AddAssetClassesToPortfolioMapRequest addRequest) throws DamServiceException {
 		try {
 			return mapStore.addAssetClassesToPortfolioSafe(addRequest);
@@ -33,7 +33,7 @@ public class AssetClassToPortfolioMapController {
 	 * 
 	 * @return
 	 */
-	@PostMapping("getPortfolioConstruction")
+	@PostMapping("/getPortfolioConstruction")
 	public RestResponse getPortfolioConstructionSafe(@RequestBody GetAssetClassesToPortfolioMapRequest getRequest)  throws DamServiceException {
 		try {
 			return mapStore.getMapPortfolioSafe(getRequest);
@@ -42,7 +42,7 @@ public class AssetClassToPortfolioMapController {
 		}
 	}
 	
-	@PostMapping("removeAssetClassesFromPortfolio")
+	@PostMapping("/removeAssetClassesFromPortfolio")
 	public RestResponse removeAssetClassesFromPortfolio(@RequestBody RemoveAssetClassesFromPortfolioMapRequest removeRequest) throws DamServiceException {
 		try {
 			return mapStore.removeAssetClassesFromPortfolioSafe(removeRequest);

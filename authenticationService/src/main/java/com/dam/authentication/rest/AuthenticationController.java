@@ -122,11 +122,6 @@ public class AuthenticationController {
 		}
 
 		user = token.getUser();
-//		if (!user.getUserId().equals(userId)) {
-//			// Wrong user in request - doesn't match with token user
-//			throw new DamServiceException(new Long(500), "Wrong User in request", "User could not assigned to token");
-//		}
-
 		Token validationToken = new Token(tokenId, user,
 				config.getTokenConfiguration().getMaxTokenAge() + System.currentTimeMillis());
 		Token validatedToken = tokenStore.validateAndRefreshToken(validationToken);

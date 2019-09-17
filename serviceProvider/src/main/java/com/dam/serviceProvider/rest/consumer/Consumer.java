@@ -30,6 +30,7 @@ public class Consumer {
 	public JsonNode retrieveResponse(String request, String url, String action) throws DamServiceException {
 		JsonHelper jsonHelper = new JsonHelper();
 
+		action = action.replace("/", "");
 		String URI = url + "/" + action;
 		String tokenId = null;
 
