@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
@@ -27,14 +28,17 @@ public interface AssetClassToPortfolioMapModel
 	@Query("SELECT mapEntry FROM AssetClassToPortfolioMap mapEntry where mapEntry.portfolioId = :portfolioId ")
 	List<AssetClassToPortfolioMap> findAllMapsByPortfolioId(@Param("portfolioId") Long portfolioId);
 
-	@Query("DELETE from AssetClassToPortfolioMap mapEntry WHERE mapEntry.portfolioId = :portfolioId")
+	@Modifying
+	@Query("DELETE from AssetClassToPortfolioMap WHERE portfolioId = :portfolioId")
 	void deleteAllMapEntriesByConstructionId(@Param("portfolioId") Long portfolioId);
 
-	@Query("DELETE from AssetClassToPortfolioMap mapEntry WHERE mapEntry.assetClassId = :assetClassId")
+	@Modifying
+	@Query("DELETE from AssetClassToPortfolioMap WHERE assetClassId = :assetClassId")
 	void deleteAllMapEntriesByAssetClassId(@Param("assetClassId") Long assetClassId);
 	
-	@Query("DELETE from AssetClassToPortfolioMap mapEntry WHERE mapEntry.assetClassId = :assetClassId " +
-	        " AND mapEntry.portfolioId = :portfolioId")
+	@Modifying
+	@Query ("DELETE from AssetClassToPortfolioMap WHERE assetClassId = :assetClassId " +
+	        " AND portfolioId = :portfolioId")
 	void deleteByAssetClassIdAndPortfolioId(@Param("assetClassId") Long assetClassId, @Param("portfolioId") Long portfolioId);
 
 }

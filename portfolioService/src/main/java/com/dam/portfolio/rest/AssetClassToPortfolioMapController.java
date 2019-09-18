@@ -11,19 +11,31 @@ import com.dam.portfolio.model.entity.ConstructionMap;
 import com.dam.portfolio.rest.message.RestResponse;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapResponse;
+import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AssetClassToPortfolioMapRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.GetAssetClassesToPortfolioMapRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.GetAssetClassesToPortfolioMapResponse;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.RemoveAssetClassesFromPortfolioMapRequest;
+import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.RemoveAssetClassesFromPortfolioMapResponse;
+import com.dam.portfolio.rest.message.mappedConstruction.MappedConstructionListResponse;
 
 @RestController
 public class AssetClassToPortfolioMapController {
 	@Autowired
 	private AssetClassToPortfolioMapStore mapStore;
 	
+	@PostMapping("/getPortfolioConstructionList")
+	public RestResponse getPortfolioConstructionList(@RequestBody AssetClassToPortfolioMapRequest listRequest) throws DamServiceException {
+		try {
+			return new MappedConstructionListResponse(mapStore.getMapPortfolioListSafe(listRequest));
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}		
+	}
+	
 	@PostMapping("/addAssetClassesToPortfolio")
 	public RestResponse addAssetClassesToPortfolio(@RequestBody AddAssetClassesToPortfolioMapRequest addRequest) throws DamServiceException {
 		try {
-			return mapStore.addAssetClassesToPortfolioSafe(addRequest);
+			return new AddAssetClassesToPortfolioMapResponse(mapStore.addAssetClassesToPortfolioSafe(addRequest));
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
@@ -36,7 +48,7 @@ public class AssetClassToPortfolioMapController {
 	@PostMapping("/getPortfolioConstruction")
 	public RestResponse getPortfolioConstructionSafe(@RequestBody GetAssetClassesToPortfolioMapRequest getRequest)  throws DamServiceException {
 		try {
-			return mapStore.getMapPortfolioSafe(getRequest);
+			return new GetAssetClassesToPortfolioMapResponse(mapStore.getMapPortfolioSafe(getRequest));
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
@@ -45,7 +57,7 @@ public class AssetClassToPortfolioMapController {
 	@PostMapping("/removeAssetClassesFromPortfolio")
 	public RestResponse removeAssetClassesFromPortfolio(@RequestBody RemoveAssetClassesFromPortfolioMapRequest removeRequest) throws DamServiceException {
 		try {
-			return mapStore.removeAssetClassesFromPortfolioSafe(removeRequest);
+			return new RemoveAssetClassesFromPortfolioMapResponse(mapStore.removeAssetClassesFromPortfolioSafe(removeRequest));
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}

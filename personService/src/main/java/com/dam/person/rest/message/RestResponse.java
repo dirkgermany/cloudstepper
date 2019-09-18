@@ -2,7 +2,7 @@ package com.dam.person.rest.message;
 
 public class RestResponse {
 
-	private static final String SERVICE_NAME = "person_service";
+	private final String SERVICE_NAME = "PersonService";
 
 	private Long returnCode;
 	private String description;
@@ -15,7 +15,7 @@ public class RestResponse {
 		setResult(result);
 	}
 
-	public static String getServiceName() {
+	public String getServiceName() {
 		return SERVICE_NAME;
 	}
 

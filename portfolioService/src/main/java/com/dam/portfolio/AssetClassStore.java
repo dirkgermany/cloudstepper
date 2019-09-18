@@ -1,5 +1,6 @@
 package com.dam.portfolio;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +109,32 @@ public class AssetClassStore {
 		}
 
 		return assetClass;
+	}
+
+	/**
+	 * Save getter for AssetClassList. Checks requesting user
+	 * 
+	 * @param assetClass
+	 * @return
+	 */
+	public List<AssetClass> getAssetClassListSafe(RestRequest assetClassListRequest)
+			throws DamServiceException {
+		
+		PermissionCheck.checkRequestedParams(assetClassListRequest, assetClassListRequest.getRequestorUserId(),
+				assetClassListRequest.getRights());
+
+		// Check if the permissions is set
+		PermissionCheck.isReadPermissionSet(assetClassListRequest.getRequestorUserId(), null,
+				assetClassListRequest.getRights());
+		
+		List<AssetClass> assetClasses = listAssetClasses();
+
+		if (null == assetClasses) {
+			throw new DamServiceException(new Long(404), "AssetClasses not found",
+					"AssetClasses not found or invalid request");
+		}
+
+		return assetClasses;
 	}
 
 	/**
@@ -221,6 +248,15 @@ public class AssetClassStore {
 		}
 
 		return dropAssetClass(existingAssetClass);
+	}
+	
+	private List<AssetClass> listAssetClasses () {
+		List<AssetClass> assetClasses = new ArrayList<>();
+		Iterator<AssetClass> it = assetClassModel.findAll().iterator();
+		while (it.hasNext()) {
+			assetClasses.add(it.next());
+		}
+		return assetClasses;
 	}
 	
 	private AssetClass getAssetClassByName(String assetClassName) {

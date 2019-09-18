@@ -42,7 +42,7 @@ public class Consumer {
 		try {
 			serviceResponse = sendMessage(URI, request);
 		} catch (Exception e) {
-			throw new DamServiceException(new Long(500), "Message could not be send", e.getMessage());
+			throw new DamServiceException(new Long(500), "Message could not be send. URI: " + URI, e.getMessage());
 		}
 
 		if (null != serviceResponse) {

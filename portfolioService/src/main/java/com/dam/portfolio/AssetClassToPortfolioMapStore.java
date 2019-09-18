@@ -1,5 +1,6 @@
 package com.dam.portfolio;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dam.exception.DamServiceException;
 import com.dam.exception.EntityNotFoundException;
@@ -25,6 +27,7 @@ import com.dam.portfolio.rest.message.assetClass.AssetClassRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassUpdateRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapResponse;
+import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AssetClassToPortfolioMapRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.GetAssetClassesToPortfolioMapRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.GetAssetClassesToPortfolioMapResponse;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.RemoveAssetClassesFromPortfolioMapRequest;
@@ -47,7 +50,7 @@ public class AssetClassToPortfolioMapStore {
 
 	@Autowired
 	private AssetClassStore assetClassStore;
-	
+
 	public long count() {
 		return mapModel.count();
 	}
@@ -62,21 +65,30 @@ public class AssetClassToPortfolioMapStore {
 
 	/**
 	 * Returns complete Map with Portfolio and assigned AssetClasses
+	 * 
 	 * @param getRequest
 	 * @return
 	 * @throws DamServiceException
 	 */
-	public GetAssetClassesToPortfolioMapResponse getMapPortfolioSafe(GetAssetClassesToPortfolioMapRequest getRequest)
+	public ConstructionMap getMapPortfolioSafe(GetAssetClassesToPortfolioMapRequest getRequest)
 			throws DamServiceException {
 		PermissionCheck.checkRequestedParams(getRequest, getRequest.getRequestorUserId(), getRequest.getRights());
 		PermissionCheck.checkRequestedEntity(getRequest.getPortfolioId(), Long.class, "Portfolio Id");
 		PermissionCheck.isReadPermissionSetInGeneral(getRequest.getRights());
-		
-		return new GetAssetClassesToPortfolioMapResponse(getConstructionMap(getRequest.getPortfolioId()));
+
+		return getConstructionMap(getRequest.getPortfolioId());
 	}
 
-	public AddAssetClassesToPortfolioMapResponse addAssetClassesToPortfolioSafe(AddAssetClassesToPortfolioMapRequest addRequest)
+	public List<ConstructionMap> getMapPortfolioListSafe(AssetClassToPortfolioMapRequest getRequest)
 			throws DamServiceException {
+		PermissionCheck.checkRequestedParams(getRequest, getRequest.getRequestorUserId(), getRequest.getRights());
+		PermissionCheck.isReadPermissionSetInGeneral(getRequest.getRights());
+
+		return getConstructionMapList();
+	}
+
+	public ConstructionMap addAssetClassesToPortfolioSafe(
+			AddAssetClassesToPortfolioMapRequest addRequest) throws DamServiceException {
 
 		PermissionCheck.checkRequestedParams(addRequest, addRequest.getRequestorUserId(), addRequest.getRights());
 		PermissionCheck.checkRequestedEntity(addRequest.getAssetClassIds(), List.class, "Asset Class Ids");
@@ -111,13 +123,14 @@ public class AssetClassToPortfolioMapStore {
 			createMapEntry(mapEntry);
 			constructionMap.addAssetClass(assetClass);
 		}
-		return new AddAssetClassesToPortfolioMapResponse(constructionMap);
+		return constructionMap;
 	}
 
-	public RemoveAssetClassesFromPortfolioMapResponse removeAssetClassesFromPortfolioSafe(RemoveAssetClassesFromPortfolioMapRequest removeRequest)
-			throws DamServiceException {
+	@Transactional
+	public ConstructionMap removeAssetClassesFromPortfolioSafe(RemoveAssetClassesFromPortfolioMapRequest removeRequest) throws DamServiceException {
 
-		PermissionCheck.checkRequestedParams(removeRequest, removeRequest.getRequestorUserId(), removeRequest.getRights());
+		PermissionCheck.checkRequestedParams(removeRequest, removeRequest.getRequestorUserId(),
+				removeRequest.getRights());
 		PermissionCheck.checkRequestedEntity(removeRequest.getAssetClassIds(), List.class, "Asset Class Ids");
 		PermissionCheck.isWritePermissionSetInGeneral(removeRequest.getRights());
 
@@ -128,33 +141,41 @@ public class AssetClassToPortfolioMapStore {
 
 		Portfolio portfolio = portfolioStore.getPortfolioById(removeRequest.getPortfolioId());
 		if (null == portfolio) {
-			throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklassen an Portfolio",
+			throw new DamServiceException(400L, "Fehler bei Entfernen von Assetklassen von Portfolio",
 					"Portfolio mit angegebener Id existiert nicht");
 		}
 
 		AssetClassToPortfolioMap map = null;
-		
 		Iterator<Long> it = removeRequest.getAssetClassIds().iterator();
 		while (it.hasNext()) {
 			Long assetClassId = it.next();
 			map = new AssetClassToPortfolioMap();
 			map.setAssetClassId(assetClassId);
 			map.setPortfolioId(removeRequest.getPortfolioId());
-			dropMapEntry(map);
+
+			AssetClassToPortfolioMap storedMap = getMapByAssetId_PortfolioId(assetClassId,
+					removeRequest.getPortfolioId());
+			if (null == storedMap) {
+				throw new DamServiceException(500L, "Fehler bei Entfernen von Assetklassen von Portfolio",
+						"Assetklasse mit Id: " + assetClassId + " ist dem Portfolio " + removeRequest.getPortfolioId()
+								+ " nicht zugeordnet");
+			}
+
+			dropMapEntryByAsset_Portfolio(map);
 		}
-		return new RemoveAssetClassesFromPortfolioMapResponse(getConstructionMap(removeRequest.getPortfolioId()));
+		return getConstructionMap(removeRequest.getPortfolioId());
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	public AssetClassToPortfolioMap getMapById(Long mapId) throws EntityNotFoundException {
+	private AssetClassToPortfolioMap getMapById(Long mapId) throws EntityNotFoundException {
 		Optional<AssetClassToPortfolioMap> map = mapModel.findById(mapId);
 		if (null != map && map.isPresent()) {
 			return map.get();
 		}
-		throw new EntityNotFoundException(new Long(500), "Map Entry not found", "Unknown Map Entry");
+		throw new EntityNotFoundException(new Long(500), "Map Entry not found", "Unknown Map Entry with id: " + mapId);
 	}
 
 	public List<AssetClassToPortfolioMap> getMapsByAssetId(Long assetId) {
@@ -163,6 +184,10 @@ public class AssetClassToPortfolioMapStore {
 
 	public List<AssetClassToPortfolioMap> getMapsByPortfolioId(Long portfolioId) {
 		return mapModel.findAllMapsByPortfolioId(portfolioId);
+	}
+
+	private AssetClassToPortfolioMap getMapByAssetId_PortfolioId(Long assetClassId, Long portfolioId) {
+		return mapModel.findMapByAssetClassIdAndPortfolioId(assetClassId, portfolioId);
 	}
 
 	/**
@@ -179,9 +204,9 @@ public class AssetClassToPortfolioMapStore {
 		throw new DamServiceException(new Long(404), "MapEntry could not be saved", "Check MapEntry data in request.");
 	}
 
-	public Long dropMapEntry(AssetClassToPortfolioMap mapEntry) throws DamServiceException {
+	private Long dropMapEntryById(AssetClassToPortfolioMap mapEntry) throws DamServiceException {
 		if (null != mapEntry) {
-			mapModel.deleteById(mapEntry.getPortfolioId());
+			mapModel.deleteById(mapEntry.getMapId());
 			AssetClassToPortfolioMap deletedAssetClass = getMapById(mapEntry.getPortfolioId());
 			if (null == deletedAssetClass) {
 				return new Long(200);
@@ -190,19 +215,45 @@ public class AssetClassToPortfolioMapStore {
 
 		return new Long(10);
 	}
+
+	private Long dropMapEntryByAsset_Portfolio(AssetClassToPortfolioMap mapEntry) throws DamServiceException {
+		if (null != mapEntry) {
+			mapModel.deleteByAssetClassIdAndPortfolioId(mapEntry.getAssetClassId(), mapEntry.getPortfolioId());
+			try {
+				getMapById(mapEntry.getPortfolioId());
+			} catch (EntityNotFoundException e) {
+				return new Long(200);
+			}
+		}
+
+		throw new DamServiceException(400L, "Deletion failed", "Entity still exists after drop to database");
+	}
 	
-	private ConstructionMap getConstructionMap(Long portfolioId)  throws DamServiceException {
+	private List<ConstructionMap> getConstructionMapList () throws DamServiceException {
+		List<ConstructionMap> constructionMapList = new ArrayList<>();
+		
+		Iterator<Portfolio> it = portfolioStore.getPortfolioList().iterator();
+		while (it.hasNext()) {
+			Portfolio portfolio = it.next();
+			ConstructionMap constructionMap = getConstructionMapIgnoreEmptyAssetList(portfolio.getPortfolioId());
+			constructionMapList.add(constructionMap);
+		}
+		
+		return constructionMapList;
+	}
+
+	private ConstructionMap getConstructionMap(Long portfolioId) throws DamServiceException {
 		List<AssetClassToPortfolioMap> mapEntries = mapModel.findAllMapsByPortfolioId(portfolioId);
 		if (null == mapEntries || mapEntries.isEmpty()) {
 			throw new DamServiceException(new Long(500), "No Map Entry found for Portfolio", "List seems to be empty");
 		}
-		
+
 		Portfolio portfolio = (portfolioStore.getPortfolioById(portfolioId));
 		if (null == portfolio) {
 			throw new DamServiceException(400L, "Couldn't find Portfolio with id",
 					"Perhaps another call deleted the Portfolio or data is not consistent");
 		}
-		
+
 		ConstructionMap portfolioMap = new ConstructionMap();
 		portfolioMap.setPortfolio(portfolioStore.getPortfolioById(portfolioId));
 
@@ -212,8 +263,31 @@ public class AssetClassToPortfolioMapStore {
 			AssetClass assetClass = assetClassStore.getAssetClassById(id);
 			portfolioMap.getAssetClasses().add(assetClass);
 		}
-		
+
 		return portfolioMap;
 	}
+	
+	private ConstructionMap getConstructionMapIgnoreEmptyAssetList(Long portfolioId) throws DamServiceException {
+		List<AssetClassToPortfolioMap> mapEntries = mapModel.findAllMapsByPortfolioId(portfolioId);
+
+		Portfolio portfolio = (portfolioStore.getPortfolioById(portfolioId));
+		if (null == portfolio) {
+			throw new DamServiceException(400L, "Couldn't find Portfolio with id",
+					"Perhaps another call deleted the Portfolio or data is not consistent");
+		}
+
+		ConstructionMap portfolioMap = new ConstructionMap();
+		portfolioMap.setPortfolio(portfolioStore.getPortfolioById(portfolioId));
+
+		Iterator<AssetClassToPortfolioMap> it = mapEntries.iterator();
+		while (it.hasNext()) {
+			Long id = it.next().getAssetClassId();
+			AssetClass assetClass = assetClassStore.getAssetClassById(id);
+			portfolioMap.getAssetClasses().add(assetClass);
+		}
+
+		return portfolioMap;
+	}
+
 
 }

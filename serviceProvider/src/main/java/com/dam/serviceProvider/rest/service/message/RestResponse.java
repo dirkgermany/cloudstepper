@@ -2,6 +2,8 @@ package com.dam.serviceProvider.rest.service.message;
 
 public class RestResponse {
 
+	private final String SERVICE_NAME = "ServiceProvider";
+
 	private String message;
 	private String description;
 	private Long returnCode;
@@ -10,6 +12,10 @@ public class RestResponse {
 		setReturnCode(returnCode);
 		setMessage(message);
 		setDescription(description);
+	}
+	
+	public String getServiceName() {
+		return SERVICE_NAME;
 	}
 
 	public String getMessage() {

@@ -2,7 +2,7 @@ package com.dam.address.rest.message;
 
 public class RestResponse {
 
-	private static final String SERVICE_NAME = "address_service";
+	private final String SERVICE_NAME = "AddressService";
 
 	private Long returnCode;
 	private String description;

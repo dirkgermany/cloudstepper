@@ -1,5 +1,6 @@
 package com.dam.portfolio;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -183,6 +184,19 @@ public class PortfolioStore {
 
 		return dropPortfolio(existingPortfolio);
 
+	}
+	
+	/**
+	 * Lists all Portfolios.
+	 * @return
+	 */
+	public List<Portfolio> getPortfolioList() {
+		List<Portfolio> portfolios = new ArrayList<>();
+		Iterator<Portfolio> it = portfolioModel.findAll().iterator();
+		while (it.hasNext()) {
+			portfolios.add(it.next());
+		}
+		return portfolios;
 	}
 	
 	private Portfolio getPortfolioByName(String portfolioName) {
