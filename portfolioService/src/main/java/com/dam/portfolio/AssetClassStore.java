@@ -19,8 +19,10 @@ import com.dam.portfolio.model.entity.Portfolio;
 import com.dam.portfolio.rest.message.RestRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassCreateRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassDropRequest;
+import com.dam.portfolio.rest.message.assetClass.AssetClassListRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassUpdateRequest;
+import com.dam.portfolio.types.AssetClassType;
 
 /**
  * Handles active and non active Tokens
@@ -33,75 +35,34 @@ public class AssetClassStore {
 
 	@Autowired
 	private AssetClassModel assetClassModel;
-	
+
 	@Autowired
 	private PortfolioStore portfolioStore;
-	
+
 	@Autowired
 	private AssetClassToPortfolioMapStore mapStore;
-	
-//	public ConstructionMap addAssetClassesToPortfolio(Long portfolioId, List<Long> assetClassIds)
-//			throws DamServiceException {
-//		if (null == assetClassIds || assetClassIds.isEmpty()
-//				|| null == portfolioId) {
-//			throw new DamServiceException(500L, "Keine Zuordnung Asset Klassen zu Portfolio möglich.",
-//					"Request Parameter nicht vollständig.");
-//		}
-//
-//		Portfolio portfolio = portfolioStore.getPortfolioById(portfolioId);
-//		if (null == portfolio) {
-//			throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklassen an Portfolio",
-//					"Portfolio mit angegebener Id existiert nicht");
-//		}
-//		
-//		ConstructionMap constructionMap = new ConstructionMap();
-//		constructionMap.setPortfolio(portfolio);
-//
-//		Iterator<Long> it = assetClassIds.iterator();
-//		while (it.hasNext()) {
-//			Long assetClassId = it.next();
-//			AssetClass assetClass = getAssetClassById(assetClassId);
-//			if (null == assetClass) {
-//				throw new DamServiceException(400L, "Fehler bei Hinzufügen von Assetklasse an Portfolio",
-//						"Asset Klasse mit Id " + assetClassId + " existiert nicht");
-//			}
-//			
-//			AssetClassToPortfolioMap mapEntry = new AssetClassToPortfolioMap();
-//			mapEntry.setAssetClassId(assetClassId);
-//			mapEntry.setPortfolioId(portfolioId);
-//			mapStore.createMapEntry(mapEntry);
-//			constructionMap.addAssetClass(assetClass);
-//		}
-//		
-//		return constructionMap;
-//
-//	}
-	
 
 	public long count() {
 		return assetClassModel.count();
 	}
-	
+
 	/**
 	 * Save getter for AssetClass. Checks requesting user
 	 * 
 	 * @param assetClass
 	 * @return
 	 */
-	public AssetClass getAssetClassSafe(AssetClassRequest assetClassRequest)
-			throws DamServiceException {
-		
+	public AssetClass getAssetClassSafe(AssetClassRequest assetClassRequest) throws DamServiceException {
+
 		PermissionCheck.checkRequestedParams(assetClassRequest, assetClassRequest.getRequestorUserId(),
 				assetClassRequest.getRights());
 		PermissionCheck.checkRequestedEntity(assetClassRequest.getAssetClassId(), Long.class, "assetClass is not set");
-
 
 		// Check if the permissions is set
 		PermissionCheck.isReadPermissionSet(assetClassRequest.getRequestorUserId(), null,
 				assetClassRequest.getRights());
 
-		AssetClass assetClass = getAssetClassById(
-				assetClassRequest.getAssetClassId());
+		AssetClass assetClass = getAssetClassById(assetClassRequest.getAssetClassId());
 
 		if (null == assetClass) {
 			throw new DamServiceException(new Long(404), "AssetClass Unknown",
@@ -117,17 +78,17 @@ public class AssetClassStore {
 	 * @param assetClass
 	 * @return
 	 */
-	public List<AssetClass> getAssetClassListSafe(RestRequest assetClassListRequest)
+	public List<AssetClass> getAssetClassListSafe(AssetClassListRequest assetClassListRequest)
 			throws DamServiceException {
-		
+
 		PermissionCheck.checkRequestedParams(assetClassListRequest, assetClassListRequest.getRequestorUserId(),
 				assetClassListRequest.getRights());
 
 		// Check if the permissions is set
 		PermissionCheck.isReadPermissionSet(assetClassListRequest.getRequestorUserId(), null,
 				assetClassListRequest.getRights());
-		
-		List<AssetClass> assetClasses = listAssetClasses();
+
+		List<AssetClass> assetClasses = listAssetClasses(assetClassListRequest.getAssetClassType());
 
 		if (null == assetClasses) {
 			throw new DamServiceException(new Long(404), "AssetClasses not found",
@@ -144,8 +105,7 @@ public class AssetClassStore {
 	 * @return
 	 * @throws PermissionCheckException
 	 */
-	public AssetClass createAssetClassSafe(AssetClassCreateRequest assetClassCreateRequest)
-			throws DamServiceException {
+	public AssetClass createAssetClassSafe(AssetClassCreateRequest assetClassCreateRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(assetClassCreateRequest, assetClassCreateRequest.getRequestorUserId(),
 				assetClassCreateRequest.getRights());
 
@@ -161,24 +121,21 @@ public class AssetClassStore {
 
 		// check if still exists
 		// direct by assetClassId
-		AssetClass existingAssetClass = getAssetClassById(
-				assetClassCreateRequest.getAssetClass().getAssetClassId());
-		
+		AssetClass existingAssetClass = getAssetClassById(assetClassCreateRequest.getAssetClass().getAssetClassId());
+
 		if (null == existingAssetClass) {
 			existingAssetClass = getAssetClassByName(assetClassCreateRequest.getAssetClass().getAssetClassName());
 		}
 
 		if (null != existingAssetClass) {
-			return updateAssetClass(existingAssetClass,
-					assetClassCreateRequest.getAssetClass());
+			return updateAssetClass(existingAssetClass, assetClassCreateRequest.getAssetClass());
 		}
 
 		AssetClass assetClass;
-		
+
 		try {
-		// save if all checks are ok and the assetClass doesn't exist
-		assetClass = assetClassModel
-				.save(assetClassCreateRequest.getAssetClass());
+			// save if all checks are ok and the assetClass doesn't exist
+			assetClass = assetClassModel.save(assetClassCreateRequest.getAssetClass());
 		} catch (Exception e) {
 			throw new DamServiceException(new Long(500), "AssetClass could not be stored", e.getMessage());
 		}
@@ -199,21 +156,18 @@ public class AssetClassStore {
 	 * @param userUpdate
 	 * @return
 	 */
-	public AssetClass updateAssetClassSafe(AssetClassUpdateRequest assetClassUpdateRequest)
-			throws DamServiceException {
+	public AssetClass updateAssetClassSafe(AssetClassUpdateRequest assetClassUpdateRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(assetClassUpdateRequest, assetClassUpdateRequest.getRequestorUserId(),
 				assetClassUpdateRequest.getRights());
 
 		PermissionCheck.checkRequestedEntity(assetClassUpdateRequest.getAssetClass(), AssetClass.class, "Asset Class");
 
 		// Check if the permissions is set
-		PermissionCheck.isWritePermissionSet(assetClassUpdateRequest.getRequestorUserId(),
-				null,
+		PermissionCheck.isWritePermissionSet(assetClassUpdateRequest.getRequestorUserId(), null,
 				assetClassUpdateRequest.getRights());
 
 		// check if still exists
-		AssetClass existingAssetClass = getAssetClassById(
-				assetClassUpdateRequest.getAssetClass().getAssetClassId());
+		AssetClass existingAssetClass = getAssetClassById(assetClassUpdateRequest.getAssetClass().getAssetClassId());
 
 		// AssetClass must exist and userId ist not permutable
 		if (null == existingAssetClass) {
@@ -221,8 +175,7 @@ public class AssetClassStore {
 					"AssetClass with assetClassId doesn't exist.");
 		}
 
-		return updateAssetClass(existingAssetClass,
-				assetClassUpdateRequest.getAssetClass());
+		return updateAssetClass(existingAssetClass, assetClassUpdateRequest.getAssetClass());
 	}
 
 	/**
@@ -233,32 +186,46 @@ public class AssetClassStore {
 	 * @return
 	 */
 	public Long dropAssetClassSafe(AssetClassDropRequest assetClassDropRequest) throws DamServiceException {
-		PermissionCheck.checkRequestedParams(assetClassDropRequest, assetClassDropRequest.getRequestorUserId(), assetClassDropRequest.getRights());
+		PermissionCheck.checkRequestedParams(assetClassDropRequest, assetClassDropRequest.getRequestorUserId(),
+				assetClassDropRequest.getRights());
 		PermissionCheck.checkRequestedEntity(assetClassDropRequest.getAssetClass(), AssetClass.class, "Asset Class");
 
 		// Save database requests
-		PermissionCheck.isDeletePermissionSet(assetClassDropRequest.getRequestorUserId(),	null, assetClassDropRequest.getRights());
+		PermissionCheck.isDeletePermissionSet(assetClassDropRequest.getRequestorUserId(), null,
+				assetClassDropRequest.getRights());
 
-		AssetClass existingAssetClass = getAssetClassById(
-				assetClassDropRequest.getAssetClass().getAssetClassId());
+		AssetClass existingAssetClass = getAssetClassById(assetClassDropRequest.getAssetClass().getAssetClassId());
 
 		if (null == existingAssetClass) {
 			throw new DamServiceException(new Long(404), "AssetClass could not be dropped",
 					"AssetClass does not exist or could not be found in database.");
 		}
 
-		return dropAssetClass(existingAssetClass);
+		if (200 == dropAssetClass(existingAssetClass)) {
+			mapStore.dropMapEntriesByAssetClassId(assetClassDropRequest.getAssetClass().getAssetClassId());
+		}
+
+		return 200L;
 	}
-	
-	private List<AssetClass> listAssetClasses () {
+
+	private List<AssetClass> listAssetClasses(AssetClassType assetClassType) {
 		List<AssetClass> assetClasses = new ArrayList<>();
-		Iterator<AssetClass> it = assetClassModel.findAll().iterator();
-		while (it.hasNext()) {
-			assetClasses.add(it.next());
+
+		Iterator<AssetClass> it = null;
+		if (null == assetClassType) {
+			it = assetClassModel.findAll().iterator();
+		} else {
+			it = assetClassModel.listAssetClassByType(assetClassType).iterator();
+		}
+
+		if (null != it) {
+			while (it.hasNext()) {
+				assetClasses.add(it.next());
+			}
 		}
 		return assetClasses;
 	}
-	
+
 	private AssetClass getAssetClassByName(String assetClassName) {
 		return assetClassModel.findByAssetClassName(assetClassName);
 	}
@@ -268,14 +235,12 @@ public class AssetClassStore {
 			return null;
 		}
 
-		Optional<AssetClass> optionalAssetClass = assetClassModel
-				.findById(assetClassId);
+		Optional<AssetClass> optionalAssetClass = assetClassModel.findById(assetClassId);
 		if (null != optionalAssetClass && optionalAssetClass.isPresent()) {
 			return optionalAssetClass.get();
 		}
 		return null;
 	}
-
 
 	/**
 	 * Update assetClass with changed values
@@ -284,16 +249,16 @@ public class AssetClassStore {
 	 * @param assetClassContainer
 	 * @return
 	 */
-	private AssetClass updateAssetClass(AssetClass assetClassForUpdate,
-			AssetClass assetClassContainer) throws DamServiceException {
-		
+	private AssetClass updateAssetClass(AssetClass assetClassForUpdate, AssetClass assetClassContainer)
+			throws DamServiceException {
+
 		if (null != assetClassForUpdate && null != assetClassContainer) {
 			assetClassForUpdate.updateEntity(assetClassContainer);
 			try {
 				return assetClassModel.save(assetClassForUpdate);
 			} catch (Exception e) {
-				throw new DamServiceException(new Long(409),
-						"AssetClass could not be saved. Perhaps duplicate keys.", e.getMessage());
+				throw new DamServiceException(new Long(409), "AssetClass could not be saved. Perhaps duplicate keys.",
+						e.getMessage());
 			}
 		}
 		throw new DamServiceException(new Long(404), "AssetClass could not be saved",
@@ -303,14 +268,13 @@ public class AssetClassStore {
 	private Long dropAssetClass(AssetClass assetClass) {
 		if (null != assetClass) {
 			assetClassModel.deleteById(assetClass.getAssetClassId());
-			AssetClass deletedAssetClass = getAssetClassById(
-					assetClass.getAssetClassId());
+			AssetClass deletedAssetClass = getAssetClassById(assetClass.getAssetClassId());
 			if (null == deletedAssetClass) {
 				return new Long(200);
 			}
 		}
 
-		return new Long(10);
+		return new Long(400);
 	}
 
 }

@@ -55,12 +55,16 @@ public class AssetClassToPortfolioMapStore {
 		return mapModel.count();
 	}
 
-	public void dropMapEntriesByConstructionId(Long constructionId) {
-		mapModel.deleteAllMapEntriesByConstructionId(constructionId);
+	public void dropMapEntriesByMapId(Long mapId) {
+		mapModel.deleteById(mapId);
 	}
 
 	public void dropMapEntriesByAssetClassId(Long assetClassId) {
-		mapModel.deleteAllMapEntriesByConstructionId(assetClassId);
+		mapModel.deleteAllMapEntriesByAssetClassId(assetClassId);
+	}
+
+	public void dropMapEntriesByPortfolioId(Long portfolioId) {
+		mapModel.deleteAllMapEntriesByPortfolioId(portfolioId);
 	}
 
 	/**

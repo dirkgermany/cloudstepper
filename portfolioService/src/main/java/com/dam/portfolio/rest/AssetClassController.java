@@ -1,30 +1,23 @@
 package com.dam.portfolio.rest;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.exception.DamServiceException;
 import com.dam.portfolio.AssetClassStore;
-import com.dam.portfolio.model.entity.ConstructionMap;
-import com.dam.portfolio.rest.message.RestRequest;
 import com.dam.portfolio.rest.message.RestResponse;
 import com.dam.portfolio.rest.message.assetClass.AssetClassCreateRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassCreateResponse;
 import com.dam.portfolio.rest.message.assetClass.AssetClassDropRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassDropResponse;
+import com.dam.portfolio.rest.message.assetClass.AssetClassListRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassListResponse;
 import com.dam.portfolio.rest.message.assetClass.AssetClassRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassResponse;
 import com.dam.portfolio.rest.message.assetClass.AssetClassUpdateRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassUpdateResponse;
-import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapRequest;
-import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapResponse;
 
 @RestController
 public class AssetClassController {
@@ -32,7 +25,7 @@ public class AssetClassController {
 	private AssetClassStore assetClassStore;
 	
 	@PostMapping("/getAssetClassList")
-	public RestResponse getAssetClassList(@RequestBody AssetClassRequest assetClassListRequest) throws DamServiceException {
+	public RestResponse getAssetClassList(@RequestBody AssetClassListRequest assetClassListRequest) throws DamServiceException {
 		try {
 			return new AssetClassListResponse(assetClassStore.getAssetClassListSafe(assetClassListRequest));
 		} catch (DamServiceException e) {

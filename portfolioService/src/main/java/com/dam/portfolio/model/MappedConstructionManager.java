@@ -75,7 +75,7 @@ public class MappedConstructionManager {
 
 		// entries still exist
 		if (null != mapStore.getMapsByPortfolioId(constructionMap.getPortfolio().getPortfolioId())) {
-			mapStore.dropMapEntriesByConstructionId(constructionMap.getPortfolio().getPortfolioId());
+			mapStore.dropMapEntriesByPortfolioId(constructionMap.getPortfolio().getPortfolioId());
 		}
 
 		ConstructionMap storedMappedConstruction = new ConstructionMap();

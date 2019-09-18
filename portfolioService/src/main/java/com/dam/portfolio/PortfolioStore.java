@@ -31,6 +31,8 @@ public class PortfolioStore {
 	@Autowired
 	private PortfolioModel portfolioModel;
 	
+	@Autowired
+	private AssetClassToPortfolioMapStore mapStore;	
 	public long count() {
 		return portfolioModel.count();
 	}
@@ -182,7 +184,11 @@ public class PortfolioStore {
 					"Portfolio does not exist or could not be found in database.");
 		}
 
-		return dropPortfolio(existingPortfolio);
+		if (200 == dropPortfolio(existingPortfolio)) {
+			mapStore.dropMapEntriesByPortfolioId(portfolioDropRequest.getPortfolio().getPortfolioId());
+		}
+		
+		return 200L;
 
 	}
 	
