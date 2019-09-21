@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Max;
 
 import com.dam.portfolio.types.AssetClassType;
 
@@ -30,6 +31,10 @@ public class AssetClassToPortfolioMap {
 	
 	@Column(nullable=false)
 	private Long portfolioId;
+	
+	@Column(nullable= false)
+	@Max(100)
+	private Float assetWeighting;
 	
 
 	public AssetClassToPortfolioMap () {	
@@ -64,6 +69,14 @@ public class AssetClassToPortfolioMap {
 
 	public void setPortfolioId(Long portfolioId) {
 		this.portfolioId = portfolioId;
+	}
+
+	public Float getAssetWeighting() {
+		return assetWeighting;
+	}
+
+	public void setAssetWeighting(Float assetWeighting) {
+		this.assetWeighting = assetWeighting;
 	}
 
 }

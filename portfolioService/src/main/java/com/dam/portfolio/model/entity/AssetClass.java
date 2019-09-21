@@ -32,13 +32,19 @@ public class AssetClass {
 	@Column
 	private String providerName;
 	
-	@Column
+	@Column(nullable=false)
 	@Enumerated(EnumType.STRING)
 	private AssetClassType assetClassType;
 	
 	@Column
 	@Lob
 	private String description;
+	
+	@Column (nullable = false)
+	private String wkn;
+	
+	@Column (nullable = true)
+	private String link;
 
 	public AssetClass () {	
 	}
@@ -99,6 +105,22 @@ public class AssetClass {
 
 	public void setAssetClassType(AssetClassType assetClassType) {
 		this.assetClassType = assetClassType;
+	}
+
+	public String getWkn() {
+		return wkn;
+	}
+
+	public void setWkn(String wkn) {
+		this.wkn = wkn;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
 	}
 	
 }

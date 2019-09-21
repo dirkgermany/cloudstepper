@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 
 import org.springframework.stereotype.Component;
 
@@ -37,18 +38,23 @@ public class Portfolio {
 	private Risc risc;
 	
 	@Column(nullable=false)
+	@Max(100)
 	private Float callMoneyPct;
 
 	@Column(nullable=false)
+	@Max(100)
 	private Float goldPct;
 	
 	@Column(nullable=false)
+	@Max(100)
 	private Float loanPct;
 	
 	@Column(nullable=false)
+	@Max(100)
 	private Float etfPct;
 
 	@Column(nullable=false)
+	@Max(100)
 	private Float sharePct;
 
 	@Column(nullable=true)
@@ -57,11 +63,7 @@ public class Portfolio {
 	@Column(nullable=true)
 	private Date validUntil;
 
-	public Portfolio () {	
-	}
-	
-	public Portfolio (Risc risc, Float callMoneyPct, Float goldPct, Float loanPct, Float etfPct, Float sharePct, Date validFrom, Date validUntil) {
-	}
+
 
 	public Long getPortfolioId() {
 		return portfolioId;
