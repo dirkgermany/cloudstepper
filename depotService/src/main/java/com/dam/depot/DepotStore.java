@@ -280,7 +280,7 @@ public class DepotStore {
 
 	private List<Depot> getDepotListByUserActionDateFrom(Long userId, ActionType action, Date dateFrom) {
 		List<Depot> depotList = new ArrayList<>();
-		return prepareResultList(depotModel.findByUserActionDateFrom(userId, action, dateFrom));
+		return prepareResultList (depotModel.findByUserActionDateFrom(userId, action, dateFrom));
 	}
 
 	private List<Depot> getDepotListByUserActionDateUntil(Long userId, ActionType action, Date dateUntil) {
