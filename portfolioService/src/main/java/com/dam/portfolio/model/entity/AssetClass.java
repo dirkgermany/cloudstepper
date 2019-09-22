@@ -55,6 +55,8 @@ public class AssetClass {
 		setAssetClassType(container.getAssetClassType());
 		setProviderId(container.getProviderId());
 		setProviderName(container.getProviderName());
+		setWkn(container.getWkn());
+		setLink(container.getLink());
 		
 		return this;
 	}

@@ -7,7 +7,7 @@ public class DamServiceException extends Exception{
 	 */
 	private static final long serialVersionUID = 9166254022620287445L;
 	
-	private static final String SERVICE_NAME = "portfolio_service";
+	private static final String SERVICE_NAME = "portfolioService";
 	private Long errorId;
 	private String shortMsg;
 	private String description;
