@@ -19,8 +19,6 @@ public interface DepotModel extends Repository<Depot, Long>, CrudRepository<Depo
 	@Query("SELECT from Depot depot WHERE depot.userId = :userId")
 	List<Depot> findDepotByUser(@Param("userId") Long userId);
 	
-	
-	
 	@Query("SELECT from Depot depot WHERE depot.userId = :userId " + " AND depot.action = :action "
 			+ " AND depot.actionDate >= :dateFrom " + " AND depot.actionDate <= :dateUntil")
 	List<Depot> findByUserActionDateFromDateUntil(@Param("userId") Long userId, @Param("action") ActionType action,
@@ -32,8 +30,17 @@ public interface DepotModel extends Repository<Depot, Long>, CrudRepository<Depo
 			@Param("dateFrom") Date dateFrom);
 
 	@Query("SELECT from Depot depot WHERE depot.userId = :userId " + " AND depot.action = :action "
-			+ " AND depot.actionDate >= :dateFrom")
+			+ " AND depot.actionDate <= :dateUntil")
 	List<Depot> findByUserActionDateUntil(@Param("userId") Long userId, @Param("action") ActionType action,
 			@Param("dateFrom") Date dateUntil);
+	
+	@Query("SELECT from Depot depot WHERE depot.userId = :userId AND depot.action = :action ")
+	List<Depot> findByUserAction(@Param("userId") Long userId, @Param("action") ActionType action);
+	
+	@Query("SELECT from Depot depot WHERE depot.userId = :userId  AND depot.actionDate >= :dateFrom")
+	List<Depot> findByUserDateFrom(@Param("userId") Long userId, @Param("dateFrom") Date dateFrom);
+
+	@Query("SELECT from Depot depot WHERE depot.userId = :userId  AND depot.actionDate <= :dateUntil")
+	List<Depot> findByUserDateUntil(@Param("userId") Long userId, @Param("dateUntil") Date dateUntil);
 
 }

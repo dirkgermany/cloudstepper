@@ -13,9 +13,11 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Type;
 import org.springframework.stereotype.Component;
 
 import com.dam.depot.types.ActionType;
+import com.dam.depot.types.Currency;
 
 @Entity
 @Component
@@ -46,10 +48,32 @@ public class Depot {
 	private ActionType action;
 	
 	@Column
+	private Long portfolioId;
+	
+	@Column
 	private String eventText;
 	
 	@Column (nullable=false)
 	private Float amount;
+
+	@Column (nullable=false)
+	@Enumerated(EnumType.STRING)
+	private Currency currency;
+
+	@Column
+	@Type(type="true_false")
+	private boolean booked;
+
+	public Depot (Account account) {
+		this.action = account.getAction();
+		this.actionDate = account.getActionDate();
+		this.amount = account.getAmount();
+		this.eventText = account.getEventText();
+		this.userId = account.getUserId();
+		this.requestorUserId  = account.getRequestorUserId();
+		this.currency = account.getCurrency();
+		this.portfolioId = null;
+	}
 
 	public Depot updateEntity (Depot container) {
 		this.action = container.getAction();
@@ -58,6 +82,8 @@ public class Depot {
 		this.eventText = container.getEventText();
 		this.userId = container.getUserId();
 		this.requestorUserId  = container.getRequestorUserId();
+		this.portfolioId = container.getPortfolioId();
+		this.currency = container.getCurrency();
 		return this;
 	}
 
@@ -116,5 +142,29 @@ public class Depot {
 
 	public void setEventText(String eventText) {
 		this.eventText = eventText;
+	}
+
+	public Long getPortfolioId() {
+		return portfolioId;
+	}
+
+	public void setPortfolioId(Long portfolioId) {
+		this.portfolioId = portfolioId;
+	}
+
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+
+	public boolean isBooked() {
+		return booked;
+	}
+
+	public void setBooked(boolean booked) {
+		this.booked = booked;
 	}
 }

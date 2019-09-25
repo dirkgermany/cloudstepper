@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.depot.DepotStore;
-import com.dam.depot.model.entity.Depot;
+import com.dam.depot.RequestBlocker;
 import com.dam.depot.rest.message.RestResponse;
 import com.dam.depot.rest.message.depot.DepotCreateRequest;
 import com.dam.depot.rest.message.depot.DepotCreateResponse;
-import com.dam.depot.rest.message.depot.DepotDropRequest;
-import com.dam.depot.rest.message.depot.DepotDropResponse;
+import com.dam.depot.rest.message.depot.DepotListRequest;
+import com.dam.depot.rest.message.depot.DepotListResponse;
 import com.dam.depot.rest.message.depot.DepotRequest;
 import com.dam.depot.rest.message.depot.DepotResponse;
 import com.dam.depot.rest.message.depot.DepotUpdateRequest;
@@ -31,35 +31,61 @@ public class DepotController {
 	 */
 	@PostMapping("/getDepot")
 	public RestResponse getDepot(@RequestBody DepotRequest depotRequest) throws DamServiceException {
+		RequestBlocker.lockUser(depotRequest.getDepot().getUserId());
 		try {
-			return new DepotResponse(depotStore.getDepotSafe(depotRequest));
+			RestResponse response = new DepotResponse(depotStore.getDepotSafe(depotRequest));
+			RequestBlocker.unlockUser(depotRequest.getDepot().getUserId());
+			return response;
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
 
-	@PostMapping("/createDepot")
+	@PostMapping("/getDepotList")
+	public RestResponse getDepotList(@RequestBody DepotListRequest depotRequest) throws DamServiceException {
+		RequestBlocker.lockUser(depotRequest.getDepot().getUserId());
+		try {
+			RestResponse response = new DepotListResponse(depotStore.getDepotListSafe(depotRequest));
+			RequestBlocker.unlockUser(depotRequest.getDepot().getUserId());
+			return response;
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
+
+	/**
+	 * Transfer From Depot To User Account (minus value) - transfer between both
+	 * money accounts - send information to Depot Bank
+	 * 
+	 * @param depotCreateRequest
+	 * @return
+	 * @throws DamServiceException
+	 */
+	@PostMapping("/transferToAccount")
+	public RestResponse transferToAccount(@RequestBody DepotRequest depotRequest) throws DamServiceException {
+		RequestBlocker.lockUser(depotRequest.getDepot().getUserId());
+		try {
+			RestResponse response = new DepotResponse(depotStore.transferToAccountSafe(depotRequest));
+			RequestBlocker.unlockUser(depotRequest.getDepot().getUserId());
+			return response;
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
+
+	/**
+	 * User wants to increase the investment.
+	 * @param depotCreateRequest
+	 * @return
+	 * @throws DamServiceException
+	 */
+	@PostMapping("/deposit")
 	public RestResponse createDepot(@RequestBody DepotCreateRequest depotCreateRequest) throws DamServiceException {
+		RequestBlocker.lockUser(depotCreateRequest.getDepot().getUserId());
 		try {
-			return new DepotCreateResponse(depotStore.createDepotSafe(depotCreateRequest));
-		} catch (DamServiceException e) {
-			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
-		}
-	}
-
-	@PostMapping("/dropDepot")
-	public RestResponse dropDepot(@RequestBody DepotDropRequest depotDropRequest) throws DamServiceException {
-		try {
-			return new DepotDropResponse(depotStore.dropDepotSafe(depotDropRequest));
-		} catch (DamServiceException e) {
-			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
-		}
-	}
-
-	@PostMapping("/updateDepot")
-	public RestResponse updateDepot(@RequestBody DepotUpdateRequest depotUpdateRequest) throws DamServiceException {
-		try {
-			return new DepotUpdateResponse(depotStore.updateDepotSafe(depotUpdateRequest));
+			RestResponse response = new DepotCreateResponse(depotStore.depositSafe(depotCreateRequest));
+			RequestBlocker.unlockUser(depotCreateRequest.getDepot().getUserId());
+			return response;
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}

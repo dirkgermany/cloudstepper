@@ -7,16 +7,18 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 
 import com.dam.depot.model.DepotModel;
+import com.dam.depot.model.entity.Account;
+import com.dam.depot.model.entity.Balance;
 import com.dam.depot.model.entity.Depot;
-import com.dam.depot.rest.message.RestRequest;
+import com.dam.depot.rest.message.RestResponse;
+import com.dam.depot.rest.message.account.AccountRequest;
 import com.dam.depot.rest.message.depot.DepotCreateRequest;
-import com.dam.depot.rest.message.depot.DepotDropRequest;
 import com.dam.depot.rest.message.depot.DepotListRequest;
 import com.dam.depot.rest.message.depot.DepotRequest;
+import com.dam.depot.rest.message.depot.DepotResponse;
 import com.dam.depot.rest.message.depot.DepotUpdateRequest;
 import com.dam.depot.types.ActionType;
 import com.dam.exception.DamServiceException;
@@ -35,6 +37,10 @@ public class DepotStore {
 	private DepotModel depotModel;
 
 	@Autowired
+	private AccountStore accountStore;
+
+	@Autowired
+	private BalanceStore balanceStore;
 
 	public long count() {
 		return depotModel.count();
@@ -151,6 +157,79 @@ public class DepotStore {
 	}
 
 	/**
+	 * Transfer From Depot To User Account (minus value) - transfer between both
+	 * money accounts - send information to Depot Bank
+	 * 
+	 * @param depotRequest
+	 * @return
+	 * @throws DamServiceException
+	 */
+	public Depot transferToAccountSafe(DepotRequest depotRequest) throws DamServiceException {
+		List<ActionType> allowedActions = new ArrayList<>();
+		allowedActions.add(ActionType.DEPOT_TRANSFER);
+		RequestHelper.checkActions(depotRequest.getDepot().getAction(), allowedActions);
+		RequestHelper.checkAmountTransfer(depotRequest.getDepot().getAmount());
+		RequestHelper.checkCurrency(depotRequest.getDepot().getCurrency());
+
+		Float amount = RequestHelper.setAmountNegative(depotRequest.getDepot().getAmount());
+		depotRequest.getDepot().setAmount(amount);
+		depotRequest.getDepot().setActionDate(new Date());
+
+		// store depot
+		Depot depot = createDepotSafe(depotRequest);
+
+		Account account = new Account(depotRequest.getDepot());
+		amount = RequestHelper.setAmountPositive(amount);
+		AccountRequest accountRequest = new AccountRequest(account.getRequestorUserId(), account);
+
+		// store account
+		accountStore.createAccountSafe(accountRequest);
+
+		return depot;
+	}
+
+	/**
+	 * Increase the depot. This is the beginning of a process: - Booking to Account:
+	 * ACTION=DEPOT_INVEST, BOOKED=FALSE - Batch searches all not already booked
+	 * entries, works with depotId - ... Booking to Account: ACTION=DEPOT_TRANSFER,
+	 * negative amount - ... Booking to Depot: ACTION=DEPOT_TRANSFER, positive
+	 * amount - ... Call to external API: Add amount to investors depot - ... Update
+	 * at Account: BOOKED=TRUE where depotId = depotId
+	 * 
+	 * @param depotDepositRequest
+	 * @return
+	 * @throws DamServiceException
+	 */
+	public Depot depositSafe(DepotRequest depotDepositRequest) throws DamServiceException {
+		List<ActionType> allowedActions = new ArrayList<>();
+		allowedActions.add(ActionType.DEPOSIT);
+		RequestHelper.checkActions(depotDepositRequest.getDepot().getAction(), allowedActions);
+		RequestHelper.checkAmountTransfer(depotDepositRequest.getDepot().getAmount());
+		RequestHelper.checkCurrency(depotDepositRequest.getDepot().getCurrency());
+
+		Account account = new Account(depotDepositRequest.getDepot());
+		account.setBooked(false);
+		account.setAction(ActionType.DEPOT_INVEST);
+		account.setActionDate(new Date());
+		AccountRequest accountRequest = new AccountRequest(account.getRequestorUserId(), account);
+		account = accountStore.createAccountSafe(accountRequest);
+
+		Float balanceValue = new Float(0);
+		Balance balance = balanceStore.getBalanceByUserId(depotDepositRequest.getDepot().getUserId());
+		if (null != balance) {
+			balance.setAmount(balance.getAmount() + account.getAmount());
+		} else {
+			balance = new Balance();
+			balance.setCurrency(account.getCurrency());;
+			balance.setUserId(depotDepositRequest.getDepot().getUserId());
+			balance.setAmount(balanceValue);
+		}
+		balanceStore.saveBalance(balance);
+		
+		return new Depot(account);
+	}
+
+	/**
 	 * Creation of depot requests existing userId, givenName and lastName. userId in
 	 * Entity Container mustn't be null
 	 * 
@@ -158,7 +237,7 @@ public class DepotStore {
 	 * @return
 	 * @throws PermissionCheckException
 	 */
-	public Depot createDepotSafe(DepotCreateRequest depotCreateRequest) throws DamServiceException {
+	private Depot createDepotSafe(DepotRequest depotCreateRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(depotCreateRequest, depotCreateRequest.getRequestorUserId(),
 				depotCreateRequest.getRights());
 
@@ -191,68 +270,6 @@ public class DepotStore {
 	}
 
 	/**
-	 * Save update; requesting user must be user in storage
-	 * 
-	 * @param userId
-	 * @param userStored
-	 * @param userUpdate
-	 * @return
-	 */
-	public Depot updateDepotSafe(DepotUpdateRequest depotUpdateRequest) throws DamServiceException {
-		PermissionCheck.checkRequestedParams(depotUpdateRequest, depotUpdateRequest.getRequestorUserId(),
-				depotUpdateRequest.getRights());
-
-		PermissionCheck.checkRequestedEntity(depotUpdateRequest.getDepot(), Depot.class, "Depot Class");
-
-		// Check if the permissions is set
-		PermissionCheck.isWritePermissionSet(depotUpdateRequest.getRequestorUserId(), null,
-				depotUpdateRequest.getRights());
-
-		// check if still exists
-		Depot existingDepot = getDepotById(depotUpdateRequest.getDepot().getDepotId());
-
-		// Depot must exist and userId ist not permutable
-		if (null == existingDepot) {
-			throw new DamServiceException(new Long(404), "Depot for update not found",
-					"Depot with depotId doesn't exist.");
-		}
-
-		return updateDepot(existingDepot, depotUpdateRequest.getDepot());
-	}
-
-	/**
-	 * Secure drop, user must be owner
-	 * 
-	 * @param userId
-	 * @param depot
-	 * @return
-	 */
-//	public Long dropDepotSafe(DepotDropRequest depotDropRequest) throws DamServiceException {
-//		PermissionCheck.checkRequestedParams(depotDropRequest, depotDropRequest.getRequestorUserId(),
-//				depotDropRequest.getRights());
-//		PermissionCheck.checkRequestedEntity(depotDropRequest.getDepot(), Depot.class, "Depot Class");
-//
-//		// Save database requests
-//		PermissionCheck.isDeletePermissionSet(depotDropRequest.getRequestorUserId(), null,
-//				depotDropRequest.getRights());
-//
-//		Depot existingDepot = getDepotById(depotDropRequest.getDepot().getDepotId());
-//
-//		if (null == existingDepot) {
-//			throw new DamServiceException(new Long(404), "Depot could not be dropped",
-//					"Depot does not exist or could not be found in database.");
-//		}
-//
-//		if (200 == dropDepot(existingDepot)) {
-//			mapStore.dropMapEntriesByDepotId(depotDropRequest.getDepot().getDepotId());
-//		}
-//
-//		return 200L;
-//
-//	}
-
-
-	/**
 	 * Lists all Depots.
 	 * 
 	 * @return
@@ -265,9 +282,9 @@ public class DepotStore {
 		}
 		return depots;
 	}
-	
+
 	private List<Depot> getDepotListByUserAction(Long userId, ActionType action) {
-		return depotModel.findByUserAction(userId, action.name());
+		return depotModel.findByUserAction(userId, action);
 	}
 
 	private List<Depot> getDepotListByUserDateFrom(Long userId, Date dateFrom) {
@@ -279,15 +296,11 @@ public class DepotStore {
 	}
 
 	private List<Depot> getDepotListByUserActionDateFrom(Long userId, ActionType action, Date dateFrom) {
-		List<Depot> depotList = new ArrayList<>();
-		return prepareResultList (depotModel.findByUserActionDateFrom(userId, action, dateFrom));
+		return depotModel.findByUserActionDateFrom(userId, action, dateFrom);
 	}
 
 	private List<Depot> getDepotListByUserActionDateUntil(Long userId, ActionType action, Date dateUntil) {
-		List<Depot> depotList = new ArrayList<>();
 		return depotModel.findByUserActionDateUntil(userId, action, dateUntil);
-
-		return depotList;
 	}
 
 	private List<Depot> getDepotListByUserActionDateFromDateUntil(Long userId, ActionType action, Date dateFrom,
@@ -311,37 +324,16 @@ public class DepotStore {
 		return null;
 	}
 
-	/**
-	 * Update depot with changed values
-	 * 
-	 * @param depotForUpdate
-	 * @param depotContainer
-	 * @return
-	 */
-	private Depot updateDepot(Depot depotForUpdate, Depot depotContainer) throws DamServiceException {
-
-		if (null != depotForUpdate && null != depotContainer) {
-			depotForUpdate.updateEntity(depotContainer);
-			try {
-				return depotModel.save(depotForUpdate);
-			} catch (Exception e) {
-				throw new DamServiceException(new Long(409), "Depot could not be saved. Perhaps duplicate keys.",
-						e.getMessage());
+	public Long dropDepot(Depot depot) {
+		if (null != depot) {
+			depotModel.deleteById(depot.getDepotId());
+			Depot deletedDepot = getDepotById(depot.getDepotId());
+			if (null == deletedDepot) {
+				return new Long(200);
 			}
 		}
-		throw new DamServiceException(new Long(404), "Depot could not be saved", "Check Depot data in request.");
-	}
 
-//	private Long dropDepot(Depot depot) {
-//		if (null != depot) {
-//			depotModel.deleteById(depot.getDepotId());
-//			Depot deletedDepot = getDepotById(depot.getDepotId());
-//			if (null == deletedDepot) {
-//				return new Long(200);
-//			}
-//		}
-//
-//		return new Long(10);
-//	}
+		return new Long(10);
+	}
 
 }
