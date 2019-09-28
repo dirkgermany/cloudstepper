@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.dam.depot.types.ActionType;
 import com.dam.depot.types.Currency;
+import com.dam.depot.types.ReferenceType;
 
 /**
  * This entity stores the call money. Regulary payments with the debit card
@@ -43,7 +44,7 @@ public class Account {
 	@Column(nullable = false)
 	private Long userId;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private Long requestorUserId;
 
 	@Column(nullable = false)
@@ -62,10 +63,13 @@ public class Account {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Currency currency;
-
-	@Column
-	@Type(type = "true_false")
-	private boolean booked;
+	
+	@Column(nullable = true)
+	private Long referenceId;
+	
+	@Column(nullable = true)
+	private ReferenceType referenceType;
+	
 
 	public Account(Depot depot) {
 		this.action = depot.getAction();
@@ -74,7 +78,6 @@ public class Account {
 		this.eventText = depot.getEventText();
 		this.requestorUserId = depot.getRequestorUserId();
 		this.userId = depot.getUserId();
-		this.booked = depot.isBooked();
 		this.currency = depot.getCurrency();
 	}
 
@@ -85,8 +88,9 @@ public class Account {
 		this.eventText = container.getEventText();
 		this.requestorUserId = container.getRequestorUserId();
 		this.userId = container.getUserId();
-		this.booked = container.isBooked();
 		this.currency = container.getCurrency();
+		this.referenceId = container.getReferenceId();
+		this.referenceType = container.getReferenceType();
 		return this;
 	}
 
@@ -154,11 +158,19 @@ public class Account {
 		this.currency = currency;
 	}
 
-	public boolean isBooked() {
-		return booked;
+	public Long getReferenceId() {
+		return referenceId;
 	}
 
-	public void setBooked(boolean booked) {
-		this.booked = booked;
+	public void setReferenceId(Long referenceId) {
+		this.referenceId = referenceId;
+	}
+
+	public ReferenceType getReferenceType() {
+		return referenceType;
+	}
+
+	public void setReferenceType(ReferenceType referenceType) {
+		this.referenceType = referenceType;
 	}
 }

@@ -3,7 +3,7 @@ package com.dam.depot.types;
 public enum ActionType {
 	
 	DEPOSIT,   				// Einzahlung
-	DRAWING,   				// Abhebung von Bargeld
+	DEBIT,   				// Abhebung von Bargeld
 	CHARGING,  				// Belastung durch Dritte, z.B. DebitKarten-Einsatz
 	BONUS,     				// Ausschüttung einer Dividende oder ähnliches
 	DEPOT_TRANSFER,			// Bewegungen zwischen Konto und Depot

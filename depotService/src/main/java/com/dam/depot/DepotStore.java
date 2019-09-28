@@ -11,15 +11,10 @@ import org.springframework.stereotype.Controller;
 
 import com.dam.depot.model.DepotModel;
 import com.dam.depot.model.entity.Account;
-import com.dam.depot.model.entity.Balance;
 import com.dam.depot.model.entity.Depot;
-import com.dam.depot.rest.message.RestResponse;
 import com.dam.depot.rest.message.account.AccountRequest;
-import com.dam.depot.rest.message.depot.DepotCreateRequest;
 import com.dam.depot.rest.message.depot.DepotListRequest;
 import com.dam.depot.rest.message.depot.DepotRequest;
-import com.dam.depot.rest.message.depot.DepotResponse;
-import com.dam.depot.rest.message.depot.DepotUpdateRequest;
 import com.dam.depot.types.ActionType;
 import com.dam.exception.DamServiceException;
 import com.dam.exception.PermissionCheckException;
@@ -38,9 +33,6 @@ public class DepotStore {
 
 	@Autowired
 	private AccountStore accountStore;
-
-	@Autowired
-	private BalanceStore balanceStore;
 
 	public long count() {
 		return depotModel.count();
@@ -189,25 +181,7 @@ public class DepotStore {
 	}
 
 	/**
-	 * Increase the depot. This is the beginning of a process:
-	 * 
-	 * 1. Booking to Account: ACTION=DEPOT_INVEST, positive amount, BOOKED=FALSE
-	 * 
-	 * 2. Batch searches all not already booked entries, works with depotId
-	 * 
-	 * 2.1 Starts a direct debit at the house bank of the investor
-	 * 
-	 * 2.2. After direct debit was successfull, Booking to Account:
-	 * ACTION=DEPOT_TRANSFER, negative amount
-	 * 
-	 * 2.3. Booking to Depot: ACTION=DEPOT_TRANSFER, positive amount
-	 * 
-	 * 2.4. Call to external API: Add amount to investors depot
-	 * 
-	 * 2.5. Update at Account: BOOKED=TRUE where depotId = depotId
-	 * 
-	 * 2.5. Increase Balance entity with the amount.
-	 * 
+	 * Deposit is only stored to the Entity Intent
 	 * @param depotDepositRequest
 	 * @return
 	 * @throws DamServiceException
@@ -220,7 +194,6 @@ public class DepotStore {
 		RequestHelper.checkCurrency(depotDepositRequest.getDepot().getCurrency());
 
 		Account account = new Account(depotDepositRequest.getDepot());
-		account.setBooked(false);
 		account.setAction(ActionType.DEPOT_INVEST_INTENT);
 		account.setActionDate(new Date());
 		AccountRequest accountRequest = new AccountRequest(account.getRequestorUserId(), account);
@@ -249,7 +222,6 @@ public class DepotStore {
 
 		if (null == depotCreateRequest.getDepot().getAction() || null == depotCreateRequest.getDepot().getActionDate()
 				|| null == depotCreateRequest.getDepot().getAmount()
-				|| null == depotCreateRequest.getDepot().getRequestorUserId()
 				|| null == depotCreateRequest.getDepot().getUserId()) {
 			throw new DamServiceException(new Long(400), "Invalid Request", "Depot data not complete");
 		}

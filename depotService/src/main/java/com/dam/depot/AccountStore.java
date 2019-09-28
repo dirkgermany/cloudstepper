@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import com.dam.depot.model.AccountModel;
 import com.dam.depot.model.entity.Account;
-import com.dam.depot.rest.message.account.AccountCreateRequest;
 import com.dam.depot.rest.message.account.AccountListRequest;
 import com.dam.depot.rest.message.account.AccountRequest;
 import com.dam.depot.rest.message.account.AccountUpdateRequest;
@@ -167,7 +166,6 @@ public class AccountStore {
 
 		if (null == accountCreateRequest.getAccount().getAction() || null == accountCreateRequest.getAccount().getActionDate()
 				|| null == accountCreateRequest.getAccount().getAmount()
-				|| null == accountCreateRequest.getAccount().getRequestorUserId()
 				|| null == accountCreateRequest.getAccount().getUserId()) {
 			throw new DamServiceException(new Long(400), "Invalid Request", "Account data not complete");
 		}

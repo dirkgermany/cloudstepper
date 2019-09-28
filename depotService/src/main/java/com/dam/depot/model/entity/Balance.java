@@ -17,41 +17,50 @@ import com.dam.depot.types.Currency;
 @Component
 @Table(name = "Balance")
 public class Balance {
-		
-		@Id
-		@GeneratedValue(strategy = GenerationType.AUTO)
-		private Long userId;
-		
-		@Column (nullable=false)
-		private Float amount;
-		
-		@Column (nullable=false)
-		@Enumerated(EnumType.STRING)
-		private Currency currency;
-		
 
-		public Long getUserId() {
-			return userId;
-		}
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long userId;
 
-		public void setUserId(Long userId) {
-			this.userId = userId;
-		}
+	@Column(nullable = false)
+	private Float amountAccount;
 
-		public Float getAmount() {
-			return amount;
-		}
+	@Column(nullable = false)
+	private Float amountDepot;
 
-		public void setAmount(Float amount) {
-			this.amount = amount;
-		}
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Currency currency;
 
-		public Currency getCurrency() {
-			return currency;
-		}
+	public Long getUserId() {
+		return userId;
+	}
 
-		public void setCurrency(Currency currency) {
-			this.currency = currency;
-		}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Float getAmountAccount() {
+		return amountAccount;
+	}
+
+	public void setAmountAccount(Float amountAccount) {
+			this.amountAccount = amountAccount;
+	}
+
+	public Float getAmountDepot() {
+		return amountDepot;
+	}
+
+	public void setAmountDepot(Float amountDepot) {
+		this.amountDepot = amountDepot;
+	}
+
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
 }
-

@@ -43,7 +43,7 @@ public class Depot {
 	@Column (nullable=false)
 	private Long userId;
 	
-	@Column(nullable=false)
+	@Column(nullable=true)
 	private Long requestorUserId;
 	
 	@Column (nullable=false)
