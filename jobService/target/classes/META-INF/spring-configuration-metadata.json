@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "tasks.linked-list",
+      "type": "com.dam.jobService.TaskSynchronizer",
+      "sourceType": "com.dam.jobService.TaskSynchronizer"
+    }
+  ],
+  "properties": [
+    {
+      "name": "tasks.linked-list.entry",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.jobService.TaskSynchronizer"
+    }
+  ],
+  "hints": []
+}
