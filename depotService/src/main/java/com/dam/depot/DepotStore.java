@@ -221,23 +221,10 @@ public class DepotStore {
 
 		Account account = new Account(depotDepositRequest.getDepot());
 		account.setBooked(false);
-		account.setAction(ActionType.DEPOT_INVEST);
+		account.setAction(ActionType.DEPOT_INVEST_INTENT);
 		account.setActionDate(new Date());
 		AccountRequest accountRequest = new AccountRequest(account.getRequestorUserId(), account);
 		account = accountStore.createAccountSafe(accountRequest);
-
-		Float balanceValue = new Float(0);
-		Balance balance = balanceStore.getBalanceByUserId(depotDepositRequest.getDepot().getUserId());
-		if (null != balance) {
-			balance.setAmount(balance.getAmount() + account.getAmount());
-		} else {
-			balance = new Balance();
-			balance.setCurrency(account.getCurrency());
-			;
-			balance.setUserId(depotDepositRequest.getDepot().getUserId());
-			balance.setAmount(balanceValue);
-		}
-		balanceStore.saveBalance(balance);
 
 		return new Depot(account);
 	}
