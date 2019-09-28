@@ -55,7 +55,7 @@ public class DepotController {
 
 	/**
 	 * Transfer From Depot To User Account (minus value) - transfer between both
-	 * money accounts - send information to Depot Bank
+	 * money accounts.
 	 * 
 	 * @param depotCreateRequest
 	 * @return

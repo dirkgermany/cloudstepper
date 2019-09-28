@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
@@ -15,7 +16,8 @@ import com.dam.userService.types.Role;
 
 @Entity
 @Component
-@Table(name = "User")
+@Table(name = "User",
+indexes = {@Index(name = "idx_user_username", columnList = "userName")})
 public class User {
 	
 	@Id

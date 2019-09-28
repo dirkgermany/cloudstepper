@@ -189,12 +189,24 @@ public class DepotStore {
 	}
 
 	/**
-	 * Increase the depot. This is the beginning of a process: - Booking to Account:
-	 * ACTION=DEPOT_INVEST, BOOKED=FALSE - Batch searches all not already booked
-	 * entries, works with depotId - ... Booking to Account: ACTION=DEPOT_TRANSFER,
-	 * negative amount - ... Booking to Depot: ACTION=DEPOT_TRANSFER, positive
-	 * amount - ... Call to external API: Add amount to investors depot - ... Update
-	 * at Account: BOOKED=TRUE where depotId = depotId
+	 * Increase the depot. This is the beginning of a process:
+	 * 
+	 * 1. Booking to Account: ACTION=DEPOT_INVEST, positive amount, BOOKED=FALSE
+	 * 
+	 * 2. Batch searches all not already booked entries, works with depotId
+	 * 
+	 * 2.1 Starts a direct debit at the house bank of the investor
+	 * 
+	 * 2.2. After direct debit was successfull, Booking to Account:
+	 * ACTION=DEPOT_TRANSFER, negative amount
+	 * 
+	 * 2.3. Booking to Depot: ACTION=DEPOT_TRANSFER, positive amount
+	 * 
+	 * 2.4. Call to external API: Add amount to investors depot
+	 * 
+	 * 2.5. Update at Account: BOOKED=TRUE where depotId = depotId
+	 * 
+	 * 2.5. Increase Balance entity with the amount.
 	 * 
 	 * @param depotDepositRequest
 	 * @return
@@ -220,12 +232,13 @@ public class DepotStore {
 			balance.setAmount(balance.getAmount() + account.getAmount());
 		} else {
 			balance = new Balance();
-			balance.setCurrency(account.getCurrency());;
+			balance.setCurrency(account.getCurrency());
+			;
 			balance.setUserId(depotDepositRequest.getDepot().getUserId());
 			balance.setAmount(balanceValue);
 		}
 		balanceStore.saveBalance(balance);
-		
+
 		return new Depot(account);
 	}
 

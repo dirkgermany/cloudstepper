@@ -1,7 +1,6 @@
 package com.dam.depot.model.entity;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,6 +17,13 @@ import org.springframework.stereotype.Component;
 
 import com.dam.depot.types.ActionType;
 import com.dam.depot.types.Currency;
+
+/**
+ * The depot entity mirrors the depot at the depot bank.
+ * Investments always are transferred via this account to the depot bank.
+ * @author dirk
+ *
+ */
 
 @Entity
 @Component
