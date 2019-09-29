@@ -1,0 +1,72 @@
+{
+  "groups": [
+    {
+      "name": "service",
+      "type": "com.dam.serviceProvider.ConfigProperties",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "service.configured-domains",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.configured-services",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.domain-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.domains",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.domains-in-conf-file",
+      "type": "java.lang.String[]",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.hosts",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.indexes",
+      "type": "java.util.Map<java.lang.String,java.lang.Integer>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.ports",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.protocols",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.service-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.services",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    },
+    {
+      "name": "service.services-in-conf-file",
+      "type": "java.lang.String[]",
+      "sourceType": "com.dam.serviceProvider.ConfigProperties"
+    }
+  ],
+  "hints": []
+}
