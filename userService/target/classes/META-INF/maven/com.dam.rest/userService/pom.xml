@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.dam.rest</groupId>
-  <artifactId>jobService</artifactId>
+  <artifactId>userService</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -29,12 +29,24 @@
             <artifactId>json-path</artifactId>
             <scope>test</scope>
         </dependency>
+        
+  		<!-- JPA Data (We are going to use Repositories, Entities, Hibernate, etc...) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
 
-        <dependency>
-        	<groupId>org.springframework.boot</groupId>
-        	<artifactId>spring-boot-configuration-processor</artifactId>
-        	<optional>true</optional>
-        </dependency>
+		<!-- Use MySQL Connector-J -->
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<!-- 	<version>2.0.10.RELEASE</version>  -->
+		</dependency>
     </dependencies>
 
     <properties>

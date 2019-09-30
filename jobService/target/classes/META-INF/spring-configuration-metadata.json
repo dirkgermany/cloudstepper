@@ -1,0 +1,47 @@
+{
+  "groups": [
+    {
+      "name": "tasks",
+      "type": "com.dam.jobService.TaskConfiguration",
+      "sourceType": "com.dam.jobService.TaskConfiguration"
+    }
+  ],
+  "properties": [
+    {
+      "name": "tasks.password",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.jobService.TaskConfiguration"
+    },
+    {
+      "name": "tasks.predecessor",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.jobService.TaskConfiguration"
+    },
+    {
+      "name": "tasks.service-provider-host",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.jobService.TaskConfiguration"
+    },
+    {
+      "name": "tasks.service-provider-port",
+      "type": "java.lang.Long",
+      "sourceType": "com.dam.jobService.TaskConfiguration"
+    },
+    {
+      "name": "tasks.service-provider-protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.jobService.TaskConfiguration"
+    },
+    {
+      "name": "tasks.successor",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.dam.jobService.TaskConfiguration"
+    },
+    {
+      "name": "tasks.user-name",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.jobService.TaskConfiguration"
+    }
+  ],
+  "hints": []
+}

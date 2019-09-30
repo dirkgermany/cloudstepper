@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import com.dam.exception.DamServiceException;
 import com.dam.jobService.type.TaskType;
 
 /**
@@ -31,26 +32,26 @@ public class TaskConfiguration {
 	private Map<TaskType, Thread> activeTaskList = new ConcurrentHashMap<>();
 	private Map<TaskType, List<TaskType>>dependencyList = new HashMap<>();
 	
-	@Value("${service.protocol}")
+	@Value("${provider.service.protocol}")
 	private String serviceProviderProtocol;
 	
-	@Value("${service.host}")
+	@Value("${provider.service.host}")
 	private String serviceProviderHost;
 
-	@Value("${service.port}")
+	@Value("${provider.service.port}")
 	private Long serviceProviderPort;
 	
-	@Value("${bla.user.name}")
+	@Value("${provider.user.name}")
 	private String userName;
 	
-	@Value("${user.password}")
+	@Value("${provider.user.password}")
 	private String password;
 	
 	// delivered by configuration
 	private List<String>successorList;
 	
 	private List<String>predecessorList;
-	
+		
 	private void initDependencies() {
 		Iterator<String> it = successorList.iterator();
 		int index = 0;
@@ -67,6 +68,10 @@ public class TaskConfiguration {
 			dependencyList.put(successor, predecessorTaskList);
 			index++;
 		}
+	}
+	
+	public int getActiveTaskListSize () {
+		return null == activeTaskList ? 0 : activeTaskList.size();
 	}
 	
 	/**
