@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class PingFactory {
 	
 	@Autowired
-	private DepotStore depotStore;
+	private DepotTransactionStore depotTransactionStore;
 	
 	private Map<String, String> pingInfo = new HashMap<String, String>();
 
@@ -41,7 +41,7 @@ public class PingFactory {
 		pingInfo.put("uptime", upTime.toString() + "ms");
 
 		// Database
-		String recordsDepots = String.valueOf(depotStore.count());
+		String recordsDepots = String.valueOf(depotTransactionStore.count());
 		pingInfo.put("database", "records available: depots (" + recordsDepots + ")");
 
 		// Server

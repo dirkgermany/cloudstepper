@@ -9,150 +9,45 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Type;
 import org.springframework.stereotype.Component;
 
-import com.dam.depot.types.ActionType;
 import com.dam.depot.types.Currency;
-import com.dam.depot.types.ReferenceType;
-
-/**
- * The depot entity mirrors the depot at the depot bank.
- * Investments always are transferred via this account to the depot bank.
- * @author dirk
- *
- */
 
 @Entity
 @Component
-@Table(name = "Depot", 
-			uniqueConstraints= {@UniqueConstraint(columnNames = {"userId", "action", "amount", "actionDate"})},
-			indexes = {@Index(name = "idx_depot_user_action", columnList = "userId, action"),
-					   @Index(name = "idx_depot_user_date", columnList = "userId, actionDate"), 
-					   @Index(name = "idx_depot_user", columnList = "userId"), 
-					   @Index(name = "idx_depot_user_amount", columnList = "userId, amount")}
+@Table(name = "Depot", uniqueConstraints= {@UniqueConstraint(columnNames = {"userId", "portfolioId"})}
 )
 public class Depot {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long depotId;
-	
-	@Column (nullable=false)
+
+	@Column(nullable = false)
 	private Long userId;
 	
-	@Column(nullable=true)
-	private Long requestorUserId;
-	
-	@Column (nullable=false)
-	private Date actionDate;
-	
-	@Column
-	@Enumerated(EnumType.STRING)
-	private ActionType action;
-	
-	@Column
+	@Column(nullable = false)
 	private Long portfolioId;
-	
-	@Column
-	private String eventText;
-	
-	@Column (nullable=false)
-	private Float amount;
 
-	@Column (nullable=false)
+	@Column(nullable = false)
+	private Float investValue;
+
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Currency currency = Currency.EUR;
-
-	@Column(nullable = true)
-	private Long referenceId;
 	
 	@Column(nullable = true)
-	@Enumerated(EnumType.STRING)
-	private ReferenceType referenceType;
-	
+	private Date lastUpdate;
 
-	public Depot updateEntity (Depot container) {
-		this.action = container.getAction();
-		this.actionDate = container.getActionDate();
-		this.amount = container.getAmount();
-		this.eventText = container.getEventText();
-		this.userId = container.getUserId();
-		this.requestorUserId  = container.getRequestorUserId();
-		this.portfolioId = container.getPortfolioId();
-		this.currency = container.getCurrency();
-		this.referenceId = container.getReferenceId();
-		this.referenceType = container.getReferenceType();
-		return this;
-	}
-
-	public Long getDepotId() {
-		return depotId;
-	}
-
-	public void setDepotId(Long depotId) {
-		this.depotId = depotId;
-	}
-	
 	public Long getUserId() {
 		return userId;
 	}
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
-	}
-
-	public Date getActionDate() {
-		return actionDate;
-	}
-
-	public void setActionDate(Date actionDate) {
-		this.actionDate = actionDate;
-	}
-
-
-	public ActionType getAction() {
-		return action;
-	}
-
-	public void setAction(ActionType action) {
-		this.action = action;
-	}
-
-	public Float getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Float amount) {
-		this.amount = amount;
-	}
-
-	public Long getRequestorUserId() {
-		return requestorUserId;
-	}
-
-	public void setRequestorUserId(Long requestorUserId) {
-		this.requestorUserId = requestorUserId;
-	}
-
-	public String getEventText() {
-		return eventText;
-	}
-
-	public void setEventText(String eventText) {
-		this.eventText = eventText;
-	}
-
-	public Long getPortfolioId() {
-		return portfolioId;
-	}
-
-	public void setPortfolioId(Long portfolioId) {
-		this.portfolioId = portfolioId;
 	}
 
 	public Currency getCurrency() {
@@ -163,19 +58,35 @@ public class Depot {
 		this.currency = currency;
 	}
 
-	public Long getReferenceId() {
-		return referenceId;
+	public Date getLastUpdate() {
+		return lastUpdate;
 	}
 
-	public void setReferenceId(Long referenceId) {
-		this.referenceId = referenceId;
+	public void setLastUpdate(Date lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
-	public ReferenceType getReferenceType() {
-		return referenceType;
+	public Long getDepotId() {
+		return depotId;
 	}
 
-	public void setReferenceType(ReferenceType referenceType) {
-		this.referenceType = referenceType;
+	public void setDepotId(Long depotId) {
+		this.depotId = depotId;
+	}
+
+	public Float getInvestValue() {
+		return investValue;
+	}
+
+	public void setInvestValue(Float investValue) {
+		this.investValue = investValue;
+	}
+
+	public Long getPortfolioId() {
+		return portfolioId;
+	}
+
+	public void setPortfolioId(Long portfolioId) {
+		this.portfolioId = portfolioId;
 	}
 }

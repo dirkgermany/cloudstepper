@@ -19,6 +19,8 @@ public class Intent {
 	private Date bookingDate;
 	private String finishResponse;
 	private Long referenceId;
+	private Long portfolioId;
+
 	
 	public Long getIntentId() {
 		return intentId;
@@ -91,6 +93,12 @@ public class Intent {
 	}
 	public void setReferenceId(Long referenceId) {
 		this.referenceId = referenceId;
+	}
+	public Long getPortfolioId() {
+		return portfolioId;
+	}
+	public void setPortfolioId(Long portfolioId) {
+		this.portfolioId = portfolioId;
 	}
 
 }

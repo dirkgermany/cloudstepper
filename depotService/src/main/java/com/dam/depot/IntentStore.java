@@ -10,19 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.dam.depot.model.IntentModel;
-import com.dam.depot.model.entity.Account;
+import com.dam.depot.model.entity.AccountTransaction;
 import com.dam.depot.model.entity.Balance;
 import com.dam.depot.model.entity.Depot;
 import com.dam.depot.model.entity.Intent;
-import com.dam.depot.rest.message.account.AccountRequest;
-import com.dam.depot.rest.message.depot.DepotRequest;
-import com.dam.depot.rest.message.intent.IntentListRequest;
 import com.dam.depot.rest.message.intent.IntentRequest;
 import com.dam.depot.rest.message.intent.IntentUpdateRequest;
 import com.dam.depot.types.ActionType;
+import com.dam.depot.types.Currency;
 import com.dam.depot.types.ReferenceType;
 import com.dam.exception.DamServiceException;
-import com.dam.exception.PermissionCheckException;
 
 /**
  * Handles active and non active Tokens
@@ -37,10 +34,13 @@ public class IntentStore {
 	private IntentModel intentModel;
 	
 	@Autowired
-	private AccountStore accountStore;
+	private AccountTransactionStore accountTransactionStore;
 
 	@Autowired
 	private BalanceStore balanceStore;
+	
+	@Autowired
+	private DepotStore depotStore;
 
 	public long count() {
 		return intentModel.count();
@@ -107,6 +107,7 @@ public class IntentStore {
 		intent.setBookingDate(null);
 		intent.setActionDate(intentCreateRequest.getIntent().getActionDate());
 		intent.setRequestorUserId(intentCreateRequest.getRequestorUserId());
+		intent.setPortfolioId(intentCreateRequest.getIntent().getPortfolioId());
 		intent = intentModel.save(intent);
 		
 		Balance balance = balanceStore.getBalanceByUserId(intentCreateRequest.getIntent().getUserId());
@@ -165,6 +166,7 @@ public class IntentStore {
 		balance.setAmountDepotIntent(amount);
 		balance.setLastUpdate(new Date());
 		balance.setCurrency(storedIntent.getCurrency());
+		
 		balanceStore.saveBalance(balance);
 
 		return storedIntent;
@@ -183,6 +185,7 @@ public class IntentStore {
 		RequestHelper.checkActions(confirmRequest.getIntent().getAction(), allowedActions);
 		RequestHelper.checkAmountTransfer(confirmRequest.getIntent().getAmount());
 		RequestHelper.checkCurrency(confirmRequest.getIntent().getCurrency());
+		RequestHelper.checkPortfolio(confirmRequest.getIntent().getPortfolioId());
 
 		Intent storedIntent = getIntentById(confirmRequest.getIntent().getIntentId());
 		
@@ -203,17 +206,17 @@ public class IntentStore {
 		storedIntent = updateIntent(storedIntent, updateIntent);
 		
 		// 2. Insert into account
-		Account account = new Account();
-		account.setUserId(storedIntent.getUserId());
-		account.setRequestorUserId(storedIntent.getRequestorUserId());
-		account.setAction(ActionType.DEPOSIT);
-		account.setActionDate(new Date());
-		account.setReferenceType(ReferenceType.INTENT);
-		account.setReferenceId(storedIntent.getIntentId());
-		account.setAmount(storedIntent.getAmount());
-		account.setRequestorUserId(confirmRequest.getRequestorUserId());
+		AccountTransaction accountTransaction = new AccountTransaction();
+		accountTransaction.setUserId(storedIntent.getUserId());
+		accountTransaction.setRequestorUserId(storedIntent.getRequestorUserId());
+		accountTransaction.setAction(ActionType.DEPOSIT);
+		accountTransaction.setActionDate(new Date());
+		accountTransaction.setReferenceType(ReferenceType.INTENT);
+		accountTransaction.setReferenceId(storedIntent.getIntentId());
+		accountTransaction.setAmount(storedIntent.getAmount());
+		accountTransaction.setRequestorUserId(confirmRequest.getRequestorUserId());
 		
-		accountStore.storeAccount(account);
+		accountTransactionStore.storeAccount(accountTransaction);
 		
 		// 3. Update Balance for account
 		Balance balance = balanceStore.getBalanceByUserId(confirmRequest.getIntent().getUserId());
@@ -231,7 +234,22 @@ public class IntentStore {
 		
 		balanceStore.saveBalance(balance);
 		
-		// 4. Insert into Entity Intent
+		// 4. Update Entity Depot
+		Depot depot = depotStore.getDepotByUserPortfolio(confirmRequest.getIntent().getUserId(), confirmRequest.getIntent().getPortfolioId());
+		if (null == depot) {
+			depot = new Depot();
+			depot.setUserId(confirmRequest.getIntent().getUserId());
+			depot.setPortfolioId(confirmRequest.getIntent().getPortfolioId());
+			depot.setInvestValue(0f);
+			depot.setCurrency(Currency.EUR);
+		}
+		float investValue = depot.getInvestValue() + storedIntent.getAmount();
+		depot.setInvestValue(investValue);
+		depot.setLastUpdate(new Date());
+		
+		depotStore.saveDepot(depot);
+		
+		// 5. Insert into Entity Intent
 		Intent newIntent = new Intent();
 		newIntent.setIntent(storedIntent);
 		newIntent.setAction(ActionType.TRANSFER_TO_DEPOT_INTENT);

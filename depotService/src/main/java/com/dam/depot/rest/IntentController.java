@@ -5,23 +5,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dam.depot.AccountStore;
 import com.dam.depot.IntentStore;
 import com.dam.depot.RequestBlocker;
 import com.dam.depot.rest.message.RestResponse;
-import com.dam.depot.rest.message.account.AccountRequest;
-import com.dam.depot.rest.message.account.AccountResponse;
-import com.dam.depot.rest.message.depot.DepotCreateRequest;
-import com.dam.depot.rest.message.depot.DepotCreateResponse;
+import com.dam.depot.rest.message.accountTransaction.AccountTransactionCreateRequest;
+import com.dam.depot.rest.message.accountTransaction.AccountTransactionCreateResponse;
+import com.dam.depot.rest.message.accountTransaction.AccountTransactionListRequest;
+import com.dam.depot.rest.message.accountTransaction.AccountTransactionListResponse;
+import com.dam.depot.rest.message.accountTransaction.AccountTransactionRequest;
+import com.dam.depot.rest.message.accountTransaction.AccountTransactionResponse;
+import com.dam.depot.rest.message.depotTransaction.DepotTransactionCreateRequest;
+import com.dam.depot.rest.message.depotTransaction.DepotTransactionCreateResponse;
 import com.dam.depot.rest.message.intent.IntentCreateRequest;
 import com.dam.depot.rest.message.intent.IntentCreateResponse;
 import com.dam.depot.rest.message.intent.IntentListRequest;
 import com.dam.depot.rest.message.intent.IntentListResponse;
 import com.dam.depot.rest.message.intent.IntentRequest;
-import com.dam.depot.rest.message.account.AccountCreateRequest;
-import com.dam.depot.rest.message.account.AccountCreateResponse;
-import com.dam.depot.rest.message.account.AccountListRequest;
-import com.dam.depot.rest.message.account.AccountListResponse;
 import com.dam.exception.DamServiceException;
 
 @RestController

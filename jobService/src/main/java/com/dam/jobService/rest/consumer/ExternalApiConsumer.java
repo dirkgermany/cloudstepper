@@ -24,10 +24,10 @@ public class ExternalApiConsumer {
 	 * Investition in Depot.
 	 * @param userId
 	 * @param amount
-	 * @param wkn		WertKennNummer
+	 * @param portfolioId used to find out the WKN or whatever the depot bank needs
 	 * @return
 	 */
-	public static boolean stockIncrease (Long userId, float amount, String wkn) {
+	public static boolean stockIncrease (Long userId, float amount, Long portfolioId) {
 		return true;
 	}
 	

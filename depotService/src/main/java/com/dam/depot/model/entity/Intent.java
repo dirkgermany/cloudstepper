@@ -75,6 +75,9 @@ public class Intent {
 	@Column(nullable = true)
 	private Long referenceId;
 	
+	@Column(nullable = true)
+	private Long portfolioId;
+	
 	public void setIntent (Intent container) {
 		this.action = container.getAction();
 		this.actionDate = container.getActionDate();
@@ -86,7 +89,8 @@ public class Intent {
 		this.booked = container.getBooked();
 		this.bookingDate = container.getBookingDate();
 		this.finishResponse = container.getFinishResponse();
-		this.referenceId = container.referenceId;
+		this.referenceId = container.getReferenceId();
+		this.portfolioId = container.getPortfolioId();
 	}
 	
 	public Intent updateEntity(Intent container) {
@@ -100,6 +104,7 @@ public class Intent {
 		this.booked = container.getBooked();
 		this.bookingDate = container.getBookingDate();
 		this.finishResponse = container.getFinishResponse();
+		this.portfolioId = container.getPortfolioId();
 		return this;
 	}
 
@@ -200,5 +205,13 @@ public class Intent {
 
 	public void setReferenceId(Long referenceId) {
 		this.referenceId = referenceId;
+	}
+
+	public Long getPortfolioId() {
+		return portfolioId;
+	}
+
+	public void setPortfolioId(Long portfolioId) {
+		this.portfolioId = portfolioId;
 	}
 }

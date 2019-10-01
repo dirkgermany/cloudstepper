@@ -2,6 +2,9 @@ package com.dam.jobService.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +15,11 @@ import com.dam.exception.DamServiceException;
 import com.dam.jobService.JsonHelper;
 import com.dam.jobService.ScheduledTasks;
 import com.dam.jobService.TaskConfiguration;
+import com.dam.jobService.messageClass.Intent;
 import com.dam.jobService.rest.consumer.Consumer;
+import com.dam.jobService.rest.message.RestRequestIntent;
+import com.dam.jobService.type.ActionType;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -93,5 +100,69 @@ public abstract class Client {
 	protected String getServiceProviderUrl() {
 		return taskConfiguration.getServiceProviderProtocol() + "://" +  taskConfiguration.getServiceProviderHost() + ":" + taskConfiguration.getServiceProviderPort();
 	}
+	
+	/*
+	 * Requests the Service Provider for a List with TransferToDepot Intents.
+	 */
+	protected List<Intent> getIntentList(ActionType action, String domain, String path, String nodeName) throws DamServiceException {
+		Intent searchIntent = new Intent();
+		searchIntent.setAction(action);
+		searchIntent.setBooked(false);
 
+		RestRequestIntent restRequest = new RestRequestIntent(searchIntent);
+
+		JsonNode node = jsonHelper.getObjectMapper().valueToTree(restRequest);
+		JsonNode response = sendRequest(node, domain + "/" + path);
+
+		JsonNode jsonIntentList = jsonHelper.extractNodeFromNode(response, nodeName);
+
+		List<Intent> intentList = new ArrayList<>();
+		if (null != jsonIntentList) {
+			try {
+				if (jsonIntentList.isArray()) {
+					for (JsonNode arrayItem : jsonIntentList) {
+						intentList.add(jsonHelper.getObjectMapper().treeToValue(arrayItem, Intent.class));
+					}
+				} else if (jsonIntentList.isObject()) {
+					intentList.add(jsonHelper.getObjectMapper().treeToValue(jsonIntentList, Intent.class));
+				}
+			} catch (JsonProcessingException e) {
+				throw new DamServiceException(500L, "Job :: Fehler bei Bearbeitung der Response",
+						e.getMessage());
+			}
+		}
+		return intentList;
+	}
+
+	/*
+	 * Call Service Provider for updating the status of the dependent entities.
+	 */
+	protected void confirmIntent(Intent intent, ActionType action, String domain, String path) throws DamServiceException {
+		intent.setAction(action);
+		intent.setAccepted(true);
+		intent.setBookingDate(new Date());
+
+		RestRequestIntent restRequest = new RestRequestIntent(intent);
+
+		JsonNode node = jsonHelper.getObjectMapper().valueToTree(restRequest);
+		sendRequest(node, domain + "/" + path);
+	}
+
+	/**
+	 * Call Service Provider and tell him that the intent was declined.
+	 * @param intent
+	 * @param action
+	 * @param domain
+	 * @param path
+	 * @throws DamServiceException
+	 */
+	protected void declineIntent(Intent intent, ActionType action, String domain, String path) throws DamServiceException {
+		intent.setAction(action);
+		intent.setAccepted(false);
+		intent.setBookingDate(new Date());
+		
+		RestRequestIntent restRequest = new RestRequestIntent(intent);
+		JsonNode node = jsonHelper.getObjectMapper().valueToTree(restRequest);
+		sendRequest(node, domain + "/" + path);
+	}
 }

@@ -41,74 +41,16 @@ public class JobInvestIntent extends Client {
 		// TODO wenn aktion nicht ausgeführt werden konnte (token abgelaufen) dann login
 		// forcieren
 
-		Iterator<Intent> it = getIntentList().iterator();
+		Iterator<Intent> it = getIntentList(ActionType.INVEST_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT_INVEST, NODE_RESPONSE_INTENT_LIST).iterator();
 		while (it.hasNext()) {
 			Intent intent = it.next();
 			if (ExternalApiConsumer.debit(intent.getUserId(), intent.getAmount())) {
 				// house bank accepted
-				confirmIntent(intent);
+				confirmIntent(intent, ActionType.INVEST_INTENT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_INVEST_DECLINED);
 			}
 			else {
-				declineIntent(intent);
+				declineIntent(intent, ActionType.INVEST_INTENT_DECLINED, DOMAIN_DEPOT, PATH_INTENT_INVEST_DECLINED);
 			}
 		}
 	}
-	
-	private void declineIntent(Intent intent) throws DamServiceException {
-		intent.setAction(ActionType.INVEST_INTENT_DECLINED);
-		intent.setAccepted(false);
-		intent.setBookingDate(new Date());
-		
-		RestRequestIntent restRequest = new RestRequestIntent(intent);
-		JsonNode node = jsonHelper.getObjectMapper().valueToTree(restRequest);
-		sendRequest(node, DOMAIN_DEPOT + "/" + PATH_INTENT_INVEST_DECLINED);
-	}
-
-	/*
-	 * Call Service Provider for updating the status of the dependent entities.
-	 */
-	private void confirmIntent(Intent intent) throws DamServiceException {
-		intent.setAction(ActionType.INVEST_INTENT_CONFIRMED);
-		intent.setAccepted(true);
-		intent.setBookingDate(new Date());
-
-		RestRequestIntent restRequest = new RestRequestIntent(intent);
-
-		JsonNode node = jsonHelper.getObjectMapper().valueToTree(restRequest);
-		sendRequest(node, DOMAIN_DEPOT + "/" + PATH_INTENT_INVEST_CONFIRMED);
-	}
-
-	/*
-	 * Requests the Service Provider for a List with Invest Intents.
-	 */
-	private List<Intent> getIntentList() throws DamServiceException {
-		Intent searchIntent = new Intent();
-		searchIntent.setAction(ActionType.INVEST_INTENT);
-		searchIntent.setBooked(false);
-
-		RestRequestIntent restRequest = new RestRequestIntent(searchIntent);
-
-		JsonNode node = jsonHelper.getObjectMapper().valueToTree(restRequest);
-		JsonNode response = sendRequest(node, DOMAIN_DEPOT + "/" + PATH_LIST_INTENT_INVEST);
-
-		JsonNode jsonIntentList = jsonHelper.extractNodeFromNode(response, NODE_RESPONSE_INTENT_LIST);
-
-		List<Intent> intentList = new ArrayList<>();
-		if (null != jsonIntentList) {
-			try {
-				if (jsonIntentList.isArray()) {
-					for (JsonNode arrayItem : jsonIntentList) {
-						intentList.add(jsonHelper.getObjectMapper().treeToValue(arrayItem, Intent.class));
-					}
-				} else if (jsonIntentList.isObject()) {
-					intentList.add(jsonHelper.getObjectMapper().treeToValue(jsonIntentList, Intent.class));
-				}
-			} catch (JsonProcessingException e) {
-				throw new DamServiceException(500L, "JobInvestIntent :: Fehler bei Bearbeitung der Response",
-						e.getMessage());
-			}
-		}
-		return intentList;
-	}
-
 }

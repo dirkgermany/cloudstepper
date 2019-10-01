@@ -1,8 +1,13 @@
 package com.dam.jobService.task;
 
+import java.util.Iterator;
+
 import org.springframework.stereotype.Component;
 
 import com.dam.exception.DamServiceException;
+import com.dam.jobService.messageClass.Intent;
+import com.dam.jobService.rest.consumer.ExternalApiConsumer;
+import com.dam.jobService.type.ActionType;
 
 /**
  * Get list of open InvestIntents from Service Provider.
@@ -14,6 +19,12 @@ import com.dam.exception.DamServiceException;
 @Component
 public class JobTransferToDepotIntent extends Client {
 	
+	private final static String DOMAIN_DEPOT = "depot";
+	private final static String PATH_LIST_INTENT_DEPOT_TRANSFER = "getListIntentDepotTransfer";
+	private final static String PATH_INTENT_TRANSFER_TO_DEPOT_CONFIRMED = "intentTransferToDepotConfirmed";
+	private final static String PATH_INTENT_TRANSFER_TO_DEPOT_DECLINED = "intentTransferToDepotDeclined";
+	private final static String NODE_RESPONSE_INTENT_LIST = "intentList";
+	
 	public JobTransferToDepotIntent() {		
 	}
 
@@ -22,12 +33,24 @@ public class JobTransferToDepotIntent extends Client {
 	public void executeJob() throws DamServiceException {
 		super.login(this.getClass().getName());
 
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// TODO wenn aktion nicht ausgeführt werden konnte (token abgelaufen) dann login
+		// forcieren
+
+		Iterator<Intent> it = getIntentList(ActionType.TRANSFER_TO_DEPOT_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT_DEPOT_TRANSFER, NODE_RESPONSE_INTENT_LIST).iterator();
+		while (it.hasNext()) {
+			Intent intent = it.next();
+			
+			if (ExternalApiConsumer.stockIncrease(intent.getUserId(), intent.getAmount(), intent.getPortfolioId())) {
+				// house bank accepted
+				confirmIntent(intent, ActionType.TRANSFER_TO_DEPOT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_TRANSFER_TO_DEPOT_CONFIRMED);
+			}
+			else {
+				declineIntent(intent, ActionType.TRANSFER_TO_DEPOT_INTENT, DOMAIN_DEPOT, PATH_INTENT_TRANSFER_TO_DEPOT_DECLINED);
+			}
 		}
 	}
+	
+
+	
 
 }

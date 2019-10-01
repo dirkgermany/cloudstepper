@@ -43,5 +43,11 @@ public class RequestHelper {
 			throw new DamServiceException(400L, "Unknown or invalid currency", "Currency in Request not allowed: " + currency.name());
 		}
 	}
+	
+	public static void checkPortfolio(Long portfolioId) throws DamServiceException {
+		if (null == portfolioId) {
+			throw new DamServiceException(400L,  "Invalid portfolioId", "portfolioId is null");
+		}
+	}
 
 }
