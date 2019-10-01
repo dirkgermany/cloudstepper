@@ -1,9 +1,8 @@
-package com.dam.jobService.task.depot;
+package com.dam.jobService.task;
 
 import org.springframework.stereotype.Component;
 
 import com.dam.exception.DamServiceException;
-import com.dam.jobService.task.Client;
 
 /**
  * Get list of open InvestIntents from Service Provider.

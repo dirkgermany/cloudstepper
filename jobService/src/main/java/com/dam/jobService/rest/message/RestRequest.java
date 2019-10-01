@@ -3,7 +3,8 @@ package com.dam.jobService.rest.message;
 public class RestRequest {
 	
 	private String clientSource;
-    private String requestorUserId;
+    private Long requestorUserId;
+    private String rights;
 
 	
 	public RestRequest (String clientSource) {
@@ -18,12 +19,20 @@ public class RestRequest {
 		this.clientSource = clientSource;
 	}
 	
-    public String getRequestorUserId() {
+    public Long getRequestorUserId() {
     	return requestorUserId;
     }
     
-    public void setRequestorUserId(String requestorUserId) {
+    public void setRequestorUserId(Long requestorUserId) {
     	this.requestorUserId = requestorUserId;
     }
+
+	public String getRights() {
+		return rights;
+	}
+
+	public void setRights(String rights) {
+		this.rights = rights;
+	}
 
 }

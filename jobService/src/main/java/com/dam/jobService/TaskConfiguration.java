@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.dam.exception.DamServiceException;
-import com.dam.jobService.type.TaskType;
+import com.dam.jobService.type.ActionType;
 
 /**
  * Does two missions:
@@ -29,8 +29,8 @@ public class TaskConfiguration {
 	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
-	private Map<TaskType, Thread> activeTaskList = new ConcurrentHashMap<>();
-	private Map<TaskType, List<TaskType>>dependencyList = new HashMap<>();
+	private Map<ActionType, Thread> activeTaskList = new ConcurrentHashMap<>();
+	private Map<ActionType, List<ActionType>>dependencyList = new HashMap<>();
 	
 	@Value("${provider.service.protocol}")
 	private String serviceProviderProtocol;
@@ -56,14 +56,14 @@ public class TaskConfiguration {
 		Iterator<String> it = successorList.iterator();
 		int index = 0;
 		while (it.hasNext()) {
-			TaskType successor = TaskType.valueOf(it.next());
-			TaskType predecessor = TaskType.valueOf(predecessorList.get(index));
+			ActionType successor = ActionType.valueOf(it.next());
+			ActionType predecessor = ActionType.valueOf(predecessorList.get(index));
 			
-			List<TaskType> predecessorTaskList = dependencyList.get(successor);
+			List<ActionType> predecessorTaskList = dependencyList.get(successor);
 			if (null == predecessorTaskList) {
 				predecessorTaskList = new ArrayList<>();
 			}
-			predecessorTaskList.add(TaskType.valueOf(predecessor.name()));
+			predecessorTaskList.add(ActionType.valueOf(predecessor.name()));
 			
 			dependencyList.put(successor, predecessorTaskList);
 			index++;
@@ -79,7 +79,7 @@ public class TaskConfiguration {
 	 * @param dependentTask
 	 * @return
 	 */
-	public List<TaskType> getPredecessorListForTask(TaskType successorTask) {
+	public List<ActionType> getPredecessorListForTask(ActionType successorTask) {
 		if (dependencyList.size() == 0) {
 			initDependencies();
 		}		
@@ -90,7 +90,7 @@ public class TaskConfiguration {
 		return dependencyList.get(successorTask);
 	}
 	
-	public void addToActiveTaskList(TaskType activeTask, Thread t) {
+	public void addToActiveTaskList(ActionType activeTask, Thread t) {
 		activeTaskList.put(activeTask, t);
 	}
 	
@@ -99,14 +99,14 @@ public class TaskConfiguration {
 	 * @param predecessorList
 	 * @return
 	 */
-	public Thread getSyncThread (List<TaskType> predecessorList) {
+	public Thread getSyncThread (List<ActionType> predecessorList) {
 		if (null == activeTaskList || 0 == activeTaskList.size() || null == predecessorList || 0 == predecessorList.size()) {
 			return null;
 		}
 		
-		Iterator<TaskType> it = predecessorList.iterator();
+		Iterator<ActionType> it = predecessorList.iterator();
 		while (it.hasNext()) {
-			TaskType predecessor = it.next();
+			ActionType predecessor = it.next();
 			Thread thread = activeTaskList.get(predecessor);
 			if (null != thread) {
 				return thread;
@@ -115,11 +115,11 @@ public class TaskConfiguration {
 		return null;
 	}
 	
-	public void removeFromActiveTaskList(TaskType inactiveTask) {
+	public void removeFromActiveTaskList(ActionType inactiveTask) {
 		activeTaskList.remove(inactiveTask);
 	}
 	
-	public boolean isTaskActive(TaskType task) {
+	public boolean isTaskActive(ActionType task) {
 		if (null != activeTaskList.get(task)) {
 			return true;
 		}

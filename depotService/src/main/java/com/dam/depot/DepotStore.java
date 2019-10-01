@@ -1,7 +1,7 @@
 package com.dam.depot;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.dam.depot.model.DepotModel;
-import com.dam.depot.model.entity.Account;
 import com.dam.depot.model.entity.Depot;
-import com.dam.depot.rest.message.account.AccountRequest;
 import com.dam.depot.rest.message.depot.DepotListRequest;
 import com.dam.depot.rest.message.depot.DepotRequest;
 import com.dam.depot.types.ActionType;
@@ -170,37 +168,19 @@ public class DepotStore {
 		// store depot
 		Depot depot = createDepotSafe(depotRequest);
 
-		Account account = new Account(depotRequest.getDepot());
+//		Account account = new Account(depotRequest.getDepot());
+		
+		//TODO!!!
+		
 		amount = RequestHelper.setAmountPositive(amount);
-		AccountRequest accountRequest = new AccountRequest(account.getRequestorUserId(), account);
+//		AccountRequest accountRequest = new AccountRequest(account.getRequestorUserId(), account);
 
 		// store account
-		accountStore.createAccountSafe(accountRequest);
+//		accountStore.createAccountSafe(accountRequest);
 
 		return depot;
 	}
 
-	/**
-	 * Deposit is only stored to the Entity Intent
-	 * @param depotDepositRequest
-	 * @return
-	 * @throws DamServiceException
-	 */
-	public Depot depositSafe(DepotRequest depotDepositRequest) throws DamServiceException {
-		List<ActionType> allowedActions = new ArrayList<>();
-		allowedActions.add(ActionType.DEPOSIT);
-		RequestHelper.checkActions(depotDepositRequest.getDepot().getAction(), allowedActions);
-		RequestHelper.checkAmountTransfer(depotDepositRequest.getDepot().getAmount());
-		RequestHelper.checkCurrency(depotDepositRequest.getDepot().getCurrency());
-
-		Account account = new Account(depotDepositRequest.getDepot());
-		account.setAction(ActionType.DEPOT_INVEST_INTENT);
-		account.setActionDate(new Date());
-		AccountRequest accountRequest = new AccountRequest(account.getRequestorUserId(), account);
-		account = accountStore.createAccountSafe(accountRequest);
-
-		return new Depot(account);
-	}
 
 	/**
 	 * Creation of depot requests existing userId, givenName and lastName. userId in

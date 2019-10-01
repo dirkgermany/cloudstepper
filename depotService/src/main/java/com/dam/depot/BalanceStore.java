@@ -1,6 +1,5 @@
 package com.dam.depot;
 
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import com.dam.depot.model.BalanceModel;
@@ -24,11 +23,7 @@ public class BalanceStore {
 	}
 
 	public Balance getBalanceByUserId(Long userId) {
-		Optional<Balance> optionalBalance = balanceModel.findById(userId);
-		if (null != optionalBalance && optionalBalance.isPresent()) {
-			return optionalBalance.get();
-		}
-		return null;
+		return balanceModel.findByUserId(userId);
 	}
 	
 	public Balance saveBalance(Balance balance) throws DamServiceException {

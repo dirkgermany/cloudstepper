@@ -1,21 +1,16 @@
 package com.dam.jobService.rest.consumer;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
 import com.dam.exception.DamServiceException;
-import com.dam.jobService.TaskConfiguration;
 import com.dam.jobService.JsonHelper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class Consumer {
-	@Autowired
-	TaskConfiguration taskConfiguration;
 
 	/**
 	 * Send Request to any service
@@ -28,7 +23,6 @@ public class Consumer {
 	public JsonNode retrieveResponse(String request, String url, String action) throws DamServiceException {
 		com.dam.jobService.JsonHelper jsonHelper = new JsonHelper();
 
-		action = action.replace("/", "");
 		String URI = url + "/" + action;
 		String tokenId = null;
 
@@ -59,19 +53,6 @@ public class Consumer {
 			return jsonHelper.convertStringToNode(serviceResponse);
 		}
 		return null;
-	}
-
-	/*
-	 * 
-	 */
-	private String enrichRequest(String request, JsonNode validatedToken, String rights) {
-		JsonHelper jsonHelper = new JsonHelper();
-		Long loggedInUserId = jsonHelper.extractLongFromNode(validatedToken, "userId");
-
-		request = jsonHelper.putToJsonNode(request, "requestorUserId", loggedInUserId.toString());
-		request = jsonHelper.putToJsonNode(request, "rights", rights);
-
-		return request;
 	}
 
 	private JsonNode createJsonResponse(String serviceResponse, String tokenId) {

@@ -14,4 +14,12 @@ public class IntentListResponse extends RestResponse{
 		this.intentList = intentList;
 	}
 
+	public List<Intent> getIntentList() {
+		return intentList;
+	}
+
+	public void setIntentList(List<Intent> intentList) {
+		this.intentList = intentList;
+	}
+
 }

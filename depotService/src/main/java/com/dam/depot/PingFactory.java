@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class PingFactory {
 	
 	@Autowired
-	DepotStore depotStore;
+	private DepotStore depotStore;
 	
 	private Map<String, String> pingInfo = new HashMap<String, String>();
 

@@ -16,31 +16,31 @@ import com.dam.depot.types.ActionType;
 @Transactional
 public interface AccountModel extends Repository<Account, Long>, CrudRepository<Account, Long> {
 
-	@Query("SELECT from Account account WHERE account.userId = :userId")
+	@Query("SELECT account from Account account WHERE account.userId = :userId")
 	List<Account> findAccountByUser(@Param("userId") Long userId);
 	
-	@Query("SELECT from Account account WHERE account.userId = :userId " + " AND account.action = :action "
+	@Query("SELECT account from Account account WHERE account.userId = :userId " + " AND account.action = :action "
 			+ " AND account.actionDate >= :dateFrom " + " AND account.actionDate <= :dateUntil")
 	List<Account> findByUserActionDateFromDateUntil(@Param("userId") Long userId, @Param("action") ActionType action,
 			@Param("dateFrom") Date dateFrom, @Param("dateUntil") Date dateUntil);
 	
-	@Query("SELECT from Account account WHERE account.userId = :userId " + " AND account.action = :action "
+	@Query("SELECT account from Account account WHERE account.userId = :userId " + " AND account.action = :action "
 			+ " AND account.actionDate >= :dateFrom")
 	List<Account> findByUserActionDateFrom(@Param("userId") Long userId, @Param("action") ActionType action,
 			@Param("dateFrom") Date dateFrom);
 
-	@Query("SELECT from Account account WHERE account.userId = :userId " + " AND account.action = :action "
+	@Query("SELECT account from Account account WHERE account.userId = :userId " + " AND account.action = :action "
 			+ " AND account.actionDate <= :dateUntil")
 	List<Account> findByUserActionDateUntil(@Param("userId") Long userId, @Param("action") ActionType action,
-			@Param("dateFrom") Date dateUntil);
+			@Param("dateUntil") Date dateUntil);
 	
-	@Query("SELECT from Account account WHERE account.userId = :userId AND account.action = :action ")
+	@Query("SELECT account from Account account WHERE account.userId = :userId AND account.action = :action ")
 	List<Account> findByUserAction(@Param("userId") Long userId, @Param("action") ActionType action);
 	
-	@Query("SELECT from Account account WHERE account.userId = :userId  AND account.actionDate >= :dateFrom")
+	@Query("SELECT account from Account account WHERE account.userId = :userId  AND account.actionDate >= :dateFrom")
 	List<Account> findByUserDateFrom(@Param("userId") Long userId, @Param("dateFrom") Date dateFrom);
 
-	@Query("SELECT from Account account WHERE account.userId = :userId  AND account.actionDate <= :dateUntil")
+	@Query("SELECT account from Account account WHERE account.userId = :userId  AND account.actionDate <= :dateUntil")
 	List<Account> findByUserDateUntil(@Param("userId") Long userId, @Param("dateUntil") Date dateUntil);
 
 }

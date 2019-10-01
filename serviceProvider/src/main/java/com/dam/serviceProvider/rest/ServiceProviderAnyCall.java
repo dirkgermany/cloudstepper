@@ -1,19 +1,13 @@
 package com.dam.serviceProvider.rest;
 
-import java.util.Iterator;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.dam.exception.DamServiceException;
 import com.dam.serviceProvider.ConfigProperties;
-import com.dam.serviceProvider.JsonHelper;
 import com.dam.serviceProvider.rest.consumer.Consumer;
-import com.dam.serviceProvider.rest.service.message.PingResponse;
 import com.dam.serviceProvider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
 

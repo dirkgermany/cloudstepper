@@ -30,8 +30,6 @@ public class AccountStore {
 	@Autowired
 	private AccountModel accountModel;
 
-	@Autowired
-
 	public long count() {
 		return accountModel.count();
 	}
@@ -290,5 +288,9 @@ public class AccountStore {
 			}
 		}
 		throw new DamServiceException(new Long(404), "Account could not be saved", "Check Account data in request.");
+	}
+	
+	public Account storeAccount(Account account) throws DamServiceException {
+		return accountModel.save(account);
 	}
 }

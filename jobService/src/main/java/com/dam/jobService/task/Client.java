@@ -15,6 +15,12 @@ import com.dam.jobService.TaskConfiguration;
 import com.dam.jobService.rest.consumer.Consumer;
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Client of Service Provider.
+ * Used to communicate with the service.
+ * @author dirk
+ *
+ */
 @Component
 public abstract class Client {
 	@Autowired
@@ -24,33 +30,25 @@ public abstract class Client {
 	Consumer consumer;
 	
 	private static String token;
-	private JsonHelper jsonHelper = new JsonHelper();
+	protected JsonHelper jsonHelper = new JsonHelper();
 	
 	public abstract void executeJob () throws DamServiceException;
 	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
-	protected JsonNode retrieveResponse(JsonNode node, String action) throws DamServiceException {
-		
-		if (null == token) {
-			throw new DamServiceException(500L, "Request could not be sent", "Task Client is not logged in, Token is null");
-		}
-
-		String url = getServiceProviderUrl();
-		node = jsonHelper.addToJsonNode(node, "tokenId", token);
-		
-		
-		return consumer.retrieveResponse(jsonHelper.extractStringFromJsonNode(node), url, action);
-	}
 	
 	public void logout (String className) throws DamServiceException {
 		logger.info("Job Service Client :: {}: Logout {}", dateTimeFormatter.format(LocalDateTime.now()), className);
 		token = null;
 	}
 		
-	public void login (String className) throws DamServiceException {
+	/*
+	 * Login to Service Provider.
+	 * Tries to use the Token if set.
+	 */
+	protected void login (String className) throws DamServiceException {
 		if (null != token) {
-			logger.info("Job Service Client :: {}: Token: {} Class: {}", dateTimeFormatter.format(LocalDateTime.now()), this.token, className);
+			logger.info("Job Service Client :: {}: Token: {} Class: {}", dateTimeFormatter.format(LocalDateTime.now()), Client.token, className);
 			return;
 		}
 		logger.info("Job Service Client :: {}: Login {}", dateTimeFormatter.format(LocalDateTime.now()), className);
@@ -72,6 +70,24 @@ public abstract class Client {
 			throw new DamServiceException(403L, "Login to  Service Provider failed", result + "; Service: " + serviceName);
 		}
 		token = jsonHelper.extractStringFromJsonNode(response, "tokenId");
+	}
+	
+	/*
+	 * Send request to Service Provider.
+	 */
+	protected JsonNode sendRequest(JsonNode node, String path) throws DamServiceException {
+		String url = getServiceProviderUrl();
+		
+		jsonHelper.addToJsonNode(node, "tokenId", Client.token);
+		
+		JsonNode response = consumer.retrieveResponse(jsonHelper.extractStringFromJsonNode(node), url, path);
+		long returnCode = jsonHelper.extractLongFromNode(response, "returnCode");
+		if (200L != returnCode) {
+			String result  = jsonHelper.extractStringFromJsonNode(response, "result");
+			String serviceName = jsonHelper.extractStringFromJsonNode(response, "serviceName");
+			throw new DamServiceException(403L, "Request " + path + " failed", result + "; Service: " + serviceName);
+		}
+		return response;
 	}
 	
 	protected String getServiceProviderUrl() {

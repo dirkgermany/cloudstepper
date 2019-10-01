@@ -1,6 +1,7 @@
 package com.dam.depot.model.entity;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.dam.depot.types.ActionType;
 import com.dam.depot.types.Currency;
+import com.dam.depot.types.ReferenceType;
 
 /**
  * The depot entity mirrors the depot at the depot bank.
@@ -28,7 +30,7 @@ import com.dam.depot.types.Currency;
 @Entity
 @Component
 @Table(name = "Depot", 
-			uniqueConstraints= {@UniqueConstraint(columnNames = {"userId", "action", "amount", "date"})},
+			uniqueConstraints= {@UniqueConstraint(columnNames = {"userId", "action", "amount", "actionDate"})},
 			indexes = {@Index(name = "idx_depot_user_action", columnList = "userId, action"),
 					   @Index(name = "idx_depot_user_date", columnList = "userId, actionDate"), 
 					   @Index(name = "idx_depot_user", columnList = "userId"), 
@@ -64,22 +66,15 @@ public class Depot {
 
 	@Column (nullable=false)
 	@Enumerated(EnumType.STRING)
-	private Currency currency;
+	private Currency currency = Currency.EUR;
 
-	@Column
-	@Type(type="true_false")
-	private boolean booked;
-
-	public Depot (Account account) {
-		this.action = account.getAction();
-		this.actionDate = account.getActionDate();
-		this.amount = account.getAmount();
-		this.eventText = account.getEventText();
-		this.userId = account.getUserId();
-		this.requestorUserId  = account.getRequestorUserId();
-		this.currency = account.getCurrency();
-		this.portfolioId = null;
-	}
+	@Column(nullable = true)
+	private Long referenceId;
+	
+	@Column(nullable = true)
+	@Enumerated(EnumType.STRING)
+	private ReferenceType referenceType;
+	
 
 	public Depot updateEntity (Depot container) {
 		this.action = container.getAction();
@@ -90,6 +85,8 @@ public class Depot {
 		this.requestorUserId  = container.getRequestorUserId();
 		this.portfolioId = container.getPortfolioId();
 		this.currency = container.getCurrency();
+		this.referenceId = container.getReferenceId();
+		this.referenceType = container.getReferenceType();
 		return this;
 	}
 
@@ -166,11 +163,19 @@ public class Depot {
 		this.currency = currency;
 	}
 
-	public boolean isBooked() {
-		return booked;
+	public Long getReferenceId() {
+		return referenceId;
 	}
 
-	public void setBooked(boolean booked) {
-		this.booked = booked;
+	public void setReferenceId(Long referenceId) {
+		this.referenceId = referenceId;
+	}
+
+	public ReferenceType getReferenceType() {
+		return referenceType;
+	}
+
+	public void setReferenceType(ReferenceType referenceType) {
+		this.referenceType = referenceType;
 	}
 }

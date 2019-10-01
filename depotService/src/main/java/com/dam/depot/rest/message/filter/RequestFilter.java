@@ -1,6 +1,6 @@
 package com.dam.depot.rest.message.filter;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class RequestFilter {
 	

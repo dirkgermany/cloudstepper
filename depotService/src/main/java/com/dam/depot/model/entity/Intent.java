@@ -44,7 +44,11 @@ public class Intent {
 	private ActionType action;
 	
 	@Column(nullable = false)
-	private Date actionDate;
+	private Date actionDate = new Date();
+	
+	@Column(nullable = true)
+	@Type (type="yes_no")
+	private Boolean booked = false;
 	
 	/**
 	 * When booked the request must be accepted or declined at the same time
@@ -60,10 +64,30 @@ public class Intent {
 	private Date bookingDate;
 	
 	/**
-	 * Especially when the request was declined here the reason should be explained
+	 * External API response. Especially when the request was declined here the reason should be explained
 	 */
 	@Column(nullable = true)
 	private String finishResponse;
+	
+	/*
+	 * Reference to the precedessor Intent
+	 */
+	@Column(nullable = true)
+	private Long referenceId;
+	
+	public void setIntent (Intent container) {
+		this.action = container.getAction();
+		this.actionDate = container.getActionDate();
+		this.amount = container.getAmount();
+		this.requestorUserId = container.getRequestorUserId();
+		this.userId = container.getUserId();
+		this.currency = container.getCurrency();
+		this.accepted = container.getAccepted();
+		this.booked = container.getBooked();
+		this.bookingDate = container.getBookingDate();
+		this.finishResponse = container.getFinishResponse();
+		this.referenceId = container.referenceId;
+	}
 	
 	public Intent updateEntity(Intent container) {
 		this.action = container.getAction();
@@ -73,6 +97,7 @@ public class Intent {
 		this.userId = container.getUserId();
 		this.currency = container.getCurrency();
 		this.accepted = container.getAccepted();
+		this.booked = container.getBooked();
 		this.bookingDate = container.getBookingDate();
 		this.finishResponse = container.getFinishResponse();
 		return this;
@@ -159,5 +184,21 @@ public class Intent {
 
 	public void setRequestorUserId(Long requestorUserId) {
 		this.requestorUserId = requestorUserId;
+	}
+
+	public Boolean getBooked() {
+		return booked;
+	}
+
+	public void setBooked(Boolean booked) {
+		this.booked = booked;
+	}
+
+	public Long getReferenceId() {
+		return referenceId;
+	}
+
+	public void setReferenceId(Long referenceId) {
+		this.referenceId = referenceId;
 	}
 }

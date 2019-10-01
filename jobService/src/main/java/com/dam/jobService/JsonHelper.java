@@ -10,13 +10,18 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonHelper {
+	
+	ObjectMapper objectMapper = new ObjectMapper();
+	
+	public ObjectMapper getObjectMapper () {
+		return this.objectMapper;
+	}
 
 	public JsonNode createEmptyNode() {
 		return JsonNodeFactory.instance.objectNode();
 	}
 
 	public JsonNode convertStringToNode(String jsonString) {
-		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			return objectMapper.readTree(jsonString);
 		} catch (IOException e) {
@@ -28,7 +33,6 @@ public class JsonHelper {
 	}
 
 	public JsonNode createNodeFromMap(Map<String, String> keyValues) {
-		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode responseNode = objectMapper.createObjectNode();
 
 		for (Map.Entry<String, String> entry : keyValues.entrySet()) {
@@ -60,7 +64,7 @@ public class JsonHelper {
 		responseTree = convertStringToNode(jsonString);
 		((ObjectNode) responseTree).put(key, value);
 		try {
-			return new ObjectMapper().writeValueAsString(responseTree);
+			return objectMapper.writeValueAsString(responseTree);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,7 +80,6 @@ public class JsonHelper {
 	 * @return
 	 */
 	public Long extractLongFromRequest(String jsonContent, String key) {
-		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode node;
 		Long longValue = null;
 		try {
@@ -99,7 +102,6 @@ public class JsonHelper {
 	}
 
 	public String extractStringFromRequest(String jsonContent, String key) {
-		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode node;
 		String value = null;
 		try {
@@ -131,9 +133,14 @@ public class JsonHelper {
 		return null;
 	}
 
+	/**
+	 * Returns a JsonNode as String representation
+	 * @param jsonContent
+	 * @return
+	 */
 	public String extractStringFromJsonNode(JsonNode jsonContent) {
 		try {
-			return new ObjectMapper().writeValueAsString(jsonContent);
+			return objectMapper.writeValueAsString(jsonContent);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -156,7 +163,7 @@ public class JsonHelper {
 	public Long extractLongFromNode(JsonNode jsonContent, String key) {
 		String stringContent = null;
 		try {
-			stringContent = new ObjectMapper().writeValueAsString(jsonContent);
+			stringContent = objectMapper.writeValueAsString(jsonContent);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

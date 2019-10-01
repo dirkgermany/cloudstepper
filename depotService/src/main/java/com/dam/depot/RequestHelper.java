@@ -1,22 +1,19 @@
 package com.dam.depot;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.dam.depot.rest.message.depot.DepotRequest;
 import com.dam.depot.types.ActionType;
 import com.dam.depot.types.Currency;
 import com.dam.exception.DamServiceException;
 
 public class RequestHelper {
 	
-	private final static Set<String> values = new HashSet<String>(Currency.values().length);
+	private final static Set<String> currencyValues = new HashSet<String>(Currency.values().length);
 
 	static {
 		for (Currency c : Currency.values())
-			values.add(c.name());
+			currencyValues.add(c.name());
 	}
 
 	public static void checkActions(ActionType action, List<ActionType> allowedActions) throws DamServiceException {
@@ -42,7 +39,7 @@ public class RequestHelper {
 	}
 
 	public static void checkCurrency(Currency currency) throws DamServiceException {
-		if (! values.contains(currency.name())) {
+		if (! currencyValues.contains(currency.name())) {
 			throw new DamServiceException(400L, "Unknown or invalid currency", "Currency in Request not allowed: " + currency.name());
 		}
 	}

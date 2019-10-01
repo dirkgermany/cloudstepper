@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.Type;
 import org.springframework.stereotype.Component;
 
 import com.dam.depot.types.ActionType;
@@ -30,7 +28,7 @@ import com.dam.depot.types.ReferenceType;
 @Entity
 @Component
 @Table(name = "Account", uniqueConstraints = {
-		@UniqueConstraint(columnNames = { "userId", "action", "amount", "date" }) }, indexes = {
+		@UniqueConstraint(columnNames = { "userId", "action", "amount", "actionDate" }) }, indexes = {
 				@Index(name = "idx_account_user_action", columnList = "userId, action"),
 				@Index(name = "idx_account_user_date", columnList = "userId, actionDate"),
 				@Index(name = "idx_account_user", columnList = "userId"),
@@ -62,24 +60,15 @@ public class Account {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Currency currency;
+	private Currency currency = Currency.EUR;
 	
 	@Column(nullable = true)
 	private Long referenceId;
 	
 	@Column(nullable = true)
+	@Enumerated(EnumType.STRING)
 	private ReferenceType referenceType;
 	
-
-	public Account(Depot depot) {
-		this.action = depot.getAction();
-		this.actionDate = depot.getActionDate();
-		this.amount = depot.getAmount();
-		this.eventText = depot.getEventText();
-		this.requestorUserId = depot.getRequestorUserId();
-		this.userId = depot.getUserId();
-		this.currency = depot.getCurrency();
-	}
 
 	public Account updateEntity(Account container) {
 		this.action = container.getAction();

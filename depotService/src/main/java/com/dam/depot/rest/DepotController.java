@@ -73,22 +73,4 @@ public class DepotController {
 		}
 	}
 
-	/**
-	 * User wants to increase the investment.
-	 * @param depotCreateRequest
-	 * @return
-	 * @throws DamServiceException
-	 */
-	@PostMapping("/deposit")
-	public RestResponse createDepot(@RequestBody DepotCreateRequest depotCreateRequest) throws DamServiceException {
-		RequestBlocker.lockUser(depotCreateRequest.getDepot().getUserId());
-		try {
-			RestResponse response = new DepotCreateResponse(depotStore.depositSafe(depotCreateRequest));
-			RequestBlocker.unlockUser(depotCreateRequest.getDepot().getUserId());
-			return response;
-		} catch (DamServiceException e) {
-			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
-		}
-	}
-
 }

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 import com.dam.exception.DamServiceException;
 import com.dam.jobService.task.Client;
-import com.dam.jobService.task.depot.JobInvestIntent;
-import com.dam.jobService.task.depot.JobTransferToDepotIntent;
-import com.dam.jobService.type.TaskType;
+import com.dam.jobService.task.JobInvestIntent;
+import com.dam.jobService.task.JobTransferToDepotIntent;
+import com.dam.jobService.type.ActionType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +27,7 @@ public class ScheduledTasks {
 
 	@Autowired
 	JobInvestIntent jobInvestIntent;
-	
+
 	@Autowired
 	JobTransferToDepotIntent jobTransferToDepotIntent;
 
@@ -35,56 +35,69 @@ public class ScheduledTasks {
 
 	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-	
+
 	/*
-	 * Waits for precedessor jobs, blocks successors if required, executes a job and logs the scheduling.
-	 * If no other process is active, logs out from Service Provider
+	 * Waits for precedessor jobs, blocks successors if required, executes a job and
+	 * logs the scheduling. If no other process is active, logs out from Service
+	 * Provider
 	 */
-	private void executeJob (TaskType task, Client client) throws DamServiceException {
-		logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), task, "scheduled");
-		
+	private void executeJob(ActionType task, Client client) throws DamServiceException {
+		logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), task,
+				"scheduled");
+
 		// wait if another Job blocks this one
 		new SyncWaiter(task);
-		logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), task, "started");
+		logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), task,
+				"started");
 
 		// Start runner for blocking dependent Jobs
 		SyncRunner runner = new SyncRunner(task);
 
-		client.executeJob();
+		try {
+			client.executeJob();
+		} catch (Exception ex) {
+			logger.error("Scheduled Task", ex);
+		}
+		finally {
+			logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), task,
+					"finished");
+			// Other Jobs perhaps are waiting
+			runner.interrupt();
+		}
 
-		logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), task, "finished");
 
-		// Other Jobs perhaps are waiting
-		runner.interrupt();
+//		// Other Jobs perhaps are waiting
+//		runner.interrupt();
 	}
 
 	@Scheduled(cron = "${cron.depot.investIntent}")
 	public void scheduleInvestIntents() throws DamServiceException {
-		TaskType task = TaskType.INVEST_INTENT;
-		executeJob(task, jobInvestIntent);
+		ActionType action = ActionType.INVEST_INTENT;
+		executeJob(action, jobInvestIntent);
 	}
 
 	@Scheduled(cron = "${cron.depot.transferToDepotIntent}")
 	public void scheduleTransferToDepotIntents() throws DamServiceException {
-		TaskType task = TaskType.TRANSFER_TO_DEPOT_INTENT;
-		executeJob(task, jobTransferToDepotIntent);
+		ActionType action = ActionType.TRANSFER_TO_DEPOT_INTENT;
+		executeJob(action, jobTransferToDepotIntent);
 	}
 
 	/*
 	 * Class to wait for blocking Jobs
 	 */
 	private class SyncWaiter {
-		public SyncWaiter(TaskType successor) {
+		public SyncWaiter(ActionType successor) {
 			this.wait(successor);
 		}
 
-		public void wait(TaskType successor) {
+		public void wait(ActionType successor) {
 
-			List<TaskType> precedessorList = taskConfiguration.getPredecessorListForTask(successor);
+			List<ActionType> precedessorList = taskConfiguration.getPredecessorListForTask(successor);
 
 			Thread precedessorThread = taskConfiguration.getSyncThread(precedessorList);
 			while (null != precedessorThread) {
-				logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), successor, "waiting for thread"+ precedessorThread);
+				logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()),
+						successor, "waiting for thread" + precedessorThread);
 
 				try {
 					precedessorThread.join(maxWaitTime);
@@ -98,12 +111,12 @@ public class ScheduledTasks {
 
 	// Synchronization Class
 	private class SyncRunner extends Thread {
-		private TaskType activeTask;
+		private ActionType action;
 
-		public SyncRunner(TaskType activeTask) {
+		public SyncRunner(ActionType action) {
 
-			this.activeTask = activeTask;
-			taskConfiguration.addToActiveTaskList(this.activeTask, this);
+			this.action = action;
+			taskConfiguration.addToActiveTaskList(this.action, this);
 			this.start();
 		}
 
@@ -114,7 +127,7 @@ public class ScheduledTasks {
 					Thread.sleep(1000);
 
 				} catch (InterruptedException e) {
-					taskConfiguration.removeFromActiveTaskList(this.activeTask);
+					taskConfiguration.removeFromActiveTaskList(this.action);
 					break;
 				}
 			}

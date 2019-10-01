@@ -1,5 +1,7 @@
 package com.dam.depot.model.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.springframework.stereotype.Component;
 
@@ -15,22 +18,35 @@ import com.dam.depot.types.Currency;
 
 @Entity
 @Component
-@Table(name = "Balance")
+@Table(name = "Balance", uniqueConstraints= {@UniqueConstraint(columnNames = {"userId"})}
+)
 public class Balance {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long balanceId;
+
+	@Column(nullable = false)
 	private Long userId;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private Float amountAccount;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private Float amountDepot;
+	
+	@Column(nullable = true)
+	private Float amountAccountIntent;
+	
+	@Column(nullable = true)
+	private Float amountDepotIntent;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Currency currency;
+	private Currency currency = Currency.EUR;
+	
+	@Column(nullable = true)
+	private Date lastUpdate;
 
 	public Long getUserId() {
 		return userId;
@@ -62,5 +78,29 @@ public class Balance {
 
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
+	}
+
+	public Float getAmountAccountIntent() {
+		return amountAccountIntent;
+	}
+
+	public void setAmountAccountIntent(Float amountAccountIntent) {
+		this.amountAccountIntent = amountAccountIntent;
+	}
+
+	public Float getAmountDepotIntent() {
+		return amountDepotIntent;
+	}
+
+	public void setAmountDepotIntent(Float amountDepotIntent) {
+		this.amountDepotIntent = amountDepotIntent;
+	}
+
+	public Date getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 }
