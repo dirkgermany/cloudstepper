@@ -47,7 +47,6 @@ public class PingFactory {
 		// Server
 		try {
 			pingInfo.put("hostAddress", InetAddress.getLocalHost().getHostAddress());
-			pingInfo.put("hostAddressLoopBack", InetAddress.getLoopbackAddress().getHostAddress());
 		} catch (UnknownHostException e1) {
 		}
 

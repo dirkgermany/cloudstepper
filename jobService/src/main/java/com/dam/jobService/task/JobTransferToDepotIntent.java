@@ -45,7 +45,7 @@ public class JobTransferToDepotIntent extends Client {
 				confirmIntent(intent, ActionType.TRANSFER_TO_DEPOT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_TRANSFER_TO_DEPOT_CONFIRMED);
 			}
 			else {
-				declineIntent(intent, ActionType.TRANSFER_TO_DEPOT_INTENT, DOMAIN_DEPOT, PATH_INTENT_TRANSFER_TO_DEPOT_DECLINED);
+				declineIntent(intent, ActionType.TRANSFER_TO_DEPOT_DECLINED, DOMAIN_DEPOT, PATH_INTENT_TRANSFER_TO_DEPOT_DECLINED);
 			}
 		}
 	}

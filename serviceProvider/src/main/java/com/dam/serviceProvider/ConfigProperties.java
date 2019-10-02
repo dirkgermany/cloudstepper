@@ -21,7 +21,8 @@ public class ConfigProperties {
 	private List<String> configuredServices;
 	private List<String> configuredDomains;
 	
-	private Map<String, Integer> indexes;
+	private Map<String, Integer> indexDomain;
+	private Map<String, Integer> indexService;
 	
 	private List<String> services;
 	private List<String> domains;
@@ -30,22 +31,41 @@ public class ConfigProperties {
 	private List<String> protocols;
 	
 	public Integer getIndexPerDomain(String domain) {
-		if (null == indexes) {
-			indexes = new HashMap<String, Integer>();
+		if (null == indexDomain) {
+			indexDomain = new HashMap<String, Integer>();
 			
 			Iterator <String> it = getDomains().iterator();
 			Integer index = 0;
 			while (it.hasNext()) {
 				String name = it.next();
-				indexes.put(name.toUpperCase(), index);
+				indexDomain.put(name.toUpperCase(), index);
 				index++;
 			}
 		}
-		return indexes.get(domain.toUpperCase());
+		return indexDomain.get(domain.toUpperCase());
+	}
+	
+	public Integer getIndexPerService(String service) {
+		if (null == indexService) {
+			indexService = new HashMap<String, Integer>();
+			
+			Iterator <String> it = getServices().iterator();
+			Integer index = 0;
+			while (it.hasNext()) {
+				String name = it.next();
+				indexService.put(name.toUpperCase(), index);
+				index++;
+			}
+		}
+		return indexService.get(service.toUpperCase());
 	}
 	
 	public String getServiceUrl(int index) {
 		return getProtocols().get(index) + "://" + getHosts().get(index) + ":" + getPorts().get(index);
+	}
+	
+	public String getServiceName(int index) {
+		return getServices().get(index);
 	}
 
 
@@ -98,11 +118,11 @@ public class ConfigProperties {
 
 
 	public Map<String, Integer> getIndexes() {
-		return indexes;
+		return indexDomain;
 	}
 
 	public void setIndexes(Map<String, Integer> indexes) {
-		this.indexes = indexes;
+		this.indexDomain = indexes;
 	}
 
 	public List<String> getDomains() {

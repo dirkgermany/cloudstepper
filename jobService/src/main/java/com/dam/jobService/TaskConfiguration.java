@@ -1,5 +1,6 @@
 package com.dam.jobService;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,12 @@ public class TaskConfiguration {
 	
 	private Map<ActionType, Thread> activeTaskList = new ConcurrentHashMap<>();
 	private Map<ActionType, List<ActionType>>dependencyList = new HashMap<>();
+	
+	@Value("${tasks.activation.task.INVEST_INTENT}")
+	private String isInvestIntentActive;
+	
+	@Value("${tasks.activation.task.TRANSFER_TO_DEPOT_INTENT}")
+	private String isTransferToDepotIntentActive;
 	
 	@Value("${provider.service.protocol}")
 	private String serviceProviderProtocol;
@@ -180,5 +187,25 @@ public class TaskConfiguration {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getIsInvestIntentActive() {
+		logger.info("Job Service :: {} : Configuration IsInvestIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isInvestIntentActive);
+		return isInvestIntentActive;
+	}
+
+	public void setIsInvestIntentActive(String isInvestIntentActive) {
+		logger.info("Job Service :: {} : Configuration IsInvestIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isInvestIntentActive);
+		this.isInvestIntentActive = isInvestIntentActive;
+	}
+
+	public String getIsTransferToDepotIntentActive() {
+		logger.info("Job Service :: {} : Configuration IsTransferToDepotIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isTransferToDepotIntentActive);
+		return isTransferToDepotIntentActive;
+	}
+
+	public void setIsTransferToDepotIntentActive(String isTransferToDepotIntentActive) {
+		logger.info("Job Service :: {} : Configuration IsTransferToDepotIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isTransferToDepotIntentActive);
+		this.isTransferToDepotIntentActive = isTransferToDepotIntentActive;
 	}
 }

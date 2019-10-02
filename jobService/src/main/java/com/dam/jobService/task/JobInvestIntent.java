@@ -46,7 +46,7 @@ public class JobInvestIntent extends Client {
 			Intent intent = it.next();
 			if (ExternalApiConsumer.debit(intent.getUserId(), intent.getAmount())) {
 				// house bank accepted
-				confirmIntent(intent, ActionType.INVEST_INTENT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_INVEST_DECLINED);
+				confirmIntent(intent, ActionType.INVEST_INTENT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_INVEST_CONFIRMED);
 			}
 			else {
 				declineIntent(intent, ActionType.INVEST_INTENT_DECLINED, DOMAIN_DEPOT, PATH_INTENT_INVEST_DECLINED);

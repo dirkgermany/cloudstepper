@@ -78,7 +78,7 @@ public class IntentStore {
 	 */
 	public List<Intent> getIntentListSafe(IntentRequest intentRequest) throws DamServiceException {
 		if (null == intentRequest.getIntent()) {
-			throw new DamServiceException(500L, "Invalid request", "Intent is not set in request.");
+			return null;
 		}
 		PermissionCheck.checkRequestedParams(intentRequest, intentRequest.getRequestorUserId(),
 				intentRequest.getRights());

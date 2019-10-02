@@ -42,12 +42,13 @@ public class ServiceProviderPing {
 		pingResponse.getServiceInfos().add(response);
 		
 		// all other microservices
-		Iterator<String> it = config.getDomainList().iterator();
+		Iterator<String> it = config.getServiceList().iterator();
 		Integer index = 0;
 		while (it.hasNext()) {
-			String domainName = it.next();
-			index = config.getIndexPerDomain(domainName);
-			pingResponse = pingToService(pingResponse, config.getServiceUrl(index), domainName);
+			String serviceName = it.next();
+			index = config.getIndexPerService(serviceName);
+//			String domainName = config.getDomainList().get(index);
+			pingResponse = pingToService(pingResponse, config.getServiceUrl(index), serviceName.toUpperCase());
 			index++;
 		}
 		

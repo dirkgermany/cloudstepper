@@ -17,7 +17,7 @@ public class ExternalApiConsumer {
 	 * @return
 	 */
 	public static boolean debit (Long userId, float amount) {
-		return false;
+		return true;
 	}
 	
 	/**

@@ -52,7 +52,7 @@ public class PingFactory {
 
 		try {
 			InetAddress.getLocalHost().getHostName();
-			pingInfo.put("hostName", InetAddress.getLocalHost().getHostName());
+			pingInfo.put("hostName", InetAddress.getLocalHost().getCanonicalHostName());
 		} catch (UnknownHostException e1) {
 		}
 	}

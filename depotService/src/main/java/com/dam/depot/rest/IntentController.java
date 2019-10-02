@@ -37,6 +37,7 @@ public class IntentController {
 			RequestBlocker.unlockUser(intentListRequest.getRequestorUserId());
 			return response;
 		} catch (DamServiceException e) {
+			RequestBlocker.unlockUser(intentListRequest.getRequestorUserId());
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
@@ -73,6 +74,7 @@ public class IntentController {
 			RequestBlocker.unlockUser(intentDeclinedRequest.getRequestorUserId());
 			return response;
 		} catch (DamServiceException e) {
+			RequestBlocker.unlockUser(intentDeclinedRequest.getRequestorUserId());
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
