@@ -113,8 +113,6 @@ public class AuthenticationController {
 		JsonHelper jsonHelper = new JsonHelper();
 
 		UUID tokenId = jsonHelper.extractUuidFromRequest(tokenRequest, "tokenId");
-		Long userId = jsonHelper.extractLongFromRequest(tokenRequest, "userId");
-
 		User user = null;
 		Token token = tokenStore.getToken(tokenId);
 		if (null == token) {

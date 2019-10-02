@@ -1,0 +1,70 @@
+{
+  "groups": [
+    {
+      "name": "token",
+      "type": "com.dam.authentication.ConfigProperties",
+      "sourceType": "com.dam.authentication.ConfigProperties"
+    },
+    {
+      "name": "token.permission-service",
+      "type": "com.dam.authentication.ConfigProperties$PermissionService",
+      "sourceType": "com.dam.authentication.ConfigProperties",
+      "sourceMethod": "public com.dam.authentication.ConfigProperties.PermissionService getPermissionService() "
+    },
+    {
+      "name": "token.token-configuration",
+      "type": "com.dam.authentication.ConfigProperties$TokenConfiguration",
+      "sourceType": "com.dam.authentication.ConfigProperties",
+      "sourceMethod": "public com.dam.authentication.ConfigProperties.TokenConfiguration getTokenConfiguration() "
+    },
+    {
+      "name": "token.user-service",
+      "type": "com.dam.authentication.ConfigProperties$UserService",
+      "sourceType": "com.dam.authentication.ConfigProperties",
+      "sourceMethod": "public com.dam.authentication.ConfigProperties.UserService getUserService() "
+    }
+  ],
+  "properties": [
+    {
+      "name": "token.permission-service.host",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.authentication.ConfigProperties$PermissionService"
+    },
+    {
+      "name": "token.permission-service.port",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.authentication.ConfigProperties$PermissionService"
+    },
+    {
+      "name": "token.permission-service.protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.authentication.ConfigProperties$PermissionService"
+    },
+    {
+      "name": "token.token-configuration.check-old-token-interval",
+      "type": "java.lang.Long",
+      "sourceType": "com.dam.authentication.ConfigProperties$TokenConfiguration"
+    },
+    {
+      "name": "token.token-configuration.max-token-age",
+      "type": "java.lang.Long",
+      "sourceType": "com.dam.authentication.ConfigProperties$TokenConfiguration"
+    },
+    {
+      "name": "token.user-service.host",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.authentication.ConfigProperties$UserService"
+    },
+    {
+      "name": "token.user-service.port",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.authentication.ConfigProperties$UserService"
+    },
+    {
+      "name": "token.user-service.protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.dam.authentication.ConfigProperties$UserService"
+    }
+  ],
+  "hints": []
+}
