@@ -30,14 +30,14 @@ public class TaskConfiguration {
 	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
-	private Map<ActionType, Thread> activeTaskList = new ConcurrentHashMap<>();
+	private Map<ActionType, Thread> runningJobList = new ConcurrentHashMap<>();
 	private Map<ActionType, List<ActionType>>dependencyList = new HashMap<>();
 	
 	@Value("${tasks.activation.task.INVEST_INTENT}")
-	private String isInvestIntentActive;
+	private Boolean isInvestIntentActive;
 	
 	@Value("${tasks.activation.task.TRANSFER_TO_DEPOT_INTENT}")
-	private String isTransferToDepotIntentActive;
+	private Boolean isTransferToDepotIntentActive;
 	
 	@Value("${provider.service.protocol}")
 	private String serviceProviderProtocol;
@@ -77,8 +77,8 @@ public class TaskConfiguration {
 		}
 	}
 	
-	public int getActiveTaskListSize () {
-		return null == activeTaskList ? 0 : activeTaskList.size();
+	public int getRunningJobListSize () {
+		return null == runningJobList ? 0 : runningJobList.size();
 	}
 	
 	/**
@@ -97,8 +97,8 @@ public class TaskConfiguration {
 		return dependencyList.get(successorTask);
 	}
 	
-	public void addToActiveTaskList(ActionType activeTask, Thread t) {
-		activeTaskList.put(activeTask, t);
+	public void addToRunningJobList(ActionType activeTask, Thread t) {
+		runningJobList.put(activeTask, t);
 	}
 	
 	/**
@@ -107,14 +107,14 @@ public class TaskConfiguration {
 	 * @return
 	 */
 	public Thread getSyncThread (List<ActionType> predecessorList) {
-		if (null == activeTaskList || 0 == activeTaskList.size() || null == predecessorList || 0 == predecessorList.size()) {
+		if (null == runningJobList || 0 == runningJobList.size() || null == predecessorList || 0 == predecessorList.size()) {
 			return null;
 		}
 		
 		Iterator<ActionType> it = predecessorList.iterator();
 		while (it.hasNext()) {
 			ActionType predecessor = it.next();
-			Thread thread = activeTaskList.get(predecessor);
+			Thread thread = runningJobList.get(predecessor);
 			if (null != thread) {
 				return thread;
 			}
@@ -122,12 +122,12 @@ public class TaskConfiguration {
 		return null;
 	}
 	
-	public void removeFromActiveTaskList(ActionType inactiveTask) {
-		activeTaskList.remove(inactiveTask);
+	public void removeFromRunningJobList(ActionType inactiveTask) {
+		runningJobList.remove(inactiveTask);
 	}
 	
-	public boolean isTaskActive(ActionType task) {
-		if (null != activeTaskList.get(task)) {
+	public boolean isJobRunning(ActionType task) {
+		if (null != runningJobList.get(task)) {
 			return true;
 		}
 		return false;
@@ -189,22 +189,22 @@ public class TaskConfiguration {
 		this.password = password;
 	}
 
-	public String getIsInvestIntentActive() {
+	public Boolean isInvestIntentActive() {
 		logger.info("Job Service :: {} : Configuration IsInvestIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isInvestIntentActive);
 		return isInvestIntentActive;
 	}
 
-	public void setIsInvestIntentActive(String isInvestIntentActive) {
+	public void setInvestIntentActive(Boolean isInvestIntentActive) {
 		logger.info("Job Service :: {} : Configuration IsInvestIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isInvestIntentActive);
 		this.isInvestIntentActive = isInvestIntentActive;
 	}
 
-	public String getIsTransferToDepotIntentActive() {
+	public Boolean isTransferToDepotIntentActive() {
 		logger.info("Job Service :: {} : Configuration IsTransferToDepotIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isTransferToDepotIntentActive);
 		return isTransferToDepotIntentActive;
 	}
 
-	public void setIsTransferToDepotIntentActive(String isTransferToDepotIntentActive) {
+	public void setTransferToDepotIntentActive(Boolean isTransferToDepotIntentActive) {
 		logger.info("Job Service :: {} : Configuration IsTransferToDepotIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isTransferToDepotIntentActive);
 		this.isTransferToDepotIntentActive = isTransferToDepotIntentActive;
 	}

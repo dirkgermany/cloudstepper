@@ -290,7 +290,7 @@ public class AccountTransactionStore {
 		throw new DamServiceException(new Long(404), "Account could not be saved", "Check Account data in request.");
 	}
 	
-	public AccountTransaction storeAccount(AccountTransaction accountTransaction) throws DamServiceException {
+	public AccountTransaction storeAccountTransaction(AccountTransaction accountTransaction) throws DamServiceException {
 		return accountTransactionModel.save(accountTransaction);
 	}
 }

@@ -57,14 +57,12 @@ public class ScheduledTasks {
 			client.executeJob();
 		} catch (Exception ex) {
 			logger.error("Scheduled Task", ex);
-		}
-		finally {
+		} finally {
 			logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), task,
 					"finished");
 			// Other Jobs perhaps are waiting
 			runner.interrupt();
 		}
-
 
 //		// Other Jobs perhaps are waiting
 //		runner.interrupt();
@@ -72,14 +70,18 @@ public class ScheduledTasks {
 
 	@Scheduled(cron = "${cron.depot.investIntent}")
 	public void scheduleInvestIntents() throws DamServiceException {
-		ActionType action = ActionType.INVEST_INTENT;
-		executeJob(action, jobInvestIntent);
+		if (taskConfiguration.isInvestIntentActive()) {
+			ActionType action = ActionType.INVEST_INTENT;
+			executeJob(action, jobInvestIntent);
+		}
 	}
 
 	@Scheduled(cron = "${cron.depot.transferToDepotIntent}")
 	public void scheduleTransferToDepotIntents() throws DamServiceException {
-		ActionType action = ActionType.TRANSFER_TO_DEPOT_INTENT;
-		executeJob(action, jobTransferToDepotIntent);
+		if (taskConfiguration.isTransferToDepotIntentActive()) {
+			ActionType action = ActionType.TRANSFER_TO_DEPOT_INTENT;
+			executeJob(action, jobTransferToDepotIntent);
+		}
 	}
 
 	/*
@@ -116,7 +118,7 @@ public class ScheduledTasks {
 		public SyncRunner(ActionType action) {
 
 			this.action = action;
-			taskConfiguration.addToActiveTaskList(this.action, this);
+			taskConfiguration.addToRunningJobList(this.action, this);
 			this.start();
 		}
 
@@ -127,7 +129,7 @@ public class ScheduledTasks {
 					Thread.sleep(1000);
 
 				} catch (InterruptedException e) {
-					taskConfiguration.removeFromActiveTaskList(this.action);
+					taskConfiguration.removeFromRunningJobList(this.action);
 					break;
 				}
 			}

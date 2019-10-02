@@ -14,7 +14,7 @@ import com.dam.depot.types.ActionType;
 public interface DepotTransactionModel extends Repository<DepotTransaction, Long>, CrudRepository<DepotTransaction, Long> {
 
 	@Query("SELECT depotTransaction from DepotTransaction depotTransaction WHERE depotTransaction.userId = :userId")
-	List<DepotTransaction> findDepotByUser(@Param("userId") Long userId);
+	List<DepotTransaction> findDepotTransactionByUser(@Param("userId") Long userId);
 	
 	@Query("SELECT depotTransaction from DepotTransaction depotTransaction WHERE depotTransaction.userId = :userId " + " AND depotTransaction.action = :action "
 			+ " AND depotTransaction.actionDate >= :dateFrom " + " AND depotTransaction.actionDate <= :dateUntil")

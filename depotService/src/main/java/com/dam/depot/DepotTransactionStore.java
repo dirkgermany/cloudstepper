@@ -29,9 +29,6 @@ public class DepotTransactionStore {
 	@Autowired
 	private DepotTransactionModel depotTransactionModel;
 
-	@Autowired
-	private AccountTransactionStore accountTransactionStore;
-
 	public long count() {
 		return depotTransactionModel.count();
 	}
@@ -42,7 +39,7 @@ public class DepotTransactionStore {
 	 * @param depot
 	 * @return
 	 */
-	public DepotTransaction getDepotSafe(DepotTransactionRequest depotTransactionRequest) throws DamServiceException {
+	public DepotTransaction getDepotTransactionSafe(DepotTransactionRequest depotTransactionRequest) throws DamServiceException {
 		if (null == depotTransactionRequest.getDepotTransaction().getDepotTransactionId()) {
 			throw new DamServiceException(new Long(404), "Invalid request", "Depot ID not set in request.");
 		}
@@ -51,7 +48,7 @@ public class DepotTransactionStore {
 		PermissionCheck.isReadPermissionSet(depotTransactionRequest.getRequestorUserId(), null, depotTransactionRequest.getRights());
 
 		// Read attemptions
-		DepotTransaction depotTransaction = getDepotById(depotTransactionRequest.getDepotTransaction().getDepotTransactionId());
+		DepotTransaction depotTransaction = getDepotTransactionById(depotTransactionRequest.getDepotTransaction().getDepotTransactionId());
 		if (null == depotTransaction) {
 			throw new DamServiceException(new Long(404), "Depot Unknown", "Depot not found or invalid request");
 		}
@@ -66,7 +63,7 @@ public class DepotTransactionStore {
 	 * @return
 	 * @throws DamServiceException
 	 */
-	public List<DepotTransaction> getDepotListSafe(DepotTransactionListRequest depotRequest) throws DamServiceException {
+	public List<DepotTransaction> getDepotTransactionListSafe(DepotTransactionListRequest depotRequest) throws DamServiceException {
 		if (null == depotRequest.getDepotTransaction()) {
 			throw new DamServiceException(500L, "Invalid request", "Depot is not set in request.");
 		}
@@ -77,28 +74,28 @@ public class DepotTransactionStore {
 		// search by sql and indexed fields
 		if (null != depotRequest.getDepotTransaction().getUserId() && null != depotRequest.getDepotTransaction().getAction()
 				&& null != depotRequest.getFilter().getDateFrom() && null != depotRequest.getFilter().getDateUntil()) {
-			depotList = getDepotListByUserActionDateFromDateUntil(depotRequest.getDepotTransaction().getUserId(),
+			depotList = getDepotTransactionListByUserActionDateFromDateUntil(depotRequest.getDepotTransaction().getUserId(),
 					depotRequest.getDepotTransaction().getAction(), depotRequest.getFilter().getDateFrom(),
 					depotRequest.getFilter().getDateUntil());
 		} else if (null != depotRequest.getDepotTransaction().getUserId() && null != depotRequest.getDepotTransaction().getAction()
 				&& null != depotRequest.getFilter().getDateFrom()) {
-			depotList = getDepotListByUserActionDateFrom(depotRequest.getDepotTransaction().getUserId(),
+			depotList = getDepotTransactionListByUserActionDateFrom(depotRequest.getDepotTransaction().getUserId(),
 					depotRequest.getDepotTransaction().getAction(), depotRequest.getFilter().getDateFrom());
 		} else if (null != depotRequest.getDepotTransaction().getUserId() && null != depotRequest.getDepotTransaction().getAction()
 				&& null != depotRequest.getFilter().getDateUntil()) {
-			depotList = getDepotListByUserActionDateUntil(depotRequest.getDepotTransaction().getUserId(),
+			depotList = getDepotTransactionListByUserActionDateUntil(depotRequest.getDepotTransaction().getUserId(),
 					depotRequest.getDepotTransaction().getAction(), depotRequest.getFilter().getDateUntil());
 		} else if (null != depotRequest.getDepotTransaction().getUserId() && null != depotRequest.getFilter().getDateFrom()) {
-			depotList = getDepotListByUserDateFrom(depotRequest.getDepotTransaction().getUserId(),
+			depotList = getDepotTransactionListByUserDateFrom(depotRequest.getDepotTransaction().getUserId(),
 					depotRequest.getFilter().getDateFrom());
 		} else if (null != depotRequest.getDepotTransaction().getUserId() && null != depotRequest.getFilter().getDateUntil()) {
-			depotList = getDepotListByUserDateUntil(depotRequest.getDepotTransaction().getUserId(),
+			depotList = getDepotTransactionListByUserDateUntil(depotRequest.getDepotTransaction().getUserId(),
 					depotRequest.getFilter().getDateUntil());
 		} else if (null != depotRequest.getDepotTransaction().getUserId() && null != depotRequest.getDepotTransaction().getAction()) {
-			depotList = getDepotListByUserAction(depotRequest.getDepotTransaction().getUserId(),
+			depotList = getDepotTransactionListByUserAction(depotRequest.getDepotTransaction().getUserId(),
 					depotRequest.getDepotTransaction().getAction());
 		} else if (null != depotRequest.getDepotTransaction().getUserId()) {
-			depotList = getDepotListByUser(depotRequest.getDepotTransaction().getUserId());
+			depotList = getDepotTransactionListByUser(depotRequest.getDepotTransaction().getUserId());
 		}
 
 		if (null == depotList) {
@@ -110,7 +107,7 @@ public class DepotTransactionStore {
 			return depotList;
 		}
 
-		List<DepotTransaction> filteredDepotList = new ArrayList<>();
+		List<DepotTransaction> filteredDepotTransactionList = new ArrayList<>();
 		Iterator<DepotTransaction> it = depotList.iterator();
 		while (it.hasNext()) {
 			DepotTransaction depotTransaction = it.next();
@@ -136,14 +133,14 @@ public class DepotTransactionStore {
 			}
 
 			// all conditions fullfilled
-			filteredDepotList.add(depotTransaction);
+			filteredDepotTransactionList.add(depotTransaction);
 		}
 
-		if (filteredDepotList.isEmpty()) {
+		if (filteredDepotTransactionList.isEmpty()) {
 			throw new DamServiceException(500L, "No Depot Entry found by request", "Request: " + depotRequest);
 		}
 
-		return filteredDepotList;
+		return filteredDepotTransactionList;
 	}
 
 	/**
@@ -166,10 +163,7 @@ public class DepotTransactionStore {
 		depotTransactionRequest.getDepotTransaction().setActionDate(new Date());
 
 		// store depot
-		DepotTransaction depotTransaction = createDepotSafe(depotTransactionRequest);
-
-//		Account account = new Account(depotRequest.getDepotTransaction());
-		
+		DepotTransaction depotTransaction = createDepotTransactionSafe(depotTransactionRequest);		
 		//TODO!!!
 		
 		amount = RequestHelper.setAmountPositive(amount);
@@ -190,7 +184,7 @@ public class DepotTransactionStore {
 	 * @return
 	 * @throws PermissionCheckException
 	 */
-	private DepotTransaction createDepotSafe(DepotTransactionRequest depotCreateRequest) throws DamServiceException {
+	private DepotTransaction createDepotTransactionSafe(DepotTransactionRequest depotCreateRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(depotCreateRequest, depotCreateRequest.getRequestorUserId(),
 				depotCreateRequest.getRights());
 
@@ -226,7 +220,7 @@ public class DepotTransactionStore {
 	 * 
 	 * @return
 	 */
-	public List<DepotTransaction> getDepotList() {
+	public List<DepotTransaction> getDepotTransactionList() {
 		List<DepotTransaction> depotTransaction = new ArrayList<>();
 		Iterator<DepotTransaction> it = depotTransactionModel.findAll().iterator();
 		while (it.hasNext()) {
@@ -235,36 +229,36 @@ public class DepotTransactionStore {
 		return depotTransaction;
 	}
 
-	private List<DepotTransaction> getDepotListByUserAction(Long userId, ActionType action) {
+	private List<DepotTransaction> getDepotTransactionListByUserAction(Long userId, ActionType action) {
 		return depotTransactionModel.findByUserAction(userId, action);
 	}
 
-	private List<DepotTransaction> getDepotListByUserDateFrom(Long userId, Date dateFrom) {
+	private List<DepotTransaction> getDepotTransactionListByUserDateFrom(Long userId, Date dateFrom) {
 		return depotTransactionModel.findByUserDateFrom(userId, dateFrom);
 	}
 
-	private List<DepotTransaction> getDepotListByUserDateUntil(Long userId, Date dateUntil) {
+	private List<DepotTransaction> getDepotTransactionListByUserDateUntil(Long userId, Date dateUntil) {
 		return depotTransactionModel.findByUserDateUntil(userId, dateUntil);
 	}
 
-	private List<DepotTransaction> getDepotListByUserActionDateFrom(Long userId, ActionType action, Date dateFrom) {
+	private List<DepotTransaction> getDepotTransactionListByUserActionDateFrom(Long userId, ActionType action, Date dateFrom) {
 		return depotTransactionModel.findByUserActionDateFrom(userId, action, dateFrom);
 	}
 
-	private List<DepotTransaction> getDepotListByUserActionDateUntil(Long userId, ActionType action, Date dateUntil) {
+	private List<DepotTransaction> getDepotTransactionListByUserActionDateUntil(Long userId, ActionType action, Date dateUntil) {
 		return depotTransactionModel.findByUserActionDateUntil(userId, action, dateUntil);
 	}
 
-	private List<DepotTransaction> getDepotListByUserActionDateFromDateUntil(Long userId, ActionType action, Date dateFrom,
+	private List<DepotTransaction> getDepotTransactionListByUserActionDateFromDateUntil(Long userId, ActionType action, Date dateFrom,
 			Date dateUntil) {
 		return depotTransactionModel.findByUserActionDateFromDateUntil(userId, action, dateFrom, dateUntil);
 	}
 
-	private List<DepotTransaction> getDepotListByUser(Long userId) {
-		return depotTransactionModel.findDepotByUser(userId);
+	private List<DepotTransaction> getDepotTransactionListByUser(Long userId) {
+		return depotTransactionModel.findDepotTransactionByUser(userId);
 	}
 
-	public DepotTransaction getDepotById(Long depotId) {
+	public DepotTransaction getDepotTransactionById(Long depotId) {
 		if (null == depotId) {
 			return null;
 		}
@@ -276,16 +270,20 @@ public class DepotTransactionStore {
 		return null;
 	}
 
-	public Long dropDepot(DepotTransaction depotTransaction) {
+	public Long dropDepotTransaction(DepotTransaction depotTransaction) {
 		if (null != depotTransaction) {
 			depotTransactionModel.deleteById(depotTransaction.getDepotTransactionId());
-			DepotTransaction deletedDepot = getDepotById(depotTransaction.getDepotTransactionId());
+			DepotTransaction deletedDepot = getDepotTransactionById(depotTransaction.getDepotTransactionId());
 			if (null == deletedDepot) {
 				return new Long(200);
 			}
 		}
 
 		return new Long(10);
+	}
+	
+	public DepotTransaction storeDepotTransaction(DepotTransaction depotTransaction) {
+		return depotTransactionModel.save(depotTransaction);
 	}
 
 }

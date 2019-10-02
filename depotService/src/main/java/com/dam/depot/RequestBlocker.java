@@ -9,12 +9,12 @@ public class RequestBlocker {
 	
 	private static Map<Long, Boolean> userLock = new ConcurrentHashMap<>();
 	
-	public synchronized static void lockUser(Long requestorUserId) throws DamServiceException {
+	public static void lockUser(Long requestorUserId) throws DamServiceException {
 		checkUserLock(requestorUserId);
 		lock(requestorUserId);
 	}
 	
-	public synchronized static void unlockUser(Long requestorUserId) {
+	public static void unlockUser(Long requestorUserId) {
 		unlock(requestorUserId);
 	}
 	
@@ -29,11 +29,11 @@ public class RequestBlocker {
 		return isLocked == null ? Boolean.FALSE : isLocked;
 	}
 	
-	private synchronized static void lock(Long requestorUserId) {
+	private static void lock(Long requestorUserId) {
 		userLock.put(requestorUserId, Boolean.TRUE);
 	}
 
-	private synchronized static void unlock(Long requestorUserId) {
+	private static void unlock(Long requestorUserId) {
 		userLock.put(requestorUserId, Boolean.FALSE);
 	}
 

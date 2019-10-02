@@ -29,7 +29,7 @@ public class DepotTransactionController {
 	public RestResponse getDepotTransaction(@RequestBody DepotTransactionRequest depotTransactionRequest) throws DamServiceException {
 //		RequestBlocker.lockUser(depotRequest.getDepot().getUserId());
 		try {
-			RestResponse response = new DepotTransactionResponse(depotTransactionStore.getDepotSafe(depotTransactionRequest));
+			RestResponse response = new DepotTransactionResponse(depotTransactionStore.getDepotTransactionSafe(depotTransactionRequest));
 //			RequestBlocker.unlockUser(depotRequest.getDepot().getUserId());
 			return response;
 		} catch (DamServiceException e) {
@@ -41,7 +41,7 @@ public class DepotTransactionController {
 	public RestResponse getDepotTransactionList(@RequestBody DepotTransactionListRequest depotTransactionRequest) throws DamServiceException {
 		RequestBlocker.lockUser(depotTransactionRequest.getDepotTransaction().getUserId());
 		try {
-			RestResponse response = new DepotTransactionListResponse(depotTransactionStore.getDepotListSafe(depotTransactionRequest));
+			RestResponse response = new DepotTransactionListResponse(depotTransactionStore.getDepotTransactionListSafe(depotTransactionRequest));
 			RequestBlocker.unlockUser(depotTransactionRequest.getDepotTransaction().getUserId());
 			return response;
 		} catch (DamServiceException e) {

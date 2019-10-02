@@ -17,13 +17,10 @@ import com.dam.jobService.type.ActionType;
  *
  */
 @Component
-public class JobTransferToDepotIntent extends Client {
+public class JobTransferToDepotIntent extends DepotClient {
 	
-	private final static String DOMAIN_DEPOT = "depot";
-	private final static String PATH_LIST_INTENT_DEPOT_TRANSFER = "getListIntentDepotTransfer";
 	private final static String PATH_INTENT_TRANSFER_TO_DEPOT_CONFIRMED = "intentTransferToDepotConfirmed";
 	private final static String PATH_INTENT_TRANSFER_TO_DEPOT_DECLINED = "intentTransferToDepotDeclined";
-	private final static String NODE_RESPONSE_INTENT_LIST = "intentList";
 	
 	public JobTransferToDepotIntent() {		
 	}
@@ -36,7 +33,7 @@ public class JobTransferToDepotIntent extends Client {
 		// TODO wenn aktion nicht ausgeführt werden konnte (token abgelaufen) dann login
 		// forcieren
 
-		Iterator<Intent> it = getIntentList(ActionType.TRANSFER_TO_DEPOT_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT_DEPOT_TRANSFER, NODE_RESPONSE_INTENT_LIST).iterator();
+		Iterator<Intent> it = getIntentList(ActionType.TRANSFER_TO_DEPOT_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT, NODE_RESPONSE_INTENT_LIST).iterator();
 		while (it.hasNext()) {
 			Intent intent = it.next();
 			
