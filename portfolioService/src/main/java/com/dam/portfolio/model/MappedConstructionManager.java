@@ -14,7 +14,6 @@ import com.dam.portfolio.model.entity.AssetClass;
 import com.dam.portfolio.model.entity.AssetClassToPortfolioMap;
 import com.dam.portfolio.model.entity.ConstructionMap;
 import com.dam.portfolio.model.entity.Portfolio;
-import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapRequest;
 
 /**
  * Wird für die Gesamtkonstruktion der Portfolios benötigt. Stellt die

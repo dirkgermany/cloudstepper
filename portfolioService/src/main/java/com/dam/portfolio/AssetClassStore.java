@@ -6,17 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 
 import com.dam.exception.DamServiceException;
 import com.dam.exception.PermissionCheckException;
 import com.dam.portfolio.model.AssetClassModel;
 import com.dam.portfolio.model.entity.AssetClass;
-import com.dam.portfolio.model.entity.AssetClassToPortfolioMap;
-import com.dam.portfolio.model.entity.ConstructionMap;
-import com.dam.portfolio.model.entity.Portfolio;
-import com.dam.portfolio.rest.message.RestRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassCreateRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassDropRequest;
 import com.dam.portfolio.rest.message.assetClass.AssetClassListRequest;
@@ -35,9 +30,6 @@ public class AssetClassStore {
 
 	@Autowired
 	private AssetClassModel assetClassModel;
-
-	@Autowired
-	private PortfolioStore portfolioStore;
 
 	@Autowired
 	private AssetClassToPortfolioMapStore mapStore;

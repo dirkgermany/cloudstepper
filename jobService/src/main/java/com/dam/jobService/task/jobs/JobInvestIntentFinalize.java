@@ -10,19 +10,19 @@ import com.dam.jobService.rest.consumer.ExternalApiConsumer;
 import com.dam.jobService.type.ActionType;
 
 /**
- * Get list of open InvestIntents from Service Provider. Charge money from house
- * bank. Send Update Request per list entry to ServiceProvider.
+ * Charge money from house bank. Send Update Requests to ServiceProvider. Works
+ * for Invest Intents and Deposit Intents (is the same step).
  * 
  * @author dirk
  *
  */
 @Component
-public class JobInvestIntent extends DepotClient {
+public class JobInvestIntentFinalize extends DepotClient {
 
 	private final static String PATH_INTENT_INVEST_CONFIRMED = "intentInvestConfirmed";
 	private final static String PATH_INTENT_INVEST_DECLINED = "intentInvestDeclined";
 
-	public JobInvestIntent() {
+	public JobInvestIntentFinalize() {
 	}
 
 	@Override
@@ -32,14 +32,19 @@ public class JobInvestIntent extends DepotClient {
 		// TODO wenn aktion nicht ausgeführt werden konnte (token abgelaufen) dann login
 		// forcieren
 
-		Iterator<Intent> it = getIntentList(ActionType.INVEST_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT, NODE_RESPONSE_INTENT_LIST).iterator();
+		// Was aus Sicht des Investors auf dem Smartphone ein DEPOSIT (also Guthaben
+		// erhöhen) ist,
+		// ist bei der Hausbank ein DEBIT (also Belastung).
+
+		// Investment
+		Iterator<Intent> it = getIntentList(ActionType.INVEST_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT,
+				NODE_RESPONSE_INTENT_LIST).iterator();
 		while (it.hasNext()) {
 			Intent intent = it.next();
 			if (ExternalApiConsumer.debit(intent.getUserId(), intent.getAmount())) {
 				// house bank accepted
 				confirmIntent(intent, ActionType.INVEST_INTENT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_INVEST_CONFIRMED);
-			}
-			else {
+			} else {
 				declineIntent(intent, ActionType.INVEST_INTENT_DECLINED, DOMAIN_DEPOT, PATH_INTENT_INVEST_DECLINED);
 			}
 		}

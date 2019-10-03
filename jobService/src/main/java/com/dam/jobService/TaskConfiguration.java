@@ -24,11 +24,14 @@ public class TaskConfiguration {
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	
-	@Value("${tasks.activation.task.INVEST_INTENT}")
-	private Boolean isInvestIntentActive;
+	@Value("${tasks.activation.task.INVEST_INTENT_FINALIZE}")
+	private Boolean investIntentActive;
+	
+	@Value("${tasks.activation.task.DEPOSIT_INTENT_FINALIZE}")
+	private Boolean depositIntentActive;
 	
 	@Value("${tasks.activation.task.TRANSFER_TO_DEPOT_INTENT}")
-	private Boolean isTransferToDepotIntentActive;
+	private Boolean transferToDepotIntentActive;
 	
 	@Value("${provider.service.protocol}")
 	private String serviceProviderProtocol;
@@ -46,13 +49,12 @@ public class TaskConfiguration {
 	private String password;
 	
 	public TaskConfiguration () {
-		
 	}
 	
 	// delivered by configuration
-	private List<String>successorList;
+	private List<String>successor;
 	
-	private List<String>predecessorList;
+	private List<String>predecessor;
 		
 	
 
@@ -80,20 +82,20 @@ public class TaskConfiguration {
 		this.serviceProviderPort = serviceProviderPort;
 	}
 
-	public List<String> getSuccessorList() {
-		return successorList;
+	public List<String> getSuccessor() {
+		return successor;
 	}
 
-	public void setSuccessorList(List<String> successorList) {
-		this.successorList = successorList;
+	public void setSuccessor(List<String> successor) {
+		this.successor = successor;
 	}
 
-	public List<String> getPredecessorList() {
-		return predecessorList;
+	public List<String> getPredecessor() {
+		return predecessor;
 	}
 
-	public void setPredecessorList(List<String> predecessorList) {
-		this.predecessorList = predecessorList;
+	public void setPredecessor(List<String> predecessor) {
+		this.predecessor = predecessor;
 	}
 
 	public String getUserName() {
@@ -112,23 +114,27 @@ public class TaskConfiguration {
 		this.password = password;
 	}
 
-	public Boolean isInvestIntentActive() {
-		logger.info("Job Service :: {} : Configuration IsInvestIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isInvestIntentActive);
-		return isInvestIntentActive;
+	public Boolean isInvestIntentFinalizeActive() {
+		return investIntentActive;
 	}
 
-	public void setInvestIntentActive(Boolean isInvestIntentActive) {
-		logger.info("Job Service :: {} : Configuration IsInvestIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isInvestIntentActive);
-		this.isInvestIntentActive = isInvestIntentActive;
+	public void setInvestIntentFinalizeActive(Boolean investIntentActive) {
+		this.investIntentActive = investIntentActive;
+	}
+
+	public Boolean isDepositIntentFinalizeActive() {
+		return depositIntentActive;
+	}
+
+	public void setDepositIntentFinalizeActive(Boolean depositIntentActive) {
+		this.depositIntentActive = depositIntentActive;
 	}
 
 	public Boolean isTransferToDepotIntentActive() {
-		logger.info("Job Service :: {} : Configuration IsTransferToDepotIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isTransferToDepotIntentActive);
-		return isTransferToDepotIntentActive;
+		return transferToDepotIntentActive;
 	}
 
-	public void setTransferToDepotIntentActive(Boolean isTransferToDepotIntentActive) {
-		logger.info("Job Service :: {} : Configuration IsTransferToDepotIntentActive {}", dateTimeFormatter.format(LocalDateTime.now()), isTransferToDepotIntentActive);
-		this.isTransferToDepotIntentActive = isTransferToDepotIntentActive;
+	public void setTransferToDepotIntentActive(Boolean transferToDepotIntentActive) {
+		this.transferToDepotIntentActive = transferToDepotIntentActive;
 	}
 }

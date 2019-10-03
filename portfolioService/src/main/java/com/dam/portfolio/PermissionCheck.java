@@ -1,10 +1,6 @@
 package com.dam.portfolio;
-
-import java.util.Optional;
-
 import com.dam.exception.DamServiceException;
 import com.dam.exception.PermissionCheckException;
-import com.dam.portfolio.model.entity.AssetClass;
 import com.dam.portfolio.rest.message.RestRequest;
 
 public class PermissionCheck {

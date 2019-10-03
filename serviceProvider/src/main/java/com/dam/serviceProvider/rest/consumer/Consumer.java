@@ -1,5 +1,10 @@
 package com.dam.serviceProvider.rest.consumer;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +23,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class Consumer {
 	@Autowired
 	ConfigProperties config;
+	
+	private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
+	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	/**
 	 * Send Request to any service
@@ -42,6 +50,7 @@ public class Consumer {
 		try {
 			serviceResponse = sendMessage(URI, request);
 		} catch (Exception e) {
+			logger.error("Service Provider :: Consumer {}: Message could not be send. URI {} - Request: {}", dateTimeFormatter.format(LocalDateTime.now()), URI, request);
 			throw new DamServiceException(new Long(500), "Message could not be send. URI: " + URI, e.getMessage());
 		}
 
@@ -84,7 +93,8 @@ public class Consumer {
 
 		if (null == returnCode || 200 != returnCode.longValue()) {
 			// token could not be validated
-			return validatedToken;
+			throw new DamServiceException(440L, "Invalid Token", "Token invalid, user not logged in");
+//			return validatedToken;
 		}
 
 		// calls AuthenticationService again

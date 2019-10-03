@@ -138,7 +138,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 			balance.setAmountDepotIntent(0f);
 		}
 		float amountAccount = balance.getAmountAccount() - storedIntent.getAmount();
-		float amountDepotIntent = balance.getAmountAccount() - storedIntent.getAmount();
+		float amountDepotIntent = balance.getAmountDepotIntent() - storedIntent.getAmount();
 		float amountDepot = balance.getAmountDepot() + storedIntent.getAmount();
 		balance.setAmountAccount(amountAccount);
 		balance.setAmountDepotIntent(amountDepotIntent);
@@ -177,7 +177,5 @@ public class IntentTransferToDepotStore extends IntentStore {
 		depotStore.saveDepot(depot);
 		
 		return storedIntent;
-		
 	}
-
 }

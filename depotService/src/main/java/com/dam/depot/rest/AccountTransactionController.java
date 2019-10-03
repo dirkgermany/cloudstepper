@@ -35,6 +35,7 @@ public class AccountTransactionController {
 			RequestBlocker.unlockUser(accountTransactionRequest.getAccountTransaction().getUserId());
 			return response;
 		} catch (DamServiceException e) {
+			RequestBlocker.unlockUser(accountTransactionRequest.getAccountTransaction().getUserId());
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
@@ -47,6 +48,7 @@ public class AccountTransactionController {
 			RequestBlocker.unlockUser(accountRequest.getAccountTransaction().getUserId());
 			return response;
 		} catch (DamServiceException e) {
+			RequestBlocker.unlockUser(accountRequest.getAccountTransaction().getUserId());
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
@@ -59,6 +61,7 @@ public class AccountTransactionController {
 			RequestBlocker.unlockUser(accountTransactionCreateRequest.getAccountTransaction().getUserId());
 			return response;
 		} catch (DamServiceException e) {
+			RequestBlocker.unlockUser(accountTransactionCreateRequest.getAccountTransaction().getUserId());
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}

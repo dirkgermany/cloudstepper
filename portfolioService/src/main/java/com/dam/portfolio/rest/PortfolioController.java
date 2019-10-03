@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.exception.DamServiceException;
 import com.dam.portfolio.PortfolioStore;
-import com.dam.portfolio.model.entity.Portfolio;
 import com.dam.portfolio.rest.message.RestResponse;
 import com.dam.portfolio.rest.message.portfolio.PortfolioCreateRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioCreateResponse;

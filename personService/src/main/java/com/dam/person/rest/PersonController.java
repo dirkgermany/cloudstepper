@@ -1,14 +1,12 @@
 package com.dam.person.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.exception.DamServiceException;
 import com.dam.person.PersonStore;
-import com.dam.person.model.entity.Person;
 import com.dam.person.rest.message.CreateRequest;
 import com.dam.person.rest.message.CreateResponse;
 import com.dam.person.rest.message.DropRequest;

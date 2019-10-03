@@ -6,14 +6,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dam.jobService.task.TaskController;
-import com.dam.jobService.type.ActionType;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component

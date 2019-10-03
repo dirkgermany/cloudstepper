@@ -6,32 +6,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dam.exception.DamServiceException;
 import com.dam.exception.EntityNotFoundException;
-import com.dam.exception.PermissionCheckException;
-import com.dam.portfolio.model.AssetClassModel;
 import com.dam.portfolio.model.AssetClassToPortfolioMapModel;
 import com.dam.portfolio.model.entity.AssetClass;
 import com.dam.portfolio.model.entity.AssetClassToPortfolioMap;
 import com.dam.portfolio.model.entity.ConstructionMap;
 import com.dam.portfolio.model.entity.Portfolio;
-import com.dam.portfolio.rest.message.RestRequest;
-import com.dam.portfolio.rest.message.assetClass.AssetClassCreateRequest;
-import com.dam.portfolio.rest.message.assetClass.AssetClassDropRequest;
-import com.dam.portfolio.rest.message.assetClass.AssetClassRequest;
-import com.dam.portfolio.rest.message.assetClass.AssetClassUpdateRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapRequest;
-import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AddAssetClassesToPortfolioMapResponse;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.AssetClassToPortfolioMapRequest;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.GetAssetClassesToPortfolioMapRequest;
-import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.GetAssetClassesToPortfolioMapResponse;
 import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.RemoveAssetClassesFromPortfolioMapRequest;
-import com.dam.portfolio.rest.message.mapAssetClassToPortfolio.RemoveAssetClassesFromPortfolioMapResponse;
 
 /**
  * Handles active and non active Tokens

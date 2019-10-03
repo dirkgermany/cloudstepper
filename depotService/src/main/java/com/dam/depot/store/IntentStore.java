@@ -56,6 +56,219 @@ public class IntentStore {
 	}
 
 	/**
+	 * Deposit is stored to the Entity Intent and as value in Entity Balance.
+	 * 
+	 * @param depotDepositRequest
+	 * @return
+	 * @throws DamServiceException
+	 */
+	public Intent storeIntentSafe(IntentRequest intentCreateRequest, ActionType action) throws DamServiceException {
+		List<ActionType> allowedActions = new ArrayList<>();
+		allowedActions.add(action);
+		RequestHelper.checkActions(intentCreateRequest.getIntent().getAction(), allowedActions);
+		RequestHelper.checkAmountTransfer(intentCreateRequest.getIntent().getAmount());
+		RequestHelper.checkCurrency(intentCreateRequest.getIntent().getCurrency());
+
+		Intent intent = new Intent();
+		intent.setIntent(intentCreateRequest.getIntent());
+		intent.setBookingDate(null);
+		intent.setActionDate(intentCreateRequest.getIntent().getActionDate());
+		intent.setRequestorUserId(intentCreateRequest.getRequestorUserId());
+		intent.setPortfolioId(intentCreateRequest.getIntent().getPortfolioId());
+		intent = intentModel.save(intent);
+
+		Balance balance = balanceStore.getBalanceByUserId(intentCreateRequest.getIntent().getUserId());
+		if (null == balance) {
+			balance = new Balance();
+			balance.setUserId(intentCreateRequest.getIntent().getUserId());
+			balance.setAmountAccount(0f);
+			balance.setAmountAccountIntent(0f);
+			balance.setAmountDepot(0f);
+			balance.setAmountDepotIntent(0f);
+		}
+		switch (action) {
+		case INVEST_INTENT:
+			balance.setAmountDepotIntent(balance.getAmountDepotIntent() + intent.getAmount());
+			break;
+
+		case DEPOSIT_INTENT:
+			balance.setAmountAccountIntent(balance.getAmountAccountIntent() + intent.getAmount());
+			break;
+
+		default:
+			break;
+		}
+		balance.setLastUpdate(new Date());
+		balance.setCurrency(intent.getCurrency());
+		balanceStore.saveBalance(balance);
+
+		return intent;
+	}
+
+	/**
+	 * Called if intents are confirmed. Means that the house bank has confirmed. But
+	 * not yet the depot bank! Regulary called by a cron scheduled system user.
+	 * 
+	 * @param confirmRequest
+	 * @return
+	 * @throws DamServiceException
+	 */
+	public Intent confirmIntentSafe(IntentRequest confirmRequest, ActionType action) throws DamServiceException {
+		List<ActionType> allowedActions = new ArrayList<>();
+		allowedActions.add(action);
+		RequestHelper.checkActions(confirmRequest.getIntent().getAction(), allowedActions);
+		RequestHelper.checkAmountTransfer(confirmRequest.getIntent().getAmount());
+		RequestHelper.checkCurrency(confirmRequest.getIntent().getCurrency());
+
+		Intent storedIntent = getIntentById(confirmRequest.getIntent().getIntentId());
+
+		if (!storedIntent.getAmount().equals(confirmRequest.getIntent().getAmount())) {
+			storedIntent.setFinishResponse("WARNING: confirmed amount [" + confirmRequest.getIntent().getAmount()
+					+ "] is not equal to origin intent amount [" + storedIntent.getAmount() + "]; Finish Response was "
+					+ confirmRequest.getIntent().getFinishResponse());
+		}
+
+		Intent updateIntent = new Intent();
+		updateIntent.setIntent(confirmRequest.getIntent());
+		updateIntent.setIntentId(confirmRequest.getIntent().getIntentId());
+		updateIntent.setBooked(true);
+
+		// For action check the requested intent had to be INVEST_INTENT_CONFIRMED
+		// But in Database the ActionType mustn't change
+		switch (action) {
+		case INVEST_INTENT_CONFIRMED:
+			updateIntent.setAction(ActionType.INVEST_INTENT);
+			break;
+		case DEPOSIT_INTENT_CONFIRMED:
+			updateIntent.setAction(ActionType.DEPOSIT_INTENT);
+		default:
+			break;
+		}
+
+		// 1. Update with intent
+		storedIntent = updateIntent(storedIntent, updateIntent);
+
+		// 2. Insert into account
+		AccountTransaction accountTransaction = new AccountTransaction();
+		accountTransaction.setUserId(storedIntent.getUserId());
+		accountTransaction.setRequestorUserId(storedIntent.getRequestorUserId());
+		accountTransaction.setAction(ActionType.DEPOSIT);
+		accountTransaction.setActionDate(new Date());
+		accountTransaction.setReferenceType(ReferenceType.INTENT);
+		accountTransaction.setReferenceId(storedIntent.getIntentId());
+		accountTransaction.setAmount(storedIntent.getAmount());
+		accountTransaction.setRequestorUserId(confirmRequest.getRequestorUserId());
+
+		accountTransactionStore.storeAccountTransaction(accountTransaction);
+
+		// 3. Update Balance for account
+		Balance balance = balanceStore.getBalanceByUserId(confirmRequest.getIntent().getUserId());
+		if (null == balance) {
+			balance = new Balance();
+			balance.setUserId(confirmRequest.getIntent().getUserId());
+			balance.setAmountAccount(0f);
+			balance.setAmountAccountIntent(0f);
+			balance.setAmountDepot(0f);
+			balance.setAmountDepotIntent(0f);
+		}
+
+		float amount = balance.getAmountAccount() + storedIntent.getAmount();
+		
+		if (action.equals(ActionType.DEPOSIT_INTENT_CONFIRMED)) {
+			balance.setAmountAccountIntent(balance.getAmountAccountIntent() - storedIntent.getAmount());
+		}
+		
+		balance.setAmountAccount(balance.getAmountAccount() + storedIntent.getAmount());
+		balance.setLastUpdate(new Date());
+
+		balanceStore.saveBalance(balance);
+
+		if (action.equals(ActionType.INVEST_INTENT_CONFIRMED)) {
+			// 4. Insert into Entity Intent
+			updateIntent = new Intent();
+			updateIntent.setIntent(storedIntent);
+			updateIntent.setAction(ActionType.TRANSFER_TO_DEPOT_INTENT);
+			updateIntent.setAccepted(false);
+			updateIntent.setBooked(false);
+			updateIntent.setBookingDate(null);
+			updateIntent.setFinishResponse(null);
+			updateIntent.setRequestorUserId(confirmRequest.getRequestorUserId());
+			updateIntent.setReferenceId(storedIntent.getIntentId());
+			updateIntent = intentModel.save(updateIntent);
+		}
+		
+		return updateIntent;
+	}
+
+	/**
+	 * If the house bank of the investor declines the deposit of the account, the
+	 * investment cannot be performed.
+	 * 
+	 * @param delineRequest
+	 * @return
+	 * @throws DamServiceException
+	 */
+	public Intent declineIntentSafe(IntentRequest declineRequest, ActionType action) throws DamServiceException {
+		List<ActionType> allowedActions = new ArrayList<>();
+		allowedActions.add(action);
+		RequestHelper.checkActions(declineRequest.getIntent().getAction(), allowedActions);
+		RequestHelper.checkAmountTransfer(declineRequest.getIntent().getAmount());
+
+		Intent storedIntent = getIntentById(declineRequest.getIntent().getIntentId());
+
+		Intent updateIntent = new Intent();
+		updateIntent.setIntent(declineRequest.getIntent());
+		updateIntent.setIntentId(declineRequest.getIntent().getIntentId());
+		updateIntent.setBooked(true);
+
+		// For action check the requested intent had to be INVEST_INTENT_CONFIRMED
+		// But in Database the ActionType mustn't change
+		switch (action) {
+		case INVEST_INTENT_DECLINED:
+			updateIntent.setAction(ActionType.INVEST_INTENT);
+			break;
+
+		case DEPOSIT_INTENT_DECLINED:
+			updateIntent.setAction(ActionType.DEPOSIT_INTENT);
+			break;
+
+		default:
+			break;
+		}
+
+		storedIntent = updateIntent(storedIntent, updateIntent);
+
+		Balance balance = balanceStore.getBalanceByUserId(declineRequest.getIntent().getUserId());
+		if (null == balance) {
+			balance = new Balance();
+			balance.setUserId(declineRequest.getIntent().getUserId());
+			balance.setAmountAccount(0f);
+			balance.setAmountAccountIntent(0f);
+			balance.setAmountDepot(0f);
+			balance.setAmountDepotIntent(0f);
+		}
+
+		switch (action) {
+		case INVEST_INTENT_DECLINED:
+			balance.setAmountDepotIntent(balance.getAmountDepotIntent() - storedIntent.getAmount());
+			break;
+
+		case DEPOSIT_INTENT_DECLINED:
+			balance.setAmountAccountIntent(balance.getAmountAccountIntent() - storedIntent.getAmount());
+			break;
+
+		default:
+			break;
+		}
+		balance.setLastUpdate(new Date());
+		balance.setCurrency(storedIntent.getCurrency());
+
+		balanceStore.saveBalance(balance);
+
+		return storedIntent;
+	}
+
+	/**
 	 * Save getter for Intent. request
 	 * 
 	 * @param intent
