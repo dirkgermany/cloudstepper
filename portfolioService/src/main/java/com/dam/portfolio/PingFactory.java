@@ -50,7 +50,9 @@ public class PingFactory {
 		String recordsAsset = String.valueOf(assetClassStore.count());
 		String recordsPortfolio = String.valueOf(portfolioStore.count());
 		String recordsMap = String.valueOf(mapStore.count());
-		pingInfo.put("database", "records available: portfolios (" + recordsPortfolio + "); asset classes (" + recordsAsset + "); map entries (" + recordsMap + ")");
+		pingInfo.put("database", "records available: [{table: portfolios, records: " + recordsPortfolio + "},"
+				                                  +  "{table: assetclasses, records: " + recordsAsset + "}, "
+				                                  + " {table: map, records: " + recordsMap + "}]");
 
 		// Server
 		try {

@@ -1,4 +1,6 @@
-package com.dam.jobService.task;
+package com.dam.jobService.task.jobs;
+
+import com.dam.jobService.task.Client;
 
 public abstract class DepotClient extends Client {
 	protected final static String DOMAIN_DEPOT = "depot";

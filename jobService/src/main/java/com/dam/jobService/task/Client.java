@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import com.dam.exception.DamServiceException;
 import com.dam.jobService.JsonHelper;
-import com.dam.jobService.ScheduledTasks;
 import com.dam.jobService.TaskConfiguration;
 import com.dam.jobService.messageClass.Intent;
 import com.dam.jobService.rest.consumer.Consumer;

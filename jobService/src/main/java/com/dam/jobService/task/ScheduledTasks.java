@@ -1,4 +1,4 @@
-package com.dam.jobService;
+package com.dam.jobService.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -6,9 +6,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.dam.exception.DamServiceException;
-import com.dam.jobService.task.Client;
-import com.dam.jobService.task.JobInvestIntent;
-import com.dam.jobService.task.JobTransferToDepotIntent;
+import com.dam.jobService.TaskConfiguration;
+import com.dam.jobService.task.TaskController.SyncRunner;
+import com.dam.jobService.task.jobs.JobInvestIntent;
+import com.dam.jobService.task.jobs.JobTransferToDepotIntent;
 import com.dam.jobService.type.ActionType;
 
 import java.time.LocalDateTime;
@@ -26,12 +27,13 @@ public class ScheduledTasks {
 	TaskConfiguration taskConfiguration;
 
 	@Autowired
+	TaskController taskController;
+
+	@Autowired
 	JobInvestIntent jobInvestIntent;
 
 	@Autowired
 	JobTransferToDepotIntent jobTransferToDepotIntent;
-
-	private final Long maxWaitTime = 1000 * 60 * 20L; // 20 minutes
 
 	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -46,12 +48,12 @@ public class ScheduledTasks {
 				"scheduled");
 
 		// wait if another Job blocks this one
-		new SyncWaiter(task);
+		taskController.getSyncWaiter(task);
 		logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), task,
 				"started");
 
 		// Start runner for blocking dependent Jobs
-		SyncRunner runner = new SyncRunner(task);
+		SyncRunner runner = taskController.getSyncRunner(task);
 
 		try {
 			client.executeJob();
@@ -63,9 +65,6 @@ public class ScheduledTasks {
 			// Other Jobs perhaps are waiting
 			runner.interrupt();
 		}
-
-//		// Other Jobs perhaps are waiting
-//		runner.interrupt();
 	}
 
 	@Scheduled(cron = "${cron.depot.investIntent}")
@@ -81,58 +80,6 @@ public class ScheduledTasks {
 		if (taskConfiguration.isTransferToDepotIntentActive()) {
 			ActionType action = ActionType.TRANSFER_TO_DEPOT_INTENT;
 			executeJob(action, jobTransferToDepotIntent);
-		}
-	}
-
-	/*
-	 * Class to wait for blocking Jobs
-	 */
-	private class SyncWaiter {
-		public SyncWaiter(ActionType successor) {
-			this.wait(successor);
-		}
-
-		public void wait(ActionType successor) {
-
-			List<ActionType> precedessorList = taskConfiguration.getPredecessorListForTask(successor);
-
-			Thread precedessorThread = taskConfiguration.getSyncThread(precedessorList);
-			while (null != precedessorThread) {
-				logger.info("Job Service :: {}: Job {} - Status: {}", dateTimeFormatter.format(LocalDateTime.now()),
-						successor, "waiting for thread" + precedessorThread);
-
-				try {
-					precedessorThread.join(maxWaitTime);
-				} catch (InterruptedException e) {
-				}
-				precedessorThread = taskConfiguration.getSyncThread(precedessorList);
-			}
-
-		}
-	}
-
-	// Synchronization Class
-	private class SyncRunner extends Thread {
-		private ActionType action;
-
-		public SyncRunner(ActionType action) {
-
-			this.action = action;
-			taskConfiguration.addToRunningJobList(this.action, this);
-			this.start();
-		}
-
-		@Override
-		public void run() {
-			while (true) {
-				try {
-					Thread.sleep(1000);
-
-				} catch (InterruptedException e) {
-					taskConfiguration.removeFromRunningJobList(this.action);
-					break;
-				}
-			}
 		}
 	}
 

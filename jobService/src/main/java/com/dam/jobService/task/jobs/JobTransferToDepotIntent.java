@@ -1,4 +1,4 @@
-package com.dam.jobService.task;
+package com.dam.jobService.task.jobs;
 
 import java.util.Iterator;
 

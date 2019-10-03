@@ -1,4 +1,4 @@
-package com.dam.depot;
+package com.dam.jobService;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -6,31 +6,21 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dam.depot.store.IntentStore;
+import com.dam.jobService.task.TaskController;
+import com.dam.jobService.type.ActionType;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class PingFactory {
 	
 	@Autowired
-	private DepotTransactionStore depotTransactionStore;
-	
-	@Autowired
-	private AccountTransactionStore accountTransactionStore;
-	
-	@Autowired
-	private DepotStore depotStore;
-	
-	@Autowired
-	private BalanceStore balanceStore;
-	
-	@Autowired
-	private IntentStore intentStore;
+	TaskConfiguration taskConfiguration;
 	
 	private Map<String, String> pingInfo = new HashMap<String, String>();
 
@@ -53,18 +43,6 @@ public class PingFactory {
 		Long upTime = runtimeBean.getUptime();
 		pingInfo.put("uptime", upTime.toString() + "ms");
 
-		// Database
-		String recordsDepotTransactions = String.valueOf(depotTransactionStore.count());
-		String recordsAccountTransactions  = String.valueOf(accountTransactionStore.count());
-		String recordsDepot = String.valueOf(depotStore.count());
-		String recordsBalance = String.valueOf(balanceStore.count());
-		String recordsIntent = String.valueOf(intentStore.count());
-		pingInfo.put("database", "records available: [{table: depot, records: " + recordsDepot + "},"
-                +  "{table: accountTransactions, records: " + recordsAccountTransactions + "}, "
-                +  "{table: depotTransactions, records: " + recordsDepotTransactions + "}, "
-                +  "{table: balance, records: " + recordsBalance + "}, "
-                + " {table: intent, records: " + recordsIntent + "}]");
-
 		// Server
 		try {
 			pingInfo.put("hostAddress", InetAddress.getLocalHost().getHostAddress());
@@ -76,6 +54,35 @@ public class PingFactory {
 			pingInfo.put("hostName", InetAddress.getLocalHost().getCanonicalHostName());
 		} catch (UnknownHostException e1) {
 		}
+		
+//		Iterator <String> itSuccessors = taskConfiguration.getSuccessorList().iterator();
+//		String taskInfo = "tasksConfigured: [";
+//		boolean first = true;
+//		while (itSuccessors.hasNext()) {
+//			if (!first) {
+//				taskInfo+=", ";
+//			}
+//			taskInfo+= "{task: " + itSuccessors.next() + "}";
+//			first=false;
+//		}
+//		taskInfo+= "]";
+//		pingInfo.put("Active Jobs", taskInfo);
+//
+//		
+//		
+//		Iterator <ActionType> it = TaskController.getActiveJobs().iterator();
+//		String actionInfo = "jobsActive: [";
+//		first = true;
+//		while (it.hasNext()) {
+//			if (!first) {
+//				actionInfo+=", ";
+//			}
+//			actionInfo+= "{job: " + it.next().name() + "}";
+//			first=false;
+//		}
+//		actionInfo+= "]";
+//		pingInfo.put("Active Jobs", actionInfo);
+		
 	}
 	
 	public Map<String, String> getPingInfo() {
