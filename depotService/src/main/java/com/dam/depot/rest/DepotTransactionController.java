@@ -5,13 +5,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dam.depot.DepotTransactionStore;
-import com.dam.depot.RequestBlocker;
 import com.dam.depot.rest.message.RestResponse;
 import com.dam.depot.rest.message.depotTransaction.DepotTransactionListRequest;
 import com.dam.depot.rest.message.depotTransaction.DepotTransactionListResponse;
 import com.dam.depot.rest.message.depotTransaction.DepotTransactionRequest;
 import com.dam.depot.rest.message.depotTransaction.DepotTransactionResponse;
+import com.dam.depot.store.DepotTransactionStore;
 import com.dam.exception.DamServiceException;
 
 @RestController
@@ -27,26 +26,18 @@ public class DepotTransactionController {
 	 */
 	@PostMapping("/getDepotTransaction")
 	public RestResponse getDepotTransaction(@RequestBody DepotTransactionRequest depotTransactionRequest) throws DamServiceException {
-		RequestBlocker.lockUser(depotTransactionRequest.getDepotTransaction().getUserId());
 		try {
-			RestResponse response = new DepotTransactionResponse(depotTransactionStore.getDepotTransactionSafe(depotTransactionRequest));
-			RequestBlocker.unlockUser(depotTransactionRequest.getDepotTransaction().getUserId());
-			return response;
+			return new DepotTransactionResponse(depotTransactionStore.getDepotTransactionSafe(depotTransactionRequest));
 		} catch (DamServiceException e) {
-			RequestBlocker.unlockUser(depotTransactionRequest.getDepotTransaction().getUserId());
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
 
 	@PostMapping("/getDepotTransactionList")
 	public RestResponse getDepotTransactionList(@RequestBody DepotTransactionListRequest depotTransactionRequest) throws DamServiceException {
-		RequestBlocker.lockUser(depotTransactionRequest.getDepotTransaction().getUserId());
 		try {
-			RestResponse response = new DepotTransactionListResponse(depotTransactionStore.getDepotTransactionListSafe(depotTransactionRequest));
-			RequestBlocker.unlockUser(depotTransactionRequest.getDepotTransaction().getUserId());
-			return response;
+			return new DepotTransactionListResponse(depotTransactionStore.getDepotTransactionListSafe(depotTransactionRequest));
 		} catch (DamServiceException e) {
-			RequestBlocker.unlockUser(depotTransactionRequest.getDepotTransaction().getUserId());
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}

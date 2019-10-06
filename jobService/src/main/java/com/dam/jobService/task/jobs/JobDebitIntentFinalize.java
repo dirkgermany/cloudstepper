@@ -10,17 +10,17 @@ import com.dam.jobService.rest.consumer.ExternalApiConsumer;
 import com.dam.jobService.type.ActionType;
 
 /**
- * Charge money from house bank. Send Update Requests to ServiceProvider.
+ * Pay money to house bank. Send Update Requests to ServiceProvider.
  * 
  * @author dirk
  *
  */
 @Component
-public class JobDepositIntentFinalize extends DepotClient {
-	private final static String PATH_INTENT_DEPOSIT_CONFIRMED = "depositConfirmed";
-	private final static String PATH_INTENT_DEPOSIT_DECLINED = "depositDeclined";
+public class JobDebitIntentFinalize extends DepotClient {
+	private final static String PATH_INTENT_DEBIT_CONFIRMED = "debitConfirmed";
+	private final static String PATH_INTENT_DEBIT_DECLINED = "debitDeclined";
 
-	public JobDepositIntentFinalize() {
+	public JobDebitIntentFinalize() {
 	}
 
 	@Override
@@ -34,15 +34,15 @@ public class JobDepositIntentFinalize extends DepotClient {
 		// ist bei der Hausbank ein DEBIT (also Belastung).
 
 		// Call Money
-		Iterator<Intent> it = getIntentList(ActionType.DEPOSIT_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT, NODE_RESPONSE_INTENT_LIST).iterator();
+		Iterator<Intent> it = getIntentList(ActionType.DEBIT_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT, NODE_RESPONSE_INTENT_LIST).iterator();
 		while (it.hasNext()) {
 			Intent intent = it.next();
-			if (ExternalApiConsumer.deposit(intent.getUserId(), intent.getAmount())) {
+			if (ExternalApiConsumer.debit(intent.getUserId(), intent.getAmount())) {
 				// house bank accepted
-				confirmIntent(intent, ActionType.DEPOSIT_INTENT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_DEPOSIT_CONFIRMED);
+				confirmIntent(intent, ActionType.DEBIT_INTENT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_DEBIT_CONFIRMED);
 			}
 			else {
-				declineIntent(intent, ActionType.DEPOSIT_INTENT_DECLINED, DOMAIN_DEPOT, PATH_INTENT_DEPOSIT_DECLINED);
+				declineIntent(intent, ActionType.DEBIT_INTENT_DECLINED, DOMAIN_DEPOT, PATH_INTENT_DEBIT_DECLINED);
 			}
 		}
 }

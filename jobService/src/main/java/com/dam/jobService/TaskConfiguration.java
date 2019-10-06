@@ -27,11 +27,20 @@ public class TaskConfiguration {
 	@Value("${tasks.activation.task.INVEST_INTENT_FINALIZE}")
 	private Boolean investIntentActive;
 	
+	@Value("${tasks.activation.task.SELL_INTENT_FINALIZE}")
+	private Boolean sellIntentActive;
+	
 	@Value("${tasks.activation.task.DEPOSIT_INTENT_FINALIZE}")
 	private Boolean depositIntentActive;
 	
 	@Value("${tasks.activation.task.TRANSFER_TO_DEPOT_INTENT}")
 	private Boolean transferToDepotIntentActive;
+	
+	@Value("${tasks.activation.task.TRANSFER_TO_ACCOUNT_INTENT}")
+	private Boolean transferToAccountIntentActive;
+	
+	@Value("${tasks.activation.task.DEBIT_INTENT_FINALIZE}")
+	private Boolean debitIntentActive;
 	
 	@Value("${provider.service.protocol}")
 	private String serviceProviderProtocol;
@@ -122,6 +131,14 @@ public class TaskConfiguration {
 		this.investIntentActive = investIntentActive;
 	}
 
+	public Boolean isSellIntentFinalizeActive() {
+		return sellIntentActive;
+	}
+
+	public void setSellIntentFinalizeActive(Boolean sellIntentActive) {
+		this.sellIntentActive = sellIntentActive;
+	}
+
 	public Boolean isDepositIntentFinalizeActive() {
 		return depositIntentActive;
 	}
@@ -130,11 +147,27 @@ public class TaskConfiguration {
 		this.depositIntentActive = depositIntentActive;
 	}
 
+	public Boolean isDebitIntentFinalizeActive() {
+		return debitIntentActive;
+	}
+
+	public void setDebitIntentFinalizeActive(Boolean debitIntentActive) {
+		this.debitIntentActive = debitIntentActive;
+	}
+
 	public Boolean isTransferToDepotIntentActive() {
 		return transferToDepotIntentActive;
 	}
 
 	public void setTransferToDepotIntentActive(Boolean transferToDepotIntentActive) {
 		this.transferToDepotIntentActive = transferToDepotIntentActive;
+	}
+	
+	public Boolean isTransferToAccountIntentActive() {
+		return transferToAccountIntentActive;
+	}
+
+	public void setTransferToAccountIntentActive(Boolean transferToAccountIntentActive) {
+		this.transferToAccountIntentActive = transferToAccountIntentActive;
 	}
 }

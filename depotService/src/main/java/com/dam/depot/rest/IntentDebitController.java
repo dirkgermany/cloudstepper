@@ -8,20 +8,21 @@ import com.dam.depot.RequestBlocker;
 import com.dam.depot.rest.message.RestResponse;
 import com.dam.depot.rest.message.intent.IntentCreateResponse;
 import com.dam.depot.rest.message.intent.IntentRequest;
+import com.dam.depot.store.IntentDebitStore;
 import com.dam.depot.store.IntentDepositStore;
 import com.dam.exception.DamServiceException;
 
 @RestController
-public class IntentDepositController {
+public class IntentDebitController {
 	
 	@Autowired
-	private IntentDepositStore intentDepositStore;
+	private IntentDebitStore intentDebitStore;
 
-	@PostMapping("/depositIntent")
-	public RestResponse depositIntent(@RequestBody IntentRequest intentCreateRequest) throws DamServiceException {
+	@PostMapping("/debitIntent")
+	public RestResponse debitIntent(@RequestBody IntentRequest intentCreateRequest) throws DamServiceException {
 		RequestBlocker.lockUser(intentCreateRequest.getRequestorUserId());
 		try {
-			RestResponse response = new IntentCreateResponse(intentDepositStore.depositIntentSafe(intentCreateRequest));
+			RestResponse response = new IntentCreateResponse(intentDebitStore.debitIntentSafe(intentCreateRequest));
 			RequestBlocker.unlockUser(intentCreateRequest.getRequestorUserId());
 			return response;
 		} catch (DamServiceException e) {
@@ -30,11 +31,11 @@ public class IntentDepositController {
 		}
 	}
 
-	@PostMapping("/depositConfirmed")
-	public RestResponse intentDepositConfirmed(@RequestBody IntentRequest intentConfirmedRequest) throws DamServiceException {
+	@PostMapping("/debitConfirmed")
+	public RestResponse intentDebitConfirmed(@RequestBody IntentRequest intentConfirmedRequest) throws DamServiceException {
 		RequestBlocker.lockUser(intentConfirmedRequest.getRequestorUserId());
 		try {
-			RestResponse response = new IntentCreateResponse(intentDepositStore.confirmDepositSafe(intentConfirmedRequest));
+			RestResponse response = new IntentCreateResponse(intentDebitStore.confirmDebitSafe(intentConfirmedRequest));
 			RequestBlocker.unlockUser(intentConfirmedRequest.getRequestorUserId());
 			return response;
 		} catch (DamServiceException e) {
@@ -43,11 +44,11 @@ public class IntentDepositController {
 		}
 	}
 
-	@PostMapping("/depositDeclined")
-	public RestResponse intentDepositDeclined(@RequestBody IntentRequest intentDeclinedRequest) throws DamServiceException {
+	@PostMapping("/debitDeclined")
+	public RestResponse intentDebitDeclined(@RequestBody IntentRequest intentDeclinedRequest) throws DamServiceException {
 		RequestBlocker.lockUser(intentDeclinedRequest.getRequestorUserId());
 		try {
-			RestResponse response = new IntentCreateResponse(intentDepositStore.declineDepositSafe(intentDeclinedRequest));
+			RestResponse response = new IntentCreateResponse(intentDebitStore.declineDebitSafe(intentDeclinedRequest));
 			RequestBlocker.unlockUser(intentDeclinedRequest.getRequestorUserId());
 			return response;
 		} catch (DamServiceException e) {

@@ -17,12 +17,12 @@ import com.dam.jobService.type.ActionType;
  *
  */
 @Component
-public class JobInvestIntentFinalize extends DepotClient {
+public class JobSellIntentFinalize extends DepotClient {
 
-	private final static String PATH_INTENT_INVEST_CONFIRMED = "investConfirmed";
-	private final static String PATH_INTENT_INVEST_DECLINED = "investDeclined";
+	private final static String PATH_INTENT_SELL_CONFIRMED = "sellConfirmed";
+	private final static String PATH_INTENT_SELL_DECLINED = "sellDeclined";
 
-	public JobInvestIntentFinalize() {
+	public JobSellIntentFinalize() {
 	}
 
 	@Override
@@ -37,15 +37,15 @@ public class JobInvestIntentFinalize extends DepotClient {
 		// ist bei der Hausbank ein DEBIT (also Belastung).
 
 		// Investment
-		Iterator<Intent> it = getIntentList(ActionType.INVEST_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT,
+		Iterator<Intent> it = getIntentList(ActionType.SELL_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT,
 				NODE_RESPONSE_INTENT_LIST).iterator();
 		while (it.hasNext()) {
 			Intent intent = it.next();
-			if (ExternalApiConsumer.debit(intent.getUserId(), intent.getAmount())) {
+			if (ExternalApiConsumer.stockSellAssets(intent.getUserId(), intent.getAmount(), intent.getPortfolioId())) {
 				// house bank accepted
-				confirmIntent(intent, ActionType.INVEST_INTENT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_INVEST_CONFIRMED);
+				confirmIntent(intent, ActionType.SELL_INTENT_CONFIRMED, DOMAIN_DEPOT, PATH_INTENT_SELL_CONFIRMED);
 			} else {
-				declineIntent(intent, ActionType.INVEST_INTENT_DECLINED, DOMAIN_DEPOT, PATH_INTENT_INVEST_DECLINED);
+				declineIntent(intent, ActionType.SELL_INTENT_DECLINED, DOMAIN_DEPOT, PATH_INTENT_SELL_DECLINED);
 			}
 		}
 	}

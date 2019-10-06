@@ -18,13 +18,13 @@ import com.dam.depot.types.Currency;
 
 @Entity
 @Component
-@Table(name = "Balance", uniqueConstraints= {@UniqueConstraint(columnNames = {"userId"})}
+@Table(name = "AccountStatus", uniqueConstraints= {@UniqueConstraint(columnNames = {"userId"})}
 )
-public class Balance {
+public class AccountStatus {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long balanceId;
+	private Long accountStatusId;
 
 	@Column(nullable = false)
 	private Long userId;

@@ -6,7 +6,7 @@ public enum AssetClassType {
 	SHARE,
 	LOAN,
 	GOLD,
-	CALL_MONEY;
+	CASH;
 		
 	AssetClassType() {		
 	}

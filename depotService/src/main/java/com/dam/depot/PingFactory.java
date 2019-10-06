@@ -11,6 +11,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.dam.depot.store.AccountStatusStore;
+import com.dam.depot.store.AccountTransactionStore;
+import com.dam.depot.store.DepotStore;
+import com.dam.depot.store.DepotTransactionStore;
 import com.dam.depot.store.IntentStore;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -27,7 +31,7 @@ public class PingFactory {
 	private DepotStore depotStore;
 	
 	@Autowired
-	private BalanceStore balanceStore;
+	private AccountStatusStore accountStatusStore;
 	
 	@Autowired
 	private IntentStore intentStore;
@@ -57,12 +61,12 @@ public class PingFactory {
 		String recordsDepotTransactions = String.valueOf(depotTransactionStore.count());
 		String recordsAccountTransactions  = String.valueOf(accountTransactionStore.count());
 		String recordsDepot = String.valueOf(depotStore.count());
-		String recordsBalance = String.valueOf(balanceStore.count());
+		String recordsAccountStatus = String.valueOf(accountStatusStore.count());
 		String recordsIntent = String.valueOf(intentStore.count());
 		pingInfo.put("database", "records available: [{table: depot, records: " + recordsDepot + "},"
                 +  "{table: accountTransactions, records: " + recordsAccountTransactions + "}, "
                 +  "{table: depotTransactions, records: " + recordsDepotTransactions + "}, "
-                +  "{table: balance, records: " + recordsBalance + "}, "
+                +  "{table: accountStatus, records: " + recordsAccountStatus + "}, "
                 + " {table: intent, records: " + recordsIntent + "}]");
 
 		// Server

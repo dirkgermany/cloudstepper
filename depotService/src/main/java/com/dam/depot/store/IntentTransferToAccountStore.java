@@ -24,22 +24,23 @@ import com.dam.exception.DamServiceException;
  *
  */
 @Controller
-public class IntentTransferToDepotStore extends IntentStore {
+public class IntentTransferToAccountStore extends IntentStore {
 	
-	public Intent transferToDepotIntentSafe(IntentRequest intentCreateRequest) throws DamServiceException {
+	public Intent transferToAccountIntentSafe(IntentRequest intentCreateRequest) throws DamServiceException {
 		RequestHelper.checkPortfolio(intentCreateRequest.getIntent().getPortfolioId());
-		return storeIntentSafe(intentCreateRequest, ActionType.TRANSFER_TO_DEPOT_INTENT);
+		return storeIntentSafe(intentCreateRequest, ActionType.TRANSFER_TO_ACCOUNT_INTENT);
 	}
-
+	
+	
 	/**
 	 * If the house bank of the investor declines the deposit of the account, the investment cannot be performed.
 	 * @param delineRequest
 	 * @return
 	 * @throws DamServiceException
 	 */
-	public Intent declineTransferToDepotSafe(IntentRequest declineRequest) throws DamServiceException {
+	public Intent declineTransferToAccountSafe(IntentRequest declineRequest) throws DamServiceException {
 		List<ActionType> allowedActions = new ArrayList<>();
-		allowedActions.add(ActionType.TRANSFER_TO_DEPOT_DECLINED);
+		allowedActions.add(ActionType.TRANSFER_TO_ACCOUNT_DECLINED);
 		RequestHelper.checkActions(declineRequest.getIntent().getAction(), allowedActions);
 		RequestHelper.checkAmountTransfer(declineRequest.getIntent().getAmount());
 		
@@ -50,9 +51,9 @@ public class IntentTransferToDepotStore extends IntentStore {
 		updateIntent.setIntentId(declineRequest.getIntent().getIntentId());
 		updateIntent.setBooked(true);
 		
-		// For action check the requested intent had to be INVEST_INTENT_CONFIRMED
+		// For action check the requested intent had to be TRANSFER_TO_ACCOUNT_DECLINED
 		// But in Database the ActionType mustn't change
-		updateIntent.setAction(ActionType.TRANSFER_TO_DEPOT_INTENT);
+		updateIntent.setAction(ActionType.TRANSFER_TO_ACCOUNT_INTENT);
 		
 		storedIntent = updateIntent(storedIntent, updateIntent);
 		
@@ -65,7 +66,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 			accountStatus.setAmountDepot(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
-		float amount = accountStatus.getAmountDepotIntent() - storedIntent.getAmount();
+		float amount = accountStatus.getAmountAccountIntent() - storedIntent.getAmount();
 		accountStatus.setAmountDepotIntent(amount);
 		accountStatus.setLastUpdate(new Date());
 		accountStatus.setCurrency(storedIntent.getCurrency());
@@ -76,15 +77,15 @@ public class IntentTransferToDepotStore extends IntentStore {
 	}
 	
 	/**
-	 * Called if invest intents are confirmed.
+	 * Called if transfer intents are confirmed.
 	 * Regulary called by a cron scheduled system user.
 	 * @param confirmRequest
 	 * @return
 	 * @throws DamServiceException
 	 */
-	public Intent confirmTransferToDepotSafe(IntentRequest confirmRequest) throws DamServiceException {
+	public Intent confirmTransferToAccountSafe(IntentRequest confirmRequest) throws DamServiceException {
 		List<ActionType> allowedActions = new ArrayList<>();
-		allowedActions.add(ActionType.TRANSFER_TO_DEPOT_CONFIRMED);
+		allowedActions.add(ActionType.TRANSFER_TO_ACCOUNT_CONFIRMED);
 		RequestHelper.checkActions(confirmRequest.getIntent().getAction(), allowedActions);
 		RequestHelper.checkAmountTransfer(confirmRequest.getIntent().getAmount());
 		RequestHelper.checkCurrency(confirmRequest.getIntent().getCurrency());
@@ -103,7 +104,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 		
 		// For action check the requested intent had to be INVEST_INTENT_CONFIRMED
 		// But in Database the ActionType mustn't change
-		updateIntent.setAction(ActionType.TRANSFER_TO_DEPOT_INTENT);
+		updateIntent.setAction(ActionType.TRANSFER_TO_ACCOUNT_INTENT);
 		
 		// 1. Update with intent
 		storedIntent = updateIntent(storedIntent, updateIntent);
@@ -116,12 +117,12 @@ public class IntentTransferToDepotStore extends IntentStore {
 		accountTransaction.setActionDate(new Date());
 		accountTransaction.setReferenceType(ReferenceType.INTENT);
 		accountTransaction.setReferenceId(storedIntent.getIntentId());
-		accountTransaction.setAmount(storedIntent.getAmount() *-1);
+		accountTransaction.setAmount(storedIntent.getAmount());
 		accountTransaction.setRequestorUserId(confirmRequest.getRequestorUserId());
 		
 		accountTransactionStore.storeAccountTransaction(accountTransaction);
 		
-		// 3. Update account status for account
+		// 3. Update AccountStatus for account
 		AccountStatus accountStatus = accountStatusStore.getAccountStatusByUserId(storedIntent.getUserId());
 		if (null == accountStatus) {
 			accountStatus = new AccountStatus();
@@ -131,11 +132,11 @@ public class IntentTransferToDepotStore extends IntentStore {
 			accountStatus.setAmountDepot(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
-		float amountAccount = accountStatus.getAmountAccount() - storedIntent.getAmount();
-		float amountDepotIntent = accountStatus.getAmountDepotIntent() - storedIntent.getAmount();
-		float amountDepot = accountStatus.getAmountDepot() + storedIntent.getAmount();
+		float amountAccount = accountStatus.getAmountAccount() + storedIntent.getAmount();
+		float amountAccountIntent = accountStatus.getAmountAccountIntent() - storedIntent.getAmount();
+		float amountDepot = accountStatus.getAmountDepot() - storedIntent.getAmount();
 		accountStatus.setAmountAccount(amountAccount);
-		accountStatus.setAmountDepotIntent(amountDepotIntent);
+		accountStatus.setAmountAccountIntent(amountAccountIntent);
 		accountStatus.setAmountDepot(amountDepot);
 		accountStatus.setLastUpdate(new Date());
 		
@@ -149,7 +150,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 		depotTransaction.setActionDate(new Date());
 		depotTransaction.setReferenceType(ReferenceType.INTENT);
 		depotTransaction.setReferenceId(storedIntent.getIntentId());
-		depotTransaction.setAmount(storedIntent.getAmount());
+		depotTransaction.setAmount(storedIntent.getAmount() *-1);
 		depotTransaction.setRequestorUserId(confirmRequest.getRequestorUserId());
 		depotTransaction.setPortfolioId(storedIntent.getPortfolioId());
 		
@@ -164,7 +165,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 			depot.setInvestValue(0f);
 			depot.setCurrency(Currency.EUR);
 		}
-		float investValue = depot.getInvestValue() + storedIntent.getAmount();
+		float investValue = depot.getInvestValue() - storedIntent.getAmount();
 		depot.setInvestValue(investValue);
 		depot.setLastUpdate(new Date());
 		

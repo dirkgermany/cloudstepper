@@ -27,7 +27,7 @@ public class ExternalApiConsumer {
 	 * @param portfolioId used to find out the WKN or whatever the depot bank needs
 	 * @return
 	 */
-	public static boolean stockIncrease (Long userId, float amount, Long portfolioId) {
+	public static boolean stockBuyAssets (Long userId, float amount, Long portfolioId) {
 		return true;
 	}
 	
@@ -38,7 +38,7 @@ public class ExternalApiConsumer {
 	 * @param wkn
 	 * @return
 	 */
-	public static boolean stockDecrease (Long userId, float amount, String wkn) {
+	public static boolean stockSellAssets (Long userId, float amount, Long portfolioId) {
 		return true;
 	}
 

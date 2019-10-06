@@ -29,8 +29,8 @@ public class IntentInvestController {
 		}
 	}
 
-	@PostMapping("/intentInvestConfirmed")
-	public RestResponse intentInvestConfirmed(@RequestBody IntentRequest intentConfirmedRequest) throws DamServiceException {
+	@PostMapping("/investConfirmed")
+	public RestResponse investConfirmed(@RequestBody IntentRequest intentConfirmedRequest) throws DamServiceException {
 		RequestBlocker.lockUser(intentConfirmedRequest.getRequestorUserId());
 		try {
 			RestResponse response = new IntentCreateResponse(intentInvestStore.confirmInvestSafe(intentConfirmedRequest));
@@ -42,8 +42,8 @@ public class IntentInvestController {
 		}
 	}
 	
-	@PostMapping("/intentInvestDeclined")
-	public RestResponse intentInvestDeclined(@RequestBody IntentRequest intentDeclinedRequest) throws DamServiceException {
+	@PostMapping("/investDeclined")
+	public RestResponse investDeclined(@RequestBody IntentRequest intentDeclinedRequest) throws DamServiceException {
 		RequestBlocker.lockUser(intentDeclinedRequest.getRequestorUserId());
 		try {
 			RestResponse response = new IntentCreateResponse(intentInvestStore.declineInvestSafe(intentDeclinedRequest));

@@ -1,4 +1,4 @@
-package com.dam.depot;
+package com.dam.depot.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

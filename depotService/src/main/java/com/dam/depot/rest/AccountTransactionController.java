@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dam.depot.AccountTransactionStore;
 import com.dam.depot.RequestBlocker;
 import com.dam.depot.rest.message.RestResponse;
 import com.dam.depot.rest.message.accountTransaction.AccountTransactionCreateRequest;
@@ -14,6 +13,7 @@ import com.dam.depot.rest.message.accountTransaction.AccountTransactionListReque
 import com.dam.depot.rest.message.accountTransaction.AccountTransactionListResponse;
 import com.dam.depot.rest.message.accountTransaction.AccountTransactionRequest;
 import com.dam.depot.rest.message.accountTransaction.AccountTransactionResponse;
+import com.dam.depot.store.AccountTransactionStore;
 import com.dam.exception.DamServiceException;
 
 @RestController

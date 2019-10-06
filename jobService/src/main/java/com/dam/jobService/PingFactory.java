@@ -6,7 +6,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,21 +56,23 @@ public class PingFactory {
 		} catch (UnknownHostException e1) {
 		}
 		
-//		Iterator <String> itSuccessors = taskConfiguration.getSuccessorList().iterator();
-//		String taskInfo = "tasksConfigured: [";
-//		boolean first = true;
-//		while (itSuccessors.hasNext()) {
-//			if (!first) {
-//				taskInfo+=", ";
-//			}
-//			taskInfo+= "{task: " + itSuccessors.next() + "}";
-//			first=false;
-//		}
-//		taskInfo+= "]";
-//		pingInfo.put("Active Jobs", taskInfo);
-//
-//		
-//		
+		Set<String>successorSet = new HashSet<>();
+		taskConfiguration.getSuccessor().forEach(successor -> successorSet.add(successor));
+		Iterator<String> it = successorSet.iterator();
+		String taskInfo = "successorsConfigured: [";
+		boolean first = true;
+		while (it.hasNext()) {
+			if (!first) {
+				taskInfo+=", ";
+			}
+			taskInfo+= "{successor: " + it.next() + "}";
+			first=false;
+		}
+		taskInfo+= "]";
+		pingInfo.put("Successor List", taskInfo);
+
+		
+		
 //		Iterator <ActionType> it = TaskController.getActiveJobs().iterator();
 //		String actionInfo = "jobsActive: [";
 //		first = true;

@@ -1,5 +1,7 @@
 package com.dam.serviceProvider.rest;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,10 +25,17 @@ public class ServiceProviderAuthentication {
 	private static ServiceDomain serviceDomain = ServiceDomain.AUTHENTICATION;
 	
 	@PostMapping("/login")
-	public JsonNode login(@RequestBody String request) throws DamServiceException {
+	public JsonNode login(@RequestBody String request, HttpServletRequest bla) throws DamServiceException {
 		int index = config.getIndexPerDomain(serviceDomain.name());
-		JsonNode response = consumer.retrieveResponse(request, config.getServiceUrl(index), "login");
+		bla.getRemoteUser();
+		bla.getRemoteAddr();
+		bla.getRemoteHost();
 
+		System.out.println("................. user: " + bla.getRemoteUser());
+		System.out.println("................. addr: " + bla.getRemoteAddr());
+		System.out.println("................. host: " + bla.getRemoteHost());
+		
+		JsonNode response = consumer.retrieveResponse(request, config.getServiceUrl(index), "login");
 		return response;
 	}
 

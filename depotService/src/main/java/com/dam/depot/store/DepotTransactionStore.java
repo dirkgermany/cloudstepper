@@ -1,4 +1,4 @@
-package com.dam.depot;
+package com.dam.depot.store;
 
 import java.util.Date;
 import java.util.ArrayList;
@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.dam.depot.PermissionCheck;
+import com.dam.depot.RequestHelper;
 import com.dam.depot.model.DepotTransactionModel;
 import com.dam.depot.model.entity.DepotTransaction;
 import com.dam.depot.rest.message.depotTransaction.DepotTransactionListRequest;
