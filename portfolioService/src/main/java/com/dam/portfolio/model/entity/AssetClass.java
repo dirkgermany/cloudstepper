@@ -40,8 +40,11 @@ public class AssetClass {
 	@Lob
 	private String description;
 	
-	@Column (nullable = false)
+	@Column (nullable = true)
 	private String wkn;
+	
+	@Column (nullable = true)
+	private String symbol;
 	
 	@Column (nullable = true)
 	private String link;
@@ -123,6 +126,14 @@ public class AssetClass {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 	
 }

@@ -1,14 +1,11 @@
 package com.dam.jobService;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import com.dam.jobService.task.ScheduledTasks;
 
 /**
  * Does two missions:
@@ -20,7 +17,7 @@ import com.dam.jobService.task.ScheduledTasks;
  */
 @ConfigurationProperties(prefix = "tasks")
 public class TaskConfiguration {
-	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaskConfiguration.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	
@@ -64,8 +61,6 @@ public class TaskConfiguration {
 	private List<String>successor;
 	
 	private List<String>predecessor;
-		
-	
 
 	public String getServiceProviderProtocol() {
 		return serviceProviderProtocol;
