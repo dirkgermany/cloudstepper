@@ -31,7 +31,7 @@ import com.dam.depot.types.ReferenceType;
 @Component
 @Table(name = "DepotTransaction", 
 			uniqueConstraints= {@UniqueConstraint(columnNames = {"userId", "action", "amount", "actionDate"})},
-			indexes = {@Index(name = "idx_depot_user_action", columnList = "userId, action"),
+			indexes = {@Index(name = "idx_depot_action", columnList = "action"),
 					   @Index(name = "idx_depot_user_date", columnList = "userId, actionDate"), 
 					   @Index(name = "idx_depot_user", columnList = "userId"), 
 					   @Index(name = "idx_depot_user_amount", columnList = "userId, amount")}
