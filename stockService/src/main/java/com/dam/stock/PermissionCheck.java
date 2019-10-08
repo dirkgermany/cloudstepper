@@ -1,8 +1,8 @@
 package com.dam.stock;
 
+import com.dam.stock.rest.message.RestRequest;
 import com.dam.exception.DamServiceException;
 import com.dam.exception.PermissionCheckException;
-import com.dam.stock.rest.message.RestRequest;
 
 public class PermissionCheck {
 	

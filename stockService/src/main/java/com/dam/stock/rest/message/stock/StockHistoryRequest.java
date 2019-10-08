@@ -7,10 +7,9 @@ public class StockHistoryRequest extends RestRequest {
 	
 	private StockHistory stockHistory;
 	
-    public StockHistoryRequest( Long requestorUserId, StockHistory stockHistory) {
+    public StockHistoryRequest(StockHistory stockHistory) {
 		super("DAM 2.0");
 		setStockHistory(stockHistory);
-		setRequestorUserId(requestorUserId);
     }
 
 

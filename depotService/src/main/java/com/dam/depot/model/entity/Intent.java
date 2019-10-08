@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -19,7 +20,7 @@ import com.dam.depot.types.Currency;
 
 @Entity
 @Component
-@Table(name = "Intent")
+@Table(name = "Intent", indexes = {@Index(name = "idx_intent_booked", columnList = "booked")})
 public class Intent {
 
 	@Id

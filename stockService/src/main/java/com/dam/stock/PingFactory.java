@@ -6,19 +6,21 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dam.stock.store.StockHistoryStore;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class PingFactory {
 	
 	@Autowired
-	private StockHistoryStore stockHistoryStore;
+	Configuration configuration;
 	
 	private Map<String, String> pingInfo = new HashMap<String, String>();
 
@@ -41,10 +43,6 @@ public class PingFactory {
 		Long upTime = runtimeBean.getUptime();
 		pingInfo.put("uptime", upTime.toString() + "ms");
 
-		// Database
-		String recordsAccountStatus = String.valueOf(stockHistoryStore.count());
-		pingInfo.put("database", "records available: [{table: depot, records: " + recordsAccountStatus + "}]");
-
 		// Server
 		try {
 			pingInfo.put("hostAddress", InetAddress.getLocalHost().getHostAddress());
@@ -56,6 +54,7 @@ public class PingFactory {
 			pingInfo.put("hostName", InetAddress.getLocalHost().getCanonicalHostName());
 		} catch (UnknownHostException e1) {
 		}
+		
 	}
 	
 	public Map<String, String> getPingInfo() {

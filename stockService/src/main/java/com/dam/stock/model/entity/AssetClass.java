@@ -1,6 +1,7 @@
 package com.dam.stock.model.entity;
 
-import com.dam.stock.types.AssetClassType;
+import com.dam.stock.type.AssetClassType;
+import com.dam.stock.type.Symbol;
 
 public class AssetClass {	
 
@@ -11,7 +12,7 @@ public class AssetClass {
 	private AssetClassType assetClassType;
 	private String description;
 	private String wkn;
-	private String symbol;
+	private Symbol symbol;
 	private String link;
 
 	public AssetClass () {	
@@ -81,11 +82,11 @@ public class AssetClass {
 		this.link = link;
 	}
 
-	public String getSymbol() {
+	public Symbol getSymbol() {
 		return symbol;
 	}
 
-	public void setSymbol(String symbol) {
+	public void setSymbol(Symbol symbol) {
 		this.symbol = symbol;
 	}
 	

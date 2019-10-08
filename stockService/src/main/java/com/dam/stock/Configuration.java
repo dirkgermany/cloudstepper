@@ -19,136 +19,72 @@ public class Configuration {
 	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
-	@Value("${domain}")
-	private String domain;
+	@Value("${tasks.activation.task.IMPORT_STOCK}")
+	private Boolean importStockActive;
 	
-	@Value("${portfolio.service.protocol}")
-	private String portfolioServiceProtocol;
+	@Value("${provider.service.protocol}")
+	private String serviceProviderProtocol;
 	
-	@Value("${portfolio.service.host}")
-	private String portfolioServiceHost;
+	@Value("${provider.service.host}")
+	private String serviceProviderHost;
+
+	@Value("${provider.service.port}")
+	private Long serviceProviderPort;
 	
-	@Value("${portfolio.service.port}")
-	private Long portfolioServicePort;
+	@Value("${provider.service.user}")
+	private String userName;
 	
-	@Value("${portfolio.user.name}")
-	private String portfolioUserName;
-	
-	@Value("${portfolio.user.password}")
-	private String portfolioUserPassword;
-	
-	
-	@Value("${stock.service.protocol}")
-	private String stockServiceProtocol;
-	
-	@Value("${stock.service.host}")
-	private String stockServiceHost;
-	
-	@Value("${stock.user.apikey}")
-	private String stockServiceApiKey;
-	
-	@Value("${stock.service.function}")
-	private String stockServiceFunction;
-	
-	@Value("${stock.service.outputsize}")
-	private String stockServiceOutputSize;
+	@Value("${provider.service.password}")
+	private String password;
 	
 	public Configuration () {
 	}
-
-	public static Logger getLogger() {
-		return logger;
+	
+	public String getServiceProviderProtocol() {
+		return serviceProviderProtocol;
 	}
 
-	public static DateTimeFormatter getDatetimeformatter() {
-		return dateTimeFormatter;
+	public void setServiceProviderProtocol(String serviceProviderProtocol) {
+		this.serviceProviderProtocol = serviceProviderProtocol;
 	}
 
-	public String getPortfolioServiceProtocol() {
-		return portfolioServiceProtocol;
+	public String getServiceProviderHost() {
+		return serviceProviderHost;
 	}
 
-	public void setPortfolioServiceProtocol(String portfolioServiceProtocol) {
-		this.portfolioServiceProtocol = portfolioServiceProtocol;
+	public void setServiceProviderHost(String serviceProviderHost) {
+		this.serviceProviderHost = serviceProviderHost;
 	}
 
-	public String getPortfolioServiceHost() {
-		return portfolioServiceHost;
+	public Long getServiceProviderPort() {
+		return serviceProviderPort;
 	}
 
-	public void setPortfolioServiceHost(String portfolioServiceHost) {
-		this.portfolioServiceHost = portfolioServiceHost;
+	public void setServiceProviderPort(Long serviceProviderPort) {
+		this.serviceProviderPort = serviceProviderPort;
 	}
 
-	public Long getPortfolioServicePort() {
-		return portfolioServicePort;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setPortfolioServicePort(Long portfolioServicePort) {
-		this.portfolioServicePort = portfolioServicePort;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
-	public String getPortfolioUserName() {
-		return portfolioUserName;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setPortfolioUserName(String portfolioUserName) {
-		this.portfolioUserName = portfolioUserName;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public String getPortfolioUserPassword() {
-		return portfolioUserPassword;
+	public Boolean isImportStockActive() {
+		return importStockActive;
 	}
 
-	public void setPortfolioUserPassword(String portfolioUserPassword) {
-		this.portfolioUserPassword = portfolioUserPassword;
-	}
-
-	public String getStockServiceProtocol() {
-		return stockServiceProtocol;
-	}
-
-	public void setStockServiceProtocol(String stockServiceProtocol) {
-		this.stockServiceProtocol = stockServiceProtocol;
-	}
-
-	public String getStockServiceHost() {
-		return stockServiceHost;
-	}
-
-	public void setStockServiceHost(String stockServiceHost) {
-		this.stockServiceHost = stockServiceHost;
-	}
-
-	public String getStockServiceApiKey() {
-		return stockServiceApiKey;
-	}
-
-	public void setStockServiceApiKey(String stockServiceApiKey) {
-		this.stockServiceApiKey = stockServiceApiKey;
-	}
-
-	public String getStockServiceFunction() {
-		return stockServiceFunction;
-	}
-
-	public void setStockServiceFunction(String stockServiceFunction) {
-		this.stockServiceFunction = stockServiceFunction;
-	}
-
-	public String getStockServiceOutputSize() {
-		return stockServiceOutputSize;
-	}
-
-	public void setStockServiceOutputSize(String stockServiceOutputSize) {
-		this.stockServiceOutputSize = stockServiceOutputSize;
-	}
-
-	public String getDomain() {
-		return domain;
-	}
-
-	public void setDomain(String domain) {
-		this.domain = domain;
+	public void setImportStockActive(Boolean importStockActive) {
+		this.importStockActive = importStockActive;
 	}
 }

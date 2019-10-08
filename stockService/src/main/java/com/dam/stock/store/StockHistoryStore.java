@@ -31,8 +31,10 @@ public class StockHistoryStore {
 		PermissionCheck.checkRequestedParams(historyRequest, historyRequest.getRequestorUserId(),
 				historyRequest.getRights());
 		PermissionCheck.isReadPermissionSet(historyRequest.getRequestorUserId(), null, historyRequest.getRights());
+		
+		return null;
 
-		return getHistoryListBySymbol(historyRequest.getStockHistory().getSymbol());
+//		return getHistoryListBySymbol(historyRequest.getStockHistory().getSymbol());
 	}
 
 	public List<StockHistory> getHistoryListBySymbol(String symbol) {

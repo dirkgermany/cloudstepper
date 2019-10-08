@@ -2,20 +2,19 @@ package com.dam.stock.rest.message;
 
 public class RestResponse {
 
-	private final String SERVICE_NAME = "DepotService";
+	private final String SERVICE_NAME = "UserService";
 
 	private Long returnCode;
 	private String description;
 	private String result;
-
 
 	public RestResponse(Long returnCode, String result, String description) {
 		setReturnCode(returnCode);
 		setDescription(description);
 		setResult(result);
 	}
-
-	public String getServiceName() {
+	
+	public String getServiceName () {
 		return SERVICE_NAME;
 	}
 

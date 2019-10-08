@@ -21,7 +21,7 @@ public class Consumer {
 	 * @return
 	 */
 	public JsonNode retrieveResponse(String request, String url, String action) throws DamServiceException {
-		JsonHelper jsonHelper = new com.dam.stock.JsonHelper();
+		com.dam.stock.JsonHelper jsonHelper = new JsonHelper();
 
 		String URI = url + "/" + action;
 		String tokenId = null;
