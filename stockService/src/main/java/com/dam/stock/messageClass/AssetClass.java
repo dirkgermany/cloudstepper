@@ -1,4 +1,4 @@
-package com.dam.stock.model.entity;
+package com.dam.stock.messageClass;
 
 import com.dam.stock.type.AssetClassType;
 import com.dam.stock.type.Symbol;

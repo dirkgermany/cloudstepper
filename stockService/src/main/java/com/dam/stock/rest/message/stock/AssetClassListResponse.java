@@ -2,7 +2,7 @@ package com.dam.stock.rest.message.stock;
 
 import java.util.List;
 
-import com.dam.stock.model.entity.AssetClass;
+import com.dam.stock.messageClass.AssetClass;
 import com.dam.stock.rest.message.RestResponse;
 
 public class AssetClassListResponse extends RestResponse {

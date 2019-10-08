@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.dam.exception.DamServiceException;
 import com.dam.stock.Configuration;
-import com.dam.stock.task.jobs.JobSellIntentFinalize;
+import com.dam.stock.task.jobs.Job;
+import com.dam.stock.task.jobs.JobUpdateStocks;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,10 +23,7 @@ public class ScheduledTasks {
 	Configuration configuration;
 
 	@Autowired
-	TaskController taskController;
-	
-	@Autowired
-	JobSellIntentFinalize jobSellIntentFinalize;
+	JobUpdateStocks jobUpdateStocks;
 
 	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -39,16 +37,16 @@ public class ScheduledTasks {
 	 * logs the scheduling. If no other process is active, logs out from Service
 	 * Provider
 	 */
-	private boolean executeJob(Client client) throws DamServiceException {
+	private boolean executeJob(Job job) throws DamServiceException {
 		logger.info("Stock Importer :: {}: - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), "started");
 		
 		boolean success = true;
 
 		try {
-			client.executeJob();
+			job.executeJob();
 		} catch (Exception ex) {
 			logger.error("Scheduled Task", ex);
-			client.logout(this.getClass().getName());
+			job.logout(this.getClass().getName());
 			success = false;
 		} finally {
 			logger.info("Stock Importer :: {}: - Status: {}", dateTimeFormatter.format(LocalDateTime.now()), "finished");
@@ -63,11 +61,11 @@ public class ScheduledTasks {
 	 * - another job/task for the same user is still in progress
 	 * - the token has expired
 	 */
-	private void startJob(Client client) throws DamServiceException {
+	private void startJob(Job job) throws DamServiceException {
 		boolean success = false;
 		int retries = 0;
 		while (!success && retries <= MAX_RETRIES) {
-			success = executeJob(client);
+			success = executeJob(job);
 			if (!success) {
 				try {
 					Thread.sleep(10000);
@@ -77,10 +75,10 @@ public class ScheduledTasks {
 		}
 	}
 
-	@Scheduled(cron = "${cron.depot.sellIntentFinalize}")
-	public void scheduleSellIntentFinalize() throws DamServiceException {
+	@Scheduled(cron = "${cron.stock.updateStocks}")
+	public void updateStocks() throws DamServiceException {
 		if (configuration.isImportStockActive()) {
-			startJob(jobSellIntentFinalize);
+			startJob(jobUpdateStocks);
 		}
 	}
 }

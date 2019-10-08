@@ -17,7 +17,7 @@ import com.dam.stock.type.Symbol;
 
 @Entity
 @Component
-@Table(name = "StockHistory", uniqueConstraints= {@UniqueConstraint(columnNames = {"historyDate"}), @UniqueConstraint(columnNames = {"historyDate", "symbol"}), @UniqueConstraint(columnNames = {"symbol"}), @UniqueConstraint(columnNames = {"wkn"})}
+@Table(name = "StockHistory", uniqueConstraints= {@UniqueConstraint(columnNames = {"historyDate", "symbol"})}
 )
 public class StockHistory {
 	
@@ -40,6 +40,15 @@ public class StockHistory {
 	
 	@Column(nullable = false)
 	private Date historyDate;
+	
+	public StockHistory updateEntity (StockHistory container) {
+		setSymbol(container.getSymbol());
+		setWkn(container.getWkn());
+		setOpen(container.getOpen());
+		setClose(container.getClose());
+		setHistoryDate(container.getHistoryDate());
+		return this;
+	}
 
 	public Long getStockHistoryId() {
 		return stockHistoryId;

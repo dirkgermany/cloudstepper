@@ -1,6 +1,7 @@
 package com.dam.stock.store;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,12 +27,12 @@ public class StockHistoryStore {
 	public long count() {
 		return stockHistoryModel.count();
 	}
-	
+
 	public List<StockHistory> getStockHistorySafe(StockHistoryRequest historyRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(historyRequest, historyRequest.getRequestorUserId(),
 				historyRequest.getRights());
 		PermissionCheck.isReadPermissionSet(historyRequest.getRequestorUserId(), null, historyRequest.getRights());
-		
+
 		return null;
 
 //		return getHistoryListBySymbol(historyRequest.getStockHistory().getSymbol());
@@ -40,8 +41,14 @@ public class StockHistoryStore {
 	public List<StockHistory> getHistoryListBySymbol(String symbol) {
 		return stockHistoryModel.findAllBySymbol(symbol);
 	}
-	
-	public StockHistory saveAccountStatus(StockHistory stockHistory) throws DamServiceException {
+
+	// makes an update if entity exists
+	public StockHistory storeStockHistory(StockHistory stockHistory) throws DamServiceException {
+		StockHistory storedEntry = stockHistoryModel.findBySymbolDate(stockHistory.getSymbol(),	stockHistory.getHistoryDate());
+		if (null != storedEntry) {
+			storedEntry.updateEntity(stockHistory);
+			return stockHistoryModel.save(storedEntry);
+		}
 		return stockHistoryModel.save(stockHistory);
 	}
 }

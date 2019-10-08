@@ -10,7 +10,7 @@ import com.dam.stock.JsonHelper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
-public class Consumer {
+public class ServiceProviderConsumer {
 
 	/**
 	 * Send Request to any service
@@ -44,9 +44,9 @@ public class Consumer {
 		return null;
 	}
 
-	public JsonNode retrieveGetResponse(String url, String action) {
+	public JsonNode retrieveGetResponse(String url, String params) {
 		JsonHelper jsonHelper = new JsonHelper();
-		String URI = url + "/" + action;
+		String URI = url + "/" + params;
 
 		String serviceResponse = getMessage(URI);
 		if (null != serviceResponse) {

@@ -5,19 +5,19 @@ import com.dam.stock.rest.message.RestRequest;
 
 public class StockHistoryRequest extends RestRequest {
 	
-	private StockHistory stockHistory;
+//	private StockHistory stockHistory;
 	
     public StockHistoryRequest(StockHistory stockHistory) {
 		super("DAM 2.0");
-		setStockHistory(stockHistory);
+//		setStockHistory(stockHistory);
     }
 
 
-	public StockHistory getStockHistory() {
-		return stockHistory;
-	}
-
-	public void setStockHistory(StockHistory stockHistory) {
-		this.stockHistory = stockHistory;
-	}
+//	public StockHistory getStockHistory() {
+//		return stockHistory;
+//	}
+//
+//	public void setStockHistory(StockHistory stockHistory) {
+//		this.stockHistory = stockHistory;
+//	}
 }

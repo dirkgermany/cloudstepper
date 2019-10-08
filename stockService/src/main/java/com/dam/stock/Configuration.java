@@ -37,6 +37,18 @@ public class Configuration {
 	@Value("${provider.service.password}")
 	private String password;
 	
+	@Value("${stock.service.protocol}")
+	private String stockServiceProtocol;
+	
+	@Value("${stock.service.host}")
+	private String stockServiceHost;
+	
+	@Value("${stock.service.key}")
+	private String stockServiceKey;
+	
+	@Value("${stock.service.function}")
+	private String stockServiceFunction;
+	
 	public Configuration () {
 	}
 	
@@ -86,5 +98,41 @@ public class Configuration {
 
 	public void setImportStockActive(Boolean importStockActive) {
 		this.importStockActive = importStockActive;
+	}
+
+	public String getStockServiceProtocol() {
+		return stockServiceProtocol;
+	}
+
+	public void setStockServiceProtocol(String stockServiceProtocol) {
+		this.stockServiceProtocol = stockServiceProtocol;
+	}
+
+	public String getStockServiceHost() {
+		return stockServiceHost;
+	}
+
+	public void setStockServiceHost(String stockServiceHost) {
+		this.stockServiceHost = stockServiceHost;
+	}
+
+	public String getStockServiceKey() {
+		return stockServiceKey;
+	}
+
+	public void setStockServiceKey(String stockServiceKey) {
+		this.stockServiceKey = stockServiceKey;
+	}
+
+	public String getStockServiceFunction() {
+		return stockServiceFunction;
+	}
+
+	public void setStockServiceFunction(String stockServiceFunction) {
+		this.stockServiceFunction = stockServiceFunction;
+	}
+
+	public Boolean getImportStockActive() {
+		return importStockActive;
 	}
 }

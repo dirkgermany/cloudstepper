@@ -2,7 +2,14 @@ package com.dam.portfolio.types;
 
 public enum Symbol {
 	
-	ISHARES_NASDAQ_100_UCITS_ETF ("EXXT.DE");
+	EXXT_DE ("EXXT.DE"),
+	EUNL_DE ("EUNL.DE"),
+	IHI ("IHI"),
+	IQQE_DE ("IQQE.DE"), 
+	SXRT_DE ("SXRT.DE"),
+	BND ("BND"),
+	IBCD_DE ("IBCD.DE"),
+	IGLN_L ("IGLN.L"); 
 
 	private String requestSymbol;
 	
@@ -17,5 +24,4 @@ public enum Symbol {
 	public String getRequestSymbol() {
 		return requestSymbol;
 	}
-
 }
