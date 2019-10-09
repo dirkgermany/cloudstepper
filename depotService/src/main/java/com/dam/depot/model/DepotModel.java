@@ -1,5 +1,7 @@
 package com.dam.depot.model;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,7 +13,7 @@ import com.dam.depot.model.entity.Depot;
 public interface DepotModel extends Repository<Depot, Long>, CrudRepository<Depot, Long> {
 	
 	@Query("SELECT depot FROM Depot depot WHERE depot.userId = :userId ")
-	Depot findByUserId(@Param("userId") Long userId);
+	List<Depot> findByUserId(@Param("userId") Long userId);
 	
 	@Query("SELECT depot FROM Depot depot WHERE depot.userId = :userId " +
 			" AND depot.portfolioId = :portfolioId")

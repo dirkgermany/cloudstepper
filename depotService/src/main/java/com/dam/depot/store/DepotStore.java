@@ -1,5 +1,7 @@
 package com.dam.depot.store;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import com.dam.depot.model.DepotModel;
@@ -22,7 +24,7 @@ public class DepotStore {
 		return depotModel.count();
 	}
 
-	public Depot getDepotByUserId(Long userId) {
+	public List<Depot> getDepotByUserId(Long userId) {
 		return depotModel.findByUserId(userId);
 	}
 	

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.depot.rest.message.RestResponse;
 import com.dam.depot.rest.message.account.AccountStatusRequest;
-import com.dam.depot.rest.message.account.AccountStatusResponse;
 import com.dam.depot.store.AccountStatusStore;
 import com.dam.exception.DamServiceException;
 
@@ -19,7 +18,7 @@ public class AccountStatusController {
 	@PostMapping("/getAccountStatus")
 	public RestResponse getAccountStatus (@RequestBody AccountStatusRequest accountStatusRequest) throws DamServiceException {
 		try {
-			return new AccountStatusResponse(accountStatusStore.getAccountStatusSafe(accountStatusRequest));
+			return accountStatusStore.getAccountStatusSafe(accountStatusRequest);
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
