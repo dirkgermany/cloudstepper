@@ -20,6 +20,8 @@ public class TaskConfiguration {
 	private static final Logger logger = LoggerFactory.getLogger(TaskConfiguration.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
+	@Value("${server.port}")
+	String serverPort;
 	
 	@Value("${tasks.activation.task.INVEST_INTENT_FINALIZE}")
 	private Boolean investIntentActive;
@@ -164,5 +166,13 @@ public class TaskConfiguration {
 
 	public void setTransferToAccountIntentActive(Boolean transferToAccountIntentActive) {
 		this.transferToAccountIntentActive = transferToAccountIntentActive;
+	}
+
+	public String getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(String serverPort) {
+		this.serverPort = serverPort;
 	}
 }

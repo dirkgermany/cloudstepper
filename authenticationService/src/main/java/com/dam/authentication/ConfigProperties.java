@@ -1,5 +1,6 @@
 package com.dam.authentication;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 //import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,6 +9,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ConfigProperties {
 
 	private TokenConfiguration tokenConfiguration;
+	
+	@Value("${server.port}")
+	String serverPort;
+
 	
 	// Superclass
 	public static class Service {
@@ -75,5 +80,13 @@ public class ConfigProperties {
 	public static class PermissionService extends Service {}
 	private PermissionService permissionService = new PermissionService();
 	public PermissionService getPermissionService() {return permissionService;}
+
+	public String getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(String serverPort) {
+		this.serverPort = serverPort;
+	}
 	
 }

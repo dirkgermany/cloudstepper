@@ -36,6 +36,9 @@ public class PingFactory {
 	@Autowired
 	private IntentStore intentStore;
 	
+	@Autowired
+	Configuration configuration;
+
 	private Map<String, String> pingInfo = new HashMap<String, String>();
 
 	public PingFactory() {
@@ -45,6 +48,9 @@ public class PingFactory {
 
 		// Own app name
 		pingInfo.put("service", serviceName);
+
+		// service port
+		pingInfo.put("port", configuration.getServerPort());
 
 		// Status
 		pingInfo.put("status", "OK");

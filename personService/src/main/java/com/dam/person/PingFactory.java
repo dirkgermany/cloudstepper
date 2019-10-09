@@ -15,8 +15,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class PingFactory {
+	
 	@Autowired
 	PersonStore personStore;
+	
+	@Autowired
+	Configuration configuration;
 	
 	private Map<String, String> pingInfo = new HashMap<String, String>();
 	
@@ -27,6 +31,9 @@ public class PingFactory {
 
 		// Own app name
 		pingInfo.put("service", serviceName);
+		
+		// service port
+		pingInfo.put("port", configuration.getServerPort());
 
 		// Status
 		pingInfo.put("status", "OK");

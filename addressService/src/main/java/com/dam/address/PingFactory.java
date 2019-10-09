@@ -11,12 +11,16 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class PingFactory {
+	
+	@Autowired
+	Configuration configuration;
 	
 	@Autowired
 	private AddressStore addressStore; 
@@ -30,6 +34,9 @@ public class PingFactory {
 
 		// Own app name
 		pingInfo.put("service", serviceName);
+		
+		// service port
+		pingInfo.put("port", configuration.getServerPort());
 
 		// Status
 		pingInfo.put("status", "OK");

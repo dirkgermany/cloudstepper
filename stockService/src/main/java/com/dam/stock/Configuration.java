@@ -19,6 +19,9 @@ public class Configuration {
 	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
+	@Value("${server.port}")
+	String serverPort;
+
 	@Value("${tasks.activation.task.IMPORT_STOCK}")
 	private Boolean importStockActive;
 	
@@ -134,5 +137,13 @@ public class Configuration {
 
 	public Boolean getImportStockActive() {
 		return importStockActive;
+	}
+
+	public String getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(String serverPort) {
+		this.serverPort = serverPort;
 	}
 }

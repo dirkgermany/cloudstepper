@@ -32,6 +32,9 @@ public class PingFactory {
 
 		// Own app name
 		pingInfo.put("service", serviceName);
+		
+		// service port
+		pingInfo.put("port", taskConfiguration.getServerPort());
 
 		// Status
 		pingInfo.put("status", "OK");
