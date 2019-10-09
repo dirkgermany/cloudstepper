@@ -33,6 +33,10 @@ public class ConfigProperties {
 	private List<String> hosts;
 	private List<String> protocols;
 	
+	public ConfigProperties() {
+		
+	}
+	
 	public Integer getIndexPerDomain(String domain) {
 		if (null == indexDomain) {
 			indexDomain = new HashMap<String, Integer>();

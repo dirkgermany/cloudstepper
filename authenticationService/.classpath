@@ -39,14 +39,5 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/dirk/.m2/repository/org/slf4j/slf4j-api/1.7.26/slf4j-api-1.7.26.jar" sourcepath="/home/dirk/.m2/repository/org/slf4j/slf4j-api/1.7.26/slf4j-api-1.7.26-sources.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.slf4j"/>
-			<attribute name="maven.artifactId" value="slf4j-api"/>
-			<attribute name="maven.version" value="1.7.26"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

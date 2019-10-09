@@ -21,7 +21,7 @@ public class Ping {
 	 */
 	@GetMapping("/ping")
 	public JsonNode ping() {
-		pingFactory.init("JobService");			
+		pingFactory.setInfo("StockService");			
 		return pingFactory.getNode();
 	}
 	

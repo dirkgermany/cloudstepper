@@ -23,6 +23,9 @@ public class ServiceProviderPing {
 
 	@Autowired
 	Consumer consumer;
+	
+	@Autowired
+	PingFactory pingFactory;
 
 	/**
 	 * Retrieves informations about service healthy.
@@ -32,7 +35,7 @@ public class ServiceProviderPing {
 	 */
 	@GetMapping("/ping")
 	public PingResponse ping() throws DamServiceException{
-		PingFactory pingFactory = new PingFactory("ServiceProvider");
+		pingFactory.setInfo("ServiceProvider");
 
 		JsonNode response = pingFactory.getNode();
 

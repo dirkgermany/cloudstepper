@@ -8,17 +8,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
+@Component
 public class PingFactory {
 	
 	@Autowired
 	ConfigProperties configuration;
 
 	private Map<String, String> pingInfo = new HashMap<String, String>();
-
-	public PingFactory(String serviceName) {
-
+	
+	public PingFactory() {
+	}
+	
+	public void setInfo(String serviceName) {
 		// Own app name
 		pingInfo.put("service", serviceName);
 		

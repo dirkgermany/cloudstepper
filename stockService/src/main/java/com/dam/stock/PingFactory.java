@@ -18,20 +18,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class PingFactory {
-	
+
 	@Autowired
 	Configuration configuration;
-	
+
 	private Map<String, String> pingInfo = new HashMap<String, String>();
 
 	public PingFactory() {
 	}
-	
-	public void init(String serviceName) {
+
+
+	public void setInfo(String serviceName) {
 
 		// Own app name
 		pingInfo.put("service", serviceName);
-		
+
 		// service port
 		pingInfo.put("port", configuration.getServerPort());
 
@@ -57,13 +58,13 @@ public class PingFactory {
 			pingInfo.put("hostName", InetAddress.getLocalHost().getCanonicalHostName());
 		} catch (UnknownHostException e1) {
 		}
-		
+
 	}
-	
+
 	public Map<String, String> getPingInfo() {
 		return this.pingInfo;
 	}
-	
+
 	public JsonNode getNode() {
 		return new JsonHelper().createNodeFromMap(getPingInfo());
 	}
