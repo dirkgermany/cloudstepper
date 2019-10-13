@@ -3,6 +3,7 @@ package com.dam.provider.rest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import com.dam.provider.ConfigProperties;
 import com.dam.provider.rest.consumer.Consumer;
 import com.dam.provider.types.ServiceDomain;
 
+@CrossOrigin
 @RestController
 public class ServiceProviderAuthentication {
 	@Autowired

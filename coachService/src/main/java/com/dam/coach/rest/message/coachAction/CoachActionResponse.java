@@ -8,7 +8,7 @@ public class CoachActionResponse extends RestResponse{
 	private CoachAction coachAction;
     	
 	public CoachActionResponse (CoachAction coachAction) {
-		super(new Long(200), "OK", "Coach Action found");
+		super(new Long(200), "OK", "Coach Request Successfull");
 		setCoachAction(coachAction);
 	}
 
