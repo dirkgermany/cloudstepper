@@ -1,5 +1,9 @@
 package com.dam.coach.model.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,7 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+
 import org.springframework.stereotype.Component;
 
 
@@ -35,6 +41,21 @@ public class CoachAction {
 	
 	@Column(nullable = false)
 	private String text;
+	
+	@Transient
+	private List<String> optionList = new ArrayList<>();
+	
+	private void splitOptions() {		
+		if (null != options) {
+			if (options.contains(",")) {
+				String option[] = options.split(",");
+				optionList=Arrays.asList(option);
+			}
+			else {
+				optionList.add(options);
+			}
+		}
+	}
 
 	public Long getActionId() {
 		return actionId;
@@ -82,6 +103,17 @@ public class CoachAction {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	@Transient
+	public List<String> getOptionList() {
+		splitOptions();
+		return optionList;
+	}
+
+	@Transient
+	public void setOptionList(List<String> optionList) {
+		splitOptions();
 	}
 
 }
