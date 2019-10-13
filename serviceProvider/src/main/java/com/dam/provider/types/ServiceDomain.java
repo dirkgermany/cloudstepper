@@ -10,6 +10,7 @@ public enum ServiceDomain {
 	DEPOT (),
 	ASSET (),
 	AUTHENTICATION (),
+	COACH (),
 	UNKNOWN ();
 	
 }
