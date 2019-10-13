@@ -1,7 +1,5 @@
 package com.dam.authentication.rest;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +13,6 @@ import com.dam.authentication.model.User;
 import com.dam.authentication.rest.message.GetUserResponse;
 import com.dam.authentication.rest.message.LoginRequest;
 import com.dam.exception.DamServiceException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component

@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ import com.dam.authentication.rest.message.TokenValidationResponse;
 import com.dam.authentication.types.ServiceDomain;
 import com.dam.exception.DamServiceException;
 
+@CrossOrigin
 @RestController
 @ComponentScan
 public class AuthenticationController {

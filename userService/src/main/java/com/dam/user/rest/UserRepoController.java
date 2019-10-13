@@ -1,6 +1,7 @@
 package com.dam.user.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import com.dam.user.rest.message.UpdateResponse;
 import com.dam.user.rest.message.UserRequest;
 import com.dam.user.rest.message.UserResponse;
 
+@CrossOrigin
 @RestController
 public class UserRepoController {
 	@Autowired
