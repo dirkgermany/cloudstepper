@@ -28,6 +28,8 @@ public class ServiceProviderAnyCall {
 	public JsonNode doubleSlash(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
+		System.out.println("------------------> doubleSlash");
+		
 		return anyPost(requestBody, servletRequest);
 		
 	}
@@ -36,14 +38,28 @@ public class ServiceProviderAnyCall {
 	public JsonNode tripleSlash(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
+		System.out.println("------------------> tripleSlash");
+
+		return anyPost(requestBody, servletRequest);
+		
+	}
+
+	@PostMapping("/*")
+	public JsonNode singleSlash(@RequestBody String requestBody, HttpServletRequest servletRequest)
+			throws DamServiceException {
+		
+		System.out.println("------------------> singleSlash");
+
 		return anyPost(requestBody, servletRequest);
 		
 	}
 
 
-	@PostMapping("/*")
+	@PostMapping("*")
 	public JsonNode anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
+		System.out.println("------------------> ASTERISK");
+
 		String requestUri = servletRequest.getRequestURI();
 		String[] pathParts = null;
 
