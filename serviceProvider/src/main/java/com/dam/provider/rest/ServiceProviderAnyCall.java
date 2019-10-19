@@ -44,7 +44,7 @@ public class ServiceProviderAnyCall {
 		
 	}
 
-	@PostMapping("/*")
+	@PostMapping("*")
 	public JsonNode singleSlash(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
@@ -55,10 +55,9 @@ public class ServiceProviderAnyCall {
 	}
 
 
-	@PostMapping("*")
+//	@PostMapping("*")
 	public JsonNode anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
-		System.out.println("------------------> ASTERISK");
 
 		String requestUri = servletRequest.getRequestURI();
 		String[] pathParts = null;
