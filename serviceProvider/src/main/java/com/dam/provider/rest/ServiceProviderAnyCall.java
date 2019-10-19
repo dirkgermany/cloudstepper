@@ -12,7 +12,7 @@ import com.dam.provider.rest.consumer.Consumer;
 import com.dam.provider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
 
-@CrossOrigin
+@CrossOrigin(origins="*")
 @RestController
 public class ServiceProviderAnyCall {
 	@Autowired

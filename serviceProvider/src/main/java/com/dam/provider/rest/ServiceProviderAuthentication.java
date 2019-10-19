@@ -14,7 +14,7 @@ import com.dam.provider.ConfigProperties;
 import com.dam.provider.rest.consumer.Consumer;
 import com.dam.provider.types.ServiceDomain;
 
-@CrossOrigin
+@CrossOrigin(origins="*")
 @RestController
 public class ServiceProviderAuthentication {
 	@Autowired
@@ -33,10 +33,6 @@ public class ServiceProviderAuthentication {
 		bla.getRemoteAddr();
 		bla.getRemoteHost();
 
-		System.out.println("................. user: " + bla.getRemoteUser());
-		System.out.println("................. addr: " + bla.getRemoteAddr());
-		System.out.println("................. host: " + bla.getRemoteHost());
-		
 		JsonNode response = consumer.retrieveResponse(request, config.getServiceUrl(index), "login");
 		return response;
 	}
