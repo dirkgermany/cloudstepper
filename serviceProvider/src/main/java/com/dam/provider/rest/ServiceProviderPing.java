@@ -17,7 +17,7 @@ import com.dam.provider.rest.consumer.Consumer;
 import com.dam.provider.rest.service.message.PingResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 
-@CrossOrigin
+@CrossOrigin(origins="*")
 @RestController
 public class ServiceProviderPing {
 	@Autowired
@@ -52,7 +52,6 @@ public class ServiceProviderPing {
 		while (it.hasNext()) {
 			String serviceName = it.next();
 			index = config.getIndexPerService(serviceName);
-//			String domainName = config.getDomainList().get(index);
 			pingResponse = pingToService(pingResponse, config.getServiceUrl(index), serviceName.toUpperCase());
 			index++;
 		}
