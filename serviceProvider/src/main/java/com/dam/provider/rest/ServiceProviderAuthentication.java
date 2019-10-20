@@ -29,7 +29,13 @@ public class ServiceProviderAuthentication {
 	private static ServiceDomain serviceDomain = ServiceDomain.AUTHENTICATION;
 	
 	@GetMapping("/login")
-	public ResponseEntity<JsonNode> login(@RequestBody String request, HttpServletRequest bla) throws DamServiceException {
+	public ResponseEntity<JsonNode> loginGet(@RequestBody String request, HttpServletRequest bla) throws DamServiceException {
+		int index = config.getIndexPerDomain(serviceDomain.name());
+		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "login");
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<JsonNode> loginPost(@RequestBody String request, HttpServletRequest bla) throws DamServiceException {
 		int index = config.getIndexPerDomain(serviceDomain.name());
 		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "login");
 	}
