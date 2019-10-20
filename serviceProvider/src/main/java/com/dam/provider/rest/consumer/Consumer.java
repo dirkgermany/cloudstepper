@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,6 +28,15 @@ public class Consumer {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+	
+	public ResponseEntity<JsonNode> retrieveWrappedResponse (String request, String url, String action) throws DamServiceException {
+		return new ResponseEntity<>(retrieveResponse(request, url, action), new HttpHeaders(), HttpStatus.OK);
+	}
+	
+	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedResponse (String request, String serviceUrl, String action,
+	ServiceDomain serviceDomain) throws DamServiceException{
+		return new ResponseEntity<>(retrieveAuthorizedResponse(request, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
+	}
 
 	/**
 	 * Send Request to any service

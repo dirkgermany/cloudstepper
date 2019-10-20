@@ -3,41 +3,43 @@ package com.dam.provider.rest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
+import com.dam.provider.JsonHelper;
 import com.dam.provider.rest.consumer.Consumer;
 import com.dam.provider.types.ServiceDomain;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins="*")
 @RestController
-public class ServiceProviderAuthentication {
+public class TestController {
 	@Autowired
 	ConfigProperties config;
 
 	@Autowired
 	Consumer consumer;
 	
-	
 	private static ServiceDomain serviceDomain = ServiceDomain.AUTHENTICATION;
-	
-	@GetMapping("/login")
-	public ResponseEntity<JsonNode> login(@RequestBody String request, HttpServletRequest bla) throws DamServiceException {
-		int index = config.getIndexPerDomain(serviceDomain.name());
-		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "login");
-	}
 
-	@GetMapping("/logout")
-	public ResponseEntity<JsonNode> logout(@RequestBody String request) throws DamServiceException {
+	@GetMapping ("/test")
+	ResponseEntity<JsonNode> getTest(@RequestBody String requestBody, HttpServletRequest httpRequest) throws DamServiceException {
 		int index = config.getIndexPerDomain(serviceDomain.name());
-		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "logout");
+	
+//			JsonNode jsonData = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "login");
+			
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.add("Access-Control-Allow-Origin", httpRequest.getHeader("Origin"));
+
+			return consumer.retrieveWrappedResponse(requestBody, config.getServiceUrl(index), "login");
 
 	}
 

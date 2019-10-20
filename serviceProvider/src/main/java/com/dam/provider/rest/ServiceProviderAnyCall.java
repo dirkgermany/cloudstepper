@@ -2,7 +2,9 @@ package com.dam.provider.rest;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,39 +26,56 @@ public class ServiceProviderAnyCall {
 	@Autowired
 	ServiceProviderPing serviceProviderPing;
 	
-	@PostMapping("/*/*")
-	public JsonNode doubleSlash(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	@GetMapping("/*/*")
+	public ResponseEntity<JsonNode> doubleSlashGet(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
+				
+		return anyPost(requestBody, servletRequest);
 		
-		System.out.println("------------------> doubleSlash");
+	}
+
+	@PostMapping("/*/*")
+	public ResponseEntity<JsonNode> doubleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
+			throws DamServiceException {
+				
+		return anyPost(requestBody, servletRequest);
+		
+	}
+
+	@GetMapping("/*/*/*")
+	public ResponseEntity<JsonNode> tripleSlashGet(@RequestBody String requestBody, HttpServletRequest servletRequest)
+			throws DamServiceException {
 		
 		return anyPost(requestBody, servletRequest);
 		
 	}
 
 	@PostMapping("/*/*/*")
-	public JsonNode tripleSlash(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<JsonNode> tripleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
-		System.out.println("------------------> tripleSlash");
+		return anyPost(requestBody, servletRequest);
+		
+	}
 
+	@GetMapping("*")
+	public ResponseEntity<JsonNode> singleSlashGet(@RequestBody String requestBody, HttpServletRequest servletRequest)
+			throws DamServiceException {
+		
 		return anyPost(requestBody, servletRequest);
 		
 	}
 
 	@PostMapping("*")
-	public JsonNode singleSlash(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<JsonNode> singleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
-		System.out.println("------------------> singleSlash");
-
 		return anyPost(requestBody, servletRequest);
 		
 	}
 
 
-//	@PostMapping("*")
-	public JsonNode anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<JsonNode> anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 
 		String requestUri = servletRequest.getRequestURI();
@@ -72,19 +91,19 @@ public class ServiceProviderAnyCall {
 		String domain = pathParts[1];
 
 		// Ausnahmefälle - direkte interne Bearbeitung
-		if (domain.equalsIgnoreCase("login")) {
-			int index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
-			JsonNode response = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "login");
-
-			return response;			
-		}
-		
-		if (domain.equalsIgnoreCase("logout")) {
-			int index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
-			JsonNode response = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "logout");
-
-			return response;			
-		}
+//		if (domain.equalsIgnoreCase("login")) {
+//			int index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
+//			JsonNode response = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "login");
+//
+//			return response;			
+//		}
+//		
+//		if (domain.equalsIgnoreCase("logout")) {
+//			int index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
+//			JsonNode response = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "logout");
+//
+//			return response;			
+//		}
 				
 		
 		ServiceDomain serviceDomain = null;
@@ -113,9 +132,8 @@ public class ServiceProviderAnyCall {
 					"Der aufgerufene Pfad existiert nicht: " + requestUri);
 		}
 
-		JsonNode response = consumer.retrieveAuthorizedResponse(requestBody, getServiceUrl(serviceDomain), subPath + apiMethod,
+		return consumer.retrieveWrappedAuthorizedResponse(requestBody, getServiceUrl(serviceDomain), subPath + apiMethod,
 				serviceDomain);
-		return response;
 	}
 
 	protected String getServiceUrl(ServiceDomain domain) throws DamServiceException {
