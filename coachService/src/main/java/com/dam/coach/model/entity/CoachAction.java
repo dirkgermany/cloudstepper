@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -30,16 +31,18 @@ public class CoachAction {
 	@Column(nullable = false)
 	private String actionReference;
 	
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String btnText;
 	
 	@Column(nullable = true)
+	@Lob
 	private String message;
 	
 	@Column(nullable = true)
 	private String options;
 	
-	@Column(nullable = false)
+	@Column(nullable = true)
+	@Lob
 	private String text;
 	
 	@Transient
