@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dam.coach.TextReplacer;
+import com.dam.coach.model.entity.CoachAction;
 import com.dam.coach.rest.message.RestResponse;
 import com.dam.coach.rest.message.coachAction.CoachActionRequest;
 import com.dam.coach.rest.message.coachAction.CoachActionResponse;
@@ -25,5 +27,20 @@ public class CoachActionController {
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
+	}
+	
+	@PostMapping("/getActionReplaced")
+
+	public RestResponse getActionReplaced(@RequestBody CoachActionRequest coachActionRequest) throws DamServiceException {
+		try {
+			CoachAction coachAction = coachActionStore.getActionSafe(coachActionRequest);
+			coachAction.setMessage(TextReplacer.dayTime(coachAction.getMessage()));
+			
+			return new CoachActionResponse(coachAction);
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+
+		
 	}
 }

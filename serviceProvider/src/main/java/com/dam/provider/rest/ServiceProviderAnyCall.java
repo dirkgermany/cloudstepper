@@ -1,6 +1,9 @@
 package com.dam.provider.rest;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +20,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 @CrossOrigin(origins="*")
 @RestController
 public class ServiceProviderAnyCall {
+	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCall.class);
+	
+	
 	@Autowired
 	ConfigProperties config;
 
@@ -77,6 +83,8 @@ public class ServiceProviderAnyCall {
 
 	public ResponseEntity<JsonNode> anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
+		
+		logger.debug("RequestHeader {}", requestBody);
 
 		String requestUri = servletRequest.getRequestURI();
 		String[] pathParts = null;
