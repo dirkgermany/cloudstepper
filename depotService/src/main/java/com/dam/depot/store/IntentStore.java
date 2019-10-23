@@ -404,6 +404,10 @@ public class IntentStore {
 		}
 		return intents;
 	}
+	
+	public List<Intent> getIntentOpenListByUser(Long userId) {
+		return intentModel.findByUserNotBooked(userId);
+	}
 
 	private List<Intent> getIntentListByActionBooked(ActionType action, Boolean booked) {
 		if (booked) {

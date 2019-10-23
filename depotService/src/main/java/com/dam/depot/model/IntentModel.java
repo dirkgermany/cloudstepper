@@ -28,6 +28,9 @@ public interface IntentModel extends Repository<Intent, Long>, CrudRepository<In
 			+ " AND (UPPER(intent.booked) = 'N' or intent.booked is null) ")
 	List<Intent> findByUserActionNotBooked(@Param("userId") Long userId, @Param("action") ActionType action);
 	
+	@Query("SELECT intent from Intent intent WHERE intent.userId = :userId AND (UPPER(intent.booked) = 'N' or intent.booked is null) ")
+	List<Intent> findByUserNotBooked(@Param("userId") Long userId);
+	
 	@Query("SELECT intent from Intent intent WHERE intent.action = :action AND (UPPER(intent.booked) = 'N' or intent.booked is null) ")
 	List<Intent> findByActionNotBooked(@Param("action") ActionType action);
 

@@ -51,6 +51,24 @@ public class AccountStatus {
 	
 	@Transient
 	private Float amountDisposable;
+	
+	@Transient
+	private Float amountInvestIntent;
+	
+	@Transient
+	private Float amountSellIntent;
+	
+	@Transient
+	private Float amountDepositIntent;
+	
+	@Transient
+	private Float amountDebitIntent;
+	
+	@Transient
+	private Float amountTransferToAccountIntent;
+	
+	@Transient
+	private Float amountTransferToDepotIntent;
 
 	public Long getUserId() {
 		return userId;
@@ -111,5 +129,57 @@ public class AccountStatus {
 	@Transient
 	public Float getAmountDisposable() {
 		return getAmountAccount() - getAmountDepot() - Math.abs(getAmountDepotIntent());
+	}
+
+	public Float getAmountInvestIntent() {
+		return amountInvestIntent;
+	}
+
+	public void setAmountInvestIntent(Float amountInvestIntent) {
+		this.amountInvestIntent = amountInvestIntent;
+	}
+
+	public Float getAmountDepositIntent() {
+		return amountDepositIntent;
+	}
+
+	public void setAmountDepositIntent(Float amountDepositIntent) {
+		this.amountDepositIntent = amountDepositIntent;
+	}
+
+	public Float getAmountDebitIntent() {
+		return amountDebitIntent;
+	}
+
+	public void setAmountDebitIntent(Float amountDebitIntent) {
+		this.amountDebitIntent = amountDebitIntent;
+	}
+
+	public Float getAmountSellIntent() {
+		return amountSellIntent;
+	}
+
+	public void setAmountSellIntent(Float amountSellIntent) {
+		this.amountSellIntent = amountSellIntent;
+	}
+
+	public void setAmountDisposable(Float amountDisposable) {
+		this.amountDisposable = amountDisposable;
+	}
+
+	public Float getAmountTransferToAccountIntent() {
+		return amountTransferToAccountIntent;
+	}
+
+	public void setAmountTransferToAccountIntent(Float amountTransferToAccountIntent) {
+		this.amountTransferToAccountIntent = amountTransferToAccountIntent;
+	}
+
+	public Float getAmountTransferToDepotIntent() {
+		return amountTransferToDepotIntent;
+	}
+
+	public void setAmountTransferToDepotIntent(Float amountTransferToDepotIntent) {
+		this.amountTransferToDepotIntent = amountTransferToDepotIntent;
 	}
 }

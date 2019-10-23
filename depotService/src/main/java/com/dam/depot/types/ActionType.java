@@ -2,7 +2,7 @@ package com.dam.depot.types;
 
 public enum ActionType {
 	
-	INVESTx,   						// Einzahlungsabsicht durch den Investor
+//	INVESTx,   						// Einzahlungsabsicht durch den Investor
 	INVEST_INTENT,					// Investor will durch Geldeinzug das Depot erhöhen
 	INVEST_INTENT_CONFIRMED,		// Bank hat Einzug bestätigt
 	INVEST_INTENT_DECLINED,			// Bank hat Einzug abgelehnt
