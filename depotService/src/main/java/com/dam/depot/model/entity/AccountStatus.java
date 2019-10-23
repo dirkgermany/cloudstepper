@@ -50,25 +50,25 @@ public class AccountStatus {
 	private Date lastUpdate;
 	
 	@Transient
-	private Float amountDisposable;
+	private Float amountDisposable = new Float(0);
 	
 	@Transient
-	private Float amountInvestIntent;
+	private Float amountInvestIntent = new Float(0);
 	
 	@Transient
-	private Float amountSellIntent;
+	private Float amountSellIntent = new Float(0);
 	
 	@Transient
-	private Float amountDepositIntent;
+	private Float amountDepositIntent = new Float(0);
 	
 	@Transient
-	private Float amountDebitIntent;
+	private Float amountDebitIntent = new Float(0);
 	
 	@Transient
-	private Float amountTransferToAccountIntent;
+	private Float amountTransferToAccountIntent = new Float(0);
 	
 	@Transient
-	private Float amountTransferToDepotIntent;
+	private Float amountTransferToDepotIntent = new Float(0);
 
 	public Long getUserId() {
 		return userId;
