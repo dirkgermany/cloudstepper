@@ -110,6 +110,6 @@ public class AccountStatus {
 
 	@Transient
 	public Float getAmountDisposable() {
-		return getAmountAccount() - getAmountDepot() - getAmountDepotIntent();
+		return getAmountAccount() - getAmountDepot() - Math.abs(getAmountDepotIntent());
 	}
 }
