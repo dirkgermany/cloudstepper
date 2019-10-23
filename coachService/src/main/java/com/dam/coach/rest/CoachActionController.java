@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dam.coach.TextReplacer;
 import com.dam.coach.model.entity.CoachAction;
 import com.dam.coach.rest.message.RestResponse;
+import com.dam.coach.rest.message.coachAction.CoachActionListResponse;
 import com.dam.coach.rest.message.coachAction.CoachActionRequest;
 import com.dam.coach.rest.message.coachAction.CoachActionResponse;
 import com.dam.coach.store.CoachActionStore;
@@ -24,6 +25,15 @@ public class CoachActionController {
 	public RestResponse getCoachAction(@RequestBody CoachActionRequest coachActionRequest) throws DamServiceException {
 		try {
 			return new CoachActionResponse(coachActionStore.getActionSafe(coachActionRequest));
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
+	
+	@PostMapping("/getActionList")
+	public RestResponse getCoachActionList(@RequestBody CoachActionRequest coachActionRequest) throws DamServiceException {
+		try {
+			return new CoachActionListResponse(coachActionStore.getActionListSafe(coachActionRequest));
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
