@@ -2,6 +2,7 @@ package com.dam.coach.model.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -46,13 +47,17 @@ public class CoachAction {
 	private String text;
 	
 	@Transient
-	private List<String> optionList = new ArrayList<>();
+	private List<String> optionList;
 	
-	private void splitOptions() {		
+	private void splitOptions() {
+		optionList = new ArrayList<>();
 		if (null != options) {
 			if (options.contains(",")) {
 				String option[] = options.split(",");
-				optionList=Arrays.asList(option);
+				Iterator<String> it = Arrays.asList(option).iterator();
+				while (it.hasNext()) {
+					optionList.add(it.next().trim());
+				}
 			}
 			else {
 				optionList.add(options);
@@ -112,11 +117,6 @@ public class CoachAction {
 	public List<String> getOptionList() {
 		splitOptions();
 		return optionList;
-	}
-
-	@Transient
-	public void setOptionList(List<String> optionList) {
-		splitOptions();
 	}
 
 }

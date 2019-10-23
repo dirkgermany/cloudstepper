@@ -22,12 +22,6 @@ public class PortfolioController {
 	@Autowired
 	private PortfolioStore portfolioStore;
 
-	/**
-	 * Retrieves a person
-	 * 
-	 * @param personRequest
-	 * @return
-	 */
 	@PostMapping("/getPortfolio")
 	public RestResponse getPortfolio(@RequestBody PortfolioRequest portfolioRequest) throws DamServiceException {
 		try {

@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.springframework.stereotype.Component;
@@ -47,6 +48,9 @@ public class AccountStatus {
 	
 	@Column(nullable = true)
 	private Date lastUpdate;
+	
+	@Transient
+	private Float amountDisposable;
 
 	public Long getUserId() {
 		return userId;
@@ -102,5 +106,10 @@ public class AccountStatus {
 
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
+	}
+
+	@Transient
+	public Float getAmountDisposable() {
+		return getAmountAccount() - getAmountDepot() - getAmountDepotIntent();
 	}
 }
