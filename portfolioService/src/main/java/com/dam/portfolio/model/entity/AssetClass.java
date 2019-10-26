@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.dam.portfolio.types.AssetClassType;
 
 import org.springframework.stereotype.Component;
@@ -48,6 +50,9 @@ public class AssetClass {
 	
 	@Column (nullable = true)
 	private String link;
+	
+	@Transient
+	private Float portfolioWeighting;
 
 	public AssetClass () {	
 	}
@@ -134,6 +139,14 @@ public class AssetClass {
 
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
+	}
+
+	public Float getPortfolioWeighting() {
+		return portfolioWeighting;
+	}
+
+	public void setPortfolioWeighting(Float portfolioWeighting) {
+		this.portfolioWeighting = portfolioWeighting;
 	}
 	
 }

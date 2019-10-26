@@ -251,8 +251,9 @@ public class AssetClassToPortfolioMapStore {
 
 		Iterator<AssetClassToPortfolioMap> it = mapEntries.iterator();
 		while (it.hasNext()) {
-			Long id = it.next().getAssetClassId();
-			AssetClass assetClass = assetClassStore.getAssetClassById(id);
+			AssetClassToPortfolioMap mapEntry = it.next();
+			AssetClass assetClass = assetClassStore.getAssetClassById(mapEntry.getAssetClassId());
+			assetClass.setPortfolioWeighting(mapEntry.getAssetWeighting());
 			portfolioMap.getAssetClasses().add(assetClass);
 		}
 
