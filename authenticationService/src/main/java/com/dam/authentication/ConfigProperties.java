@@ -3,8 +3,6 @@ package com.dam.authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-//import org.springframework.boot.context.properties.ConfigurationProperties;
-
 @ConfigurationProperties(prefix = "token")
 public class ConfigProperties {
 

@@ -36,7 +36,7 @@ public class ServiceProviderClient extends Client {
 	public List<AssetClass> getAssetClassList() throws DamServiceException {
 		StockHistory stockHistory = new StockHistory();
 
-		StockHistoryRequest restRequest = new StockHistoryRequest(stockHistory);
+		StockHistoryRequest restRequest = new StockHistoryRequest(stockHistory, null, null);
 
 		JsonNode node = jsonHelper.getObjectMapper().valueToTree(restRequest);
 		JsonNode response = sendPostRequest(node, getServiceProviderUrl(), STOCK_DOMAIN + "/" + PATH_LIST_ASSET_CLASS);

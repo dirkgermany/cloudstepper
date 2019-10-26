@@ -11,6 +11,7 @@ public enum ServiceDomain {
 	ASSET (),
 	AUTHENTICATION (),
 	COACH (),
+	STOCK (),
 	UNKNOWN ();
 	
 }

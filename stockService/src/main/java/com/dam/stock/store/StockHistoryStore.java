@@ -1,7 +1,6 @@
 package com.dam.stock.store;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,13 +32,16 @@ public class StockHistoryStore {
 				historyRequest.getRights());
 		PermissionCheck.isReadPermissionSet(historyRequest.getRequestorUserId(), null, historyRequest.getRights());
 
-		return null;
-
-//		return getHistoryListBySymbol(historyRequest.getStockHistory().getSymbol());
+		return getHistoryList(historyRequest);
 	}
 
-	public List<StockHistory> getHistoryListBySymbol(String symbol) {
-		return stockHistoryModel.findAllBySymbol(symbol);
+	public List<StockHistory> getHistoryList(StockHistoryRequest historyRequest) {
+		if (null != historyRequest.getStockHistory().getSymbol()) {
+			return stockHistoryModel.findBySymbolStartEndDate(historyRequest.getStockHistory().getSymbol(), historyRequest.getFilterStartDate(), historyRequest.getFilterEndDate());
+		}
+		else {
+			return stockHistoryModel.findByStartEndDate(historyRequest.getFilterStartDate(), historyRequest.getFilterEndDate());
+		}
 	}
 
 	// makes an update if entity exists
