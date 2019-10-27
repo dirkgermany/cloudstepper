@@ -16,6 +16,7 @@ import com.dam.portfolio.model.entity.Portfolio;
 import com.dam.portfolio.rest.message.RestRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioCreateRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioDropRequest;
+import com.dam.portfolio.rest.message.portfolio.PortfolioPerformanceRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioUpdateRequest;
 
@@ -36,13 +37,11 @@ public class PortfolioStore {
 	public long count() {
 		return portfolioModel.count();
 	}
+	
+	public PortfolioPerformance getPortfolioPerformance (PortfolioPerformanceRequest portfolioPerformanceRequest) throws DamServiceException {
+		
+	}
 
-	/**
-	 * Save getter for Portfolio. Checks requesting user
-	 * 
-	 * @param portfolio
-	 * @return
-	 */
 	public Portfolio getPortfolioSafe(PortfolioRequest portfolioRequest)
 			throws DamServiceException {
 		PermissionCheck.checkRequestedParams(portfolioRequest, portfolioRequest.getRequestorUserId(),

@@ -12,6 +12,7 @@ import com.dam.portfolio.rest.message.portfolio.PortfolioCreateRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioCreateResponse;
 import com.dam.portfolio.rest.message.portfolio.PortfolioDropRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioDropResponse;
+import com.dam.portfolio.rest.message.portfolio.PortfolioPerformanceRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioResponse;
 import com.dam.portfolio.rest.message.portfolio.PortfolioUpdateRequest;
@@ -21,6 +22,16 @@ import com.dam.portfolio.rest.message.portfolio.PortfolioUpdateResponse;
 public class PortfolioController {
 	@Autowired
 	private PortfolioStore portfolioStore;
+
+	@PostMapping("/getPortfolioPerformance")
+	public RestResponse getPortfolioPerformance(@RequestBody PortfolioPerformanceRequest portfolioPerformanceRequest)
+			throws DamServiceException {
+		try {
+			return new PortfolioPerformanceResponse(portfolioStore.getPortfolioPerformanceSafe(portfolioPerformanceRequest));
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
 
 	@PostMapping("/getPortfolio")
 	public RestResponse getPortfolio(@RequestBody PortfolioRequest portfolioRequest) throws DamServiceException {
@@ -32,7 +43,8 @@ public class PortfolioController {
 	}
 
 	@PostMapping("/createPortfolio")
-	public RestResponse createPortfolio(@RequestBody PortfolioCreateRequest portfolioCreateRequest) throws DamServiceException {
+	public RestResponse createPortfolio(@RequestBody PortfolioCreateRequest portfolioCreateRequest)
+			throws DamServiceException {
 		try {
 			return new PortfolioCreateResponse(portfolioStore.createPortfolioSafe(portfolioCreateRequest));
 		} catch (DamServiceException e) {
@@ -41,7 +53,8 @@ public class PortfolioController {
 	}
 
 	@PostMapping("/dropPortfolio")
-	public RestResponse dropPortfolio(@RequestBody PortfolioDropRequest portfolioDropRequest) throws DamServiceException {
+	public RestResponse dropPortfolio(@RequestBody PortfolioDropRequest portfolioDropRequest)
+			throws DamServiceException {
 		try {
 			return new PortfolioDropResponse(portfolioStore.dropPortfolioSafe(portfolioDropRequest));
 		} catch (DamServiceException e) {
@@ -50,7 +63,8 @@ public class PortfolioController {
 	}
 
 	@PostMapping("/updatePortfolio")
-	public RestResponse updatePortfolio(@RequestBody PortfolioUpdateRequest portfolioUpdateRequest) throws DamServiceException {
+	public RestResponse updatePortfolio(@RequestBody PortfolioUpdateRequest portfolioUpdateRequest)
+			throws DamServiceException {
 		try {
 			return new PortfolioUpdateResponse(portfolioStore.updatePortfolioSafe(portfolioUpdateRequest));
 		} catch (DamServiceException e) {
