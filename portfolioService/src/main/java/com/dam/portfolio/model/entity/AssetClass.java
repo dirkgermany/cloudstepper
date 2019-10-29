@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.dam.portfolio.types.AssetClassType;
+import com.dam.portfolio.types.Symbol;
 
 import org.springframework.stereotype.Component;
 
@@ -46,7 +47,8 @@ public class AssetClass {
 	private String wkn;
 	
 	@Column (nullable = true)
-	private String symbol;
+	@Enumerated(EnumType.STRING)
+	private Symbol symbol;
 	
 	@Column (nullable = true)
 	private String link;
@@ -133,11 +135,11 @@ public class AssetClass {
 		this.link = link;
 	}
 
-	public String getSymbol() {
+	public Symbol getSymbol() {
 		return symbol;
 	}
 
-	public void setSymbol(String symbol) {
+	public void setSymbol(Symbol symbol) {
 		this.symbol = symbol;
 	}
 

@@ -1,22 +1,30 @@
 package com.dam.portfolio;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 
 import com.dam.exception.DamServiceException;
 import com.dam.exception.PermissionCheckException;
 import com.dam.portfolio.model.PortfolioModel;
+import com.dam.portfolio.model.entity.AssetClass;
+import com.dam.portfolio.model.entity.ConstructionMap;
 import com.dam.portfolio.model.entity.Portfolio;
-import com.dam.portfolio.rest.message.RestRequest;
+import com.dam.portfolio.model.entity.StockHistory;
+import com.dam.portfolio.performance.AssetPerformance;
+import com.dam.portfolio.performance.PortfolioPerformance;
+import com.dam.portfolio.performance.PortfolioPerformanceCalculator;
+import com.dam.portfolio.rest.consumer.Client;
 import com.dam.portfolio.rest.message.portfolio.PortfolioCreateRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioDropRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioPerformanceRequest;
+import com.dam.portfolio.rest.message.portfolio.PortfolioPerformanceResponse;
 import com.dam.portfolio.rest.message.portfolio.PortfolioRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioUpdateRequest;
 
@@ -34,11 +42,57 @@ public class PortfolioStore {
 	
 	@Autowired
 	private AssetClassToPortfolioMapStore mapStore;	
+	
+	@Autowired
+	private PortfolioPerformanceCalculator calculator;
+	
+	@Autowired
+	private Client client;
+	
 	public long count() {
 		return portfolioModel.count();
 	}
-	
-	public PortfolioPerformance getPortfolioPerformance (PortfolioPerformanceRequest portfolioPerformanceRequest) throws DamServiceException {
+
+	public PortfolioPerformanceResponse getPortfolioPerformanceSafe (PortfolioPerformanceRequest request) throws DamServiceException {
+		
+		PermissionCheck.checkRequestedParams(request, request.getRequestorUserId(), request.getRights());
+		if (null == request.getPortfolioId() && null == request.getAssetClassId()) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "portfolioId must be set.");
+		}
+		// Check if the permissions is set
+		PermissionCheck.isReadPermissionSet(request.getRequestorUserId(), null,
+				request.getRights());
+		
+		// Portfolio and assets
+		Map<AssetClass, List<StockHistory>> assetStockHistory = new HashMap<>();
+				
+		ConstructionMap map = mapStore.getConstructionMap(request.getPortfolioId());
+		Portfolio portfolio =  map.getPortfolio();
+		Iterator<AssetClass> it = map.getAssetClasses().iterator();
+		while (it.hasNext()) {
+			AssetClass asset = it.next();
+			StockHistory history = new StockHistory();
+			history.setSymbol(asset.getSymbol());
+			history.setWkn(asset.getWkn());
+			
+			List<StockHistory> historyList = client.readAssetStockHistory(history, null, null);
+			assetStockHistory.put(asset, historyList);
+		}
+		
+		calculator.generatePerformanceLists(portfolio, assetStockHistory);
+		PortfolioPerformance portfolioPerformance = calculator.getPortfolioPerformance(request.getPortfolioId());
+		List<AssetPerformance> assetPerformanceList = null;
+		AssetPerformance assetPerformance = null;
+
+		if (null != request.getAssetClassId()) {
+			assetPerformance = calculator.getAssetPerformanceMap().get(request.getAssetClassId());
+		}
+		else {
+			assetPerformanceList = calculator.getAssetPerformanceList();
+		}
+		PortfolioPerformanceResponse response = new PortfolioPerformanceResponse(200L, "OK", "Performance calculated", portfolioPerformance, assetPerformance, assetPerformanceList);
+
+		return null;
 		
 	}
 

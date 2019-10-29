@@ -27,7 +27,7 @@ public class PortfolioController {
 	public RestResponse getPortfolioPerformance(@RequestBody PortfolioPerformanceRequest portfolioPerformanceRequest)
 			throws DamServiceException {
 		try {
-			return new PortfolioPerformanceResponse(portfolioStore.getPortfolioPerformanceSafe(portfolioPerformanceRequest));
+			return portfolioStore.getPortfolioPerformanceSafe(portfolioPerformanceRequest);
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}

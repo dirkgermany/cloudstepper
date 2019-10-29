@@ -36,7 +36,6 @@ public class TokenStore {
 	private static Map<UUID, Token> expiredTokenMap = new ConcurrentHashMap<>();
 	private static Map<Long, UUID> activeUserMap = new ConcurrentHashMap<>();
 
-//	public synchronized Token createNewToken(User user) throws DamServiceException {
 	public Token createNewToken(User user) throws DamServiceException {
 		if (null == user) {
 			throw new DamServiceException(new Long(424), "User is null", "Token for user could not be created");
@@ -59,7 +58,6 @@ public class TokenStore {
 		return newToken;
 	}
 
-//	public synchronized Token getToken(UUID tokenId) {
 	public Token getToken(UUID tokenId) {
 		return activeTokenMap.get(tokenId);
 	}
@@ -71,7 +69,6 @@ public class TokenStore {
 	 * @return
 	 * @throws DamServiceException 
 	 */
-//	public synchronized Token validateAndRefreshToken(Token validationToken) throws DamServiceException {
 	public Token validateAndRefreshToken(Token validationToken) throws DamServiceException {
 		refreshTokenStore();
 
@@ -99,7 +96,6 @@ public class TokenStore {
 		throw new DamServiceException(new Long(500), "No valid Token", "Token does not exist.");
 	}
 
-//	public synchronized User getUser(Long userId) {
 	public User getUser(Long userId) {
 		UUID tokenId = activeUserMap.get(userId);
 
@@ -112,7 +108,6 @@ public class TokenStore {
 		return null;
 	}
 
-//	private synchronized void archiveToken(Token tokenToArchive) {
 	private void archiveToken(Token tokenToArchive) {
 		activeTokenMap.remove(tokenToArchive.getTokenId());
 		expiredTokenMap.put(tokenToArchive.getTokenId(), tokenToArchive);
@@ -120,7 +115,6 @@ public class TokenStore {
 		activeUserMap.remove(tokenToArchive.getUser().getUserId());
 	}
 
-//	private synchronized Boolean tokenIsStillValid(Token validationToken) {
 	private Boolean tokenIsStillValid(Token validationToken) {
 		Long currentTime = System.currentTimeMillis();
 		if (null == validationToken || validationToken.getExpireTime() <= currentTime) {
@@ -152,7 +146,6 @@ public class TokenStore {
 
 	}
 
-//	public synchronized Long logout(LogoutRequest logoutRequest) {
 	public Long logout(LogoutRequest logoutRequest) {
 		Token storedToken = activeTokenMap.get(logoutRequest.getTokenId());
 		if (null != storedToken && logoutRequest.getUserName().equals(storedToken.getUser().getUserName())) {
@@ -162,7 +155,6 @@ public class TokenStore {
 		return new Long(7);
 	}
 
-//	private synchronized void refreshTokenStore() {
 	private void refreshTokenStore() {
 		if (null == this.lastStoreUpdate) {
 			this.lastStoreUpdate = new Long(System.currentTimeMillis());
@@ -187,7 +179,6 @@ public class TokenStore {
 		this.lastStoreUpdate = new Long(System.currentTimeMillis());
 	}
 
-//	public synchronized Long getMaxTokenAge() {
 	public Long getMaxTokenAge() {
 		return config.getTokenConfiguration().getMaxTokenAge();
 	}

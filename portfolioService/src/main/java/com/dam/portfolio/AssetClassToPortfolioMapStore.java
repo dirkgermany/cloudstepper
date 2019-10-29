@@ -234,7 +234,7 @@ public class AssetClassToPortfolioMapStore {
 		return constructionMapList;
 	}
 
-	private ConstructionMap getConstructionMap(Long portfolioId) throws DamServiceException {
+	public ConstructionMap getConstructionMap(Long portfolioId) throws DamServiceException {
 		List<AssetClassToPortfolioMap> mapEntries = mapModel.findAllMapsByPortfolioId(portfolioId);
 		if (null == mapEntries || mapEntries.isEmpty()) {
 			throw new DamServiceException(new Long(500), "No Map Entry found for Portfolio", "List seems to be empty");
