@@ -1,13 +1,10 @@
 package com.dam.stock.task.jobs;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
@@ -49,11 +46,8 @@ public class AlphaVantageClient extends Client {
 			StockHistory stockHistory = new StockHistory();
 
 			String dateString = entry.getKey();
-			Date date = null;
-			try {
-				date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
-			} catch (ParseException e) {
-			}
+			final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			LocalDate date = LocalDate.parse(dateString, dtf);
 
 			JsonNode node = entry.getValue();
 			String open = node.get("1. open").asText();

@@ -1,18 +1,20 @@
 package com.dam.portfolio.performance;
 
+import java.time.LocalDate;
 import java.time.Month;
-import java.time.Year;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Performance {
 	
-	private Map<Month, StockQuotationDetail> monthlyDetails;
-	private Map<Year, StockQuotationDetail> yearDetails;
-	private Map<Date, StockQuotationDetail> dailyDetails;
+	private Map<Month, StockQuotationDetail> monthlyDetails = new HashMap<>();
+	private Map<Integer, StockQuotationDetail> yearDetails = new HashMap<>();
+	private Map<LocalDate, StockQuotationDetail> dailyDetails = new TreeMap<>();
 	
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	
 	private Float open;
 	private Float close;
@@ -26,35 +28,35 @@ public class Performance {
 		this.monthlyDetails = monthlyDetails;
 	}
 
-	public Map<Year, StockQuotationDetail> getYearDetails() {
+	public Map<Integer, StockQuotationDetail> getYearDetails() {
 		return yearDetails;
 	}
 
-	public void setYearDetails(Map<Year, StockQuotationDetail> yearDetails) {
+	public void setYearDetails(Map<Integer, StockQuotationDetail> yearDetails) {
 		this.yearDetails = yearDetails;
 	}
 
-	public Map<Date, StockQuotationDetail> getDailyDetails() {
+	public Map<LocalDate, StockQuotationDetail> getDailyDetails() {
 		return dailyDetails;
 	}
 
-	public void setDailyDetails(Map<Date, StockQuotationDetail> dailyDetails) {
+	public void setDailyDetails(Map<LocalDate, StockQuotationDetail> dailyDetails) {
 		this.dailyDetails = dailyDetails;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

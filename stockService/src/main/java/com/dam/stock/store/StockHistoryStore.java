@@ -1,5 +1,6 @@
 package com.dam.stock.store;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class StockHistoryStore {
 			return stockHistoryModel.findBySymbolStartEndDate(historyRequest.getStockHistory().getSymbol(), historyRequest.getFilterStartDate(), historyRequest.getFilterEndDate());
 		}
 		else {
-			return stockHistoryModel.findByStartEndDate(historyRequest.getFilterStartDate(), historyRequest.getFilterEndDate());
+			return new ArrayList<StockHistory>();
 		}
 	}
 

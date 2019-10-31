@@ -39,65 +39,72 @@ public class PortfolioStore {
 
 	@Autowired
 	private PortfolioModel portfolioModel;
-	
+
 	@Autowired
-	private AssetClassToPortfolioMapStore mapStore;	
-	
+	private AssetClassToPortfolioMapStore mapStore;
+
 	@Autowired
 	private PortfolioPerformanceCalculator calculator;
-	
+
 	@Autowired
 	private Client client;
-	
+
 	public long count() {
 		return portfolioModel.count();
 	}
 
-	public PortfolioPerformanceResponse getPortfolioPerformanceSafe (PortfolioPerformanceRequest request) throws DamServiceException {
-		
+	public PortfolioPerformanceResponse getPortfolioPerformanceSafe(PortfolioPerformanceRequest request)
+			throws DamServiceException {
+
 		PermissionCheck.checkRequestedParams(request, request.getRequestorUserId(), request.getRights());
 		if (null == request.getPortfolioId() && null == request.getAssetClassId()) {
 			throw new DamServiceException(new Long(400), "Invalid Request", "portfolioId must be set.");
 		}
 		// Check if the permissions is set
-		PermissionCheck.isReadPermissionSet(request.getRequestorUserId(), null,
-				request.getRights());
-		
+		PermissionCheck.isReadPermissionSet(request.getRequestorUserId(), null, request.getRights());
+
 		// Portfolio and assets
 		Map<AssetClass, List<StockHistory>> assetStockHistory = new HashMap<>();
-				
+
 		ConstructionMap map = mapStore.getConstructionMap(request.getPortfolioId());
-		Portfolio portfolio =  map.getPortfolio();
+		Portfolio portfolio = map.getPortfolio();
 		Iterator<AssetClass> it = map.getAssetClasses().iterator();
 		while (it.hasNext()) {
 			AssetClass asset = it.next();
 			StockHistory history = new StockHistory();
 			history.setSymbol(asset.getSymbol());
 			history.setWkn(asset.getWkn());
-			
-			List<StockHistory> historyList = client.readAssetStockHistory(history, null, null);
+
+			List<StockHistory> historyList = client.readAssetStockHistory(history, request.getStartDate(),
+					request.getEndDate());
 			assetStockHistory.put(asset, historyList);
 		}
-		
+
 		calculator.generatePerformanceLists(portfolio, assetStockHistory);
-		PortfolioPerformance portfolioPerformance = calculator.getPortfolioPerformance(request.getPortfolioId());
+		PortfolioPerformance portfolioPerformance = null;
 		List<AssetPerformance> assetPerformanceList = null;
 		AssetPerformance assetPerformance = null;
 
-		if (null != request.getAssetClassId()) {
-			assetPerformance = calculator.getAssetPerformanceMap().get(request.getAssetClassId());
+		if (request.isShowPortfolioPerformance()) {
+			portfolioPerformance = calculator.getPortfolioPerformance(request.getPortfolioId(), request.getStartDate(),
+					request.getEndDate());
 		}
-		else {
-			assetPerformanceList = calculator.getAssetPerformanceList();
-		}
-		PortfolioPerformanceResponse response = new PortfolioPerformanceResponse(200L, "OK", "Performance calculated", portfolioPerformance, assetPerformance, assetPerformanceList);
-
-		return null;
 		
+		if (request.isShowAllAssetsOfPortfolio()) {
+			assetPerformanceList = calculator.getAssetPerformanceList(request.getStartDate(), request.getEndDate());
+
+		}
+
+		if (null != request.getAssetClassId() && request.isShowAssetPerformance()) {
+			assetPerformance = calculator.getAssetPerformance(request.getAssetClassId(), request.getStartDate(),
+					request.getEndDate());
+		}
+
+		return new PortfolioPerformanceResponse(200L, "OK", "Performance calculated", portfolioPerformance,
+				assetPerformance, assetPerformanceList);
 	}
 
-	public Portfolio getPortfolioSafe(PortfolioRequest portfolioRequest)
-			throws DamServiceException {
+	public Portfolio getPortfolioSafe(PortfolioRequest portfolioRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(portfolioRequest, portfolioRequest.getRequestorUserId(),
 				portfolioRequest.getRights());
 
@@ -106,30 +113,26 @@ public class PortfolioStore {
 		}
 
 		// Check if the permissions is set
-		PermissionCheck.isReadPermissionSet(portfolioRequest.getRequestorUserId(), null,
-				portfolioRequest.getRights());
+		PermissionCheck.isReadPermissionSet(portfolioRequest.getRequestorUserId(), null, portfolioRequest.getRights());
 
-		Portfolio portfolio = getPortfolioById(
-				portfolioRequest.getPortfolioId());
+		Portfolio portfolio = getPortfolioById(portfolioRequest.getPortfolioId());
 
 		if (null == portfolio) {
-			throw new DamServiceException(new Long(404), "Portfolio Unknown",
-					"Portfolio not found or invalid request");
+			throw new DamServiceException(new Long(404), "Portfolio Unknown", "Portfolio not found or invalid request");
 		}
 
 		return portfolio;
 	}
 
 	/**
-	 * Creation of portfolio requests existing userId, givenName and
-	 * lastName. userId in Entity Container mustn't be null
+	 * Creation of portfolio requests existing userId, givenName and lastName.
+	 * userId in Entity Container mustn't be null
 	 * 
 	 * @param portfolioContainer
 	 * @return
 	 * @throws PermissionCheckException
 	 */
-	public Portfolio createPortfolioSafe(PortfolioCreateRequest portfolioCreateRequest)
-			throws DamServiceException {
+	public Portfolio createPortfolioSafe(PortfolioCreateRequest portfolioCreateRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(portfolioCreateRequest, portfolioCreateRequest.getRequestorUserId(),
 				portfolioCreateRequest.getRights());
 
@@ -151,24 +154,21 @@ public class PortfolioStore {
 
 		// check if still exists
 		// direct by portfolioId
-		Portfolio existingPortfolio = getPortfolioById(
-				portfolioCreateRequest.getPortfolio().getPortfolioId());
-		
+		Portfolio existingPortfolio = getPortfolioById(portfolioCreateRequest.getPortfolio().getPortfolioId());
+
 		if (null == existingPortfolio) {
 			existingPortfolio = getPortfolioByName(portfolioCreateRequest.getPortfolio().getPortfolioName());
 		}
 
 		if (null != existingPortfolio) {
-			return updatePortfolio(existingPortfolio,
-					portfolioCreateRequest.getPortfolio());
+			return updatePortfolio(existingPortfolio, portfolioCreateRequest.getPortfolio());
 		}
 
 		Portfolio portfolio;
-		
+
 		try {
-		// save if all checks are ok and the portfolio doesn't exist
-		portfolio = portfolioModel
-				.save(portfolioCreateRequest.getPortfolio());
+			// save if all checks are ok and the portfolio doesn't exist
+			portfolio = portfolioModel.save(portfolioCreateRequest.getPortfolio());
 		} catch (Exception e) {
 			throw new DamServiceException(new Long(500), "Portfolioconstruction could not be stored", e.getMessage());
 		}
@@ -189,21 +189,18 @@ public class PortfolioStore {
 	 * @param userUpdate
 	 * @return
 	 */
-	public Portfolio updatePortfolioSafe(PortfolioUpdateRequest portfolioUpdateRequest)
-			throws DamServiceException {
+	public Portfolio updatePortfolioSafe(PortfolioUpdateRequest portfolioUpdateRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(portfolioUpdateRequest, portfolioUpdateRequest.getRequestorUserId(),
 				portfolioUpdateRequest.getRights());
 
 		PermissionCheck.checkRequestedEntity(portfolioUpdateRequest.getPortfolio(), Portfolio.class, "Portfolio Class");
 
 		// Check if the permissions is set
-		PermissionCheck.isWritePermissionSet(portfolioUpdateRequest.getRequestorUserId(),
-				null,
+		PermissionCheck.isWritePermissionSet(portfolioUpdateRequest.getRequestorUserId(), null,
 				portfolioUpdateRequest.getRights());
 
 		// check if still exists
-		Portfolio existingPortfolio = getPortfolioById(
-				portfolioUpdateRequest.getPortfolio().getPortfolioId());
+		Portfolio existingPortfolio = getPortfolioById(portfolioUpdateRequest.getPortfolio().getPortfolioId());
 
 		// Portfolio must exist and userId ist not permutable
 		if (null == existingPortfolio) {
@@ -211,8 +208,7 @@ public class PortfolioStore {
 					"Portfolio with portfolioId doesn't exist.");
 		}
 
-		return updatePortfolio(existingPortfolio,
-				portfolioUpdateRequest.getPortfolio());
+		return updatePortfolio(existingPortfolio, portfolioUpdateRequest.getPortfolio());
 	}
 
 	/**
@@ -223,14 +219,15 @@ public class PortfolioStore {
 	 * @return
 	 */
 	public Long dropPortfolioSafe(PortfolioDropRequest portfolioDropRequest) throws DamServiceException {
-		PermissionCheck.checkRequestedParams(portfolioDropRequest, portfolioDropRequest.getRequestorUserId(), portfolioDropRequest.getRights());
+		PermissionCheck.checkRequestedParams(portfolioDropRequest, portfolioDropRequest.getRequestorUserId(),
+				portfolioDropRequest.getRights());
 		PermissionCheck.checkRequestedEntity(portfolioDropRequest.getPortfolio(), Portfolio.class, "Portfolio Class");
 
 		// Save database requests
-		PermissionCheck.isDeletePermissionSet(portfolioDropRequest.getRequestorUserId(),	null, portfolioDropRequest.getRights());
+		PermissionCheck.isDeletePermissionSet(portfolioDropRequest.getRequestorUserId(), null,
+				portfolioDropRequest.getRights());
 
-		Portfolio existingPortfolio = getPortfolioById(
-				portfolioDropRequest.getPortfolio().getPortfolioId());
+		Portfolio existingPortfolio = getPortfolioById(portfolioDropRequest.getPortfolio().getPortfolioId());
 
 		if (null == existingPortfolio) {
 			throw new DamServiceException(new Long(404), "Portfolio could not be dropped",
@@ -240,13 +237,14 @@ public class PortfolioStore {
 		if (200 == dropPortfolio(existingPortfolio)) {
 			mapStore.dropMapEntriesByPortfolioId(portfolioDropRequest.getPortfolio().getPortfolioId());
 		}
-		
+
 		return 200L;
 
 	}
-	
+
 	/**
 	 * Lists all Portfolios.
+	 * 
 	 * @return
 	 */
 	public List<Portfolio> getPortfolioList() {
@@ -257,7 +255,7 @@ public class PortfolioStore {
 		}
 		return portfolios;
 	}
-	
+
 	private Portfolio getPortfolioByName(String portfolioName) {
 		return portfolioModel.findByPortfolioName(portfolioName);
 	}
@@ -267,14 +265,12 @@ public class PortfolioStore {
 			return null;
 		}
 
-		Optional<Portfolio> optionalPortfolio = portfolioModel
-				.findById(portfolioId);
+		Optional<Portfolio> optionalPortfolio = portfolioModel.findById(portfolioId);
 		if (null != optionalPortfolio && optionalPortfolio.isPresent()) {
 			return optionalPortfolio.get();
 		}
 		return null;
 	}
-
 
 	/**
 	 * Update portfolio with changed values
@@ -283,16 +279,16 @@ public class PortfolioStore {
 	 * @param portfolioContainer
 	 * @return
 	 */
-	private Portfolio updatePortfolio(Portfolio portfolioForUpdate,
-			Portfolio portfolioContainer) throws DamServiceException {
-		
+	private Portfolio updatePortfolio(Portfolio portfolioForUpdate, Portfolio portfolioContainer)
+			throws DamServiceException {
+
 		if (null != portfolioForUpdate && null != portfolioContainer) {
 			portfolioForUpdate.updateEntity(portfolioContainer);
 			try {
 				return portfolioModel.save(portfolioForUpdate);
 			} catch (Exception e) {
-				throw new DamServiceException(new Long(409),
-						"Portfolio could not be saved. Perhaps duplicate keys.", e.getMessage());
+				throw new DamServiceException(new Long(409), "Portfolio could not be saved. Perhaps duplicate keys.",
+						e.getMessage());
 			}
 		}
 		throw new DamServiceException(new Long(404), "Portfolio could not be saved",
@@ -302,8 +298,7 @@ public class PortfolioStore {
 	private Long dropPortfolio(Portfolio portfolio) {
 		if (null != portfolio) {
 			portfolioModel.deleteById(portfolio.getPortfolioId());
-			Portfolio deletedPortfolio = getPortfolioById(
-					portfolio.getPortfolioId());
+			Portfolio deletedPortfolio = getPortfolioById(portfolio.getPortfolioId());
 			if (null == deletedPortfolio) {
 				return new Long(200);
 			}

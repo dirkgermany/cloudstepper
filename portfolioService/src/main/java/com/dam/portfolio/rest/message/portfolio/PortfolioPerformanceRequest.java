@@ -1,19 +1,28 @@
 package com.dam.portfolio.rest.message.portfolio;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.dam.portfolio.rest.message.RestRequest;
 
 public class PortfolioPerformanceRequest extends RestRequest {
     private Long portfolioId;
     private Long assetClassId;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private boolean showPortfolioPerformance = false;
+    private boolean showAllAssetsOfPortfolio = false;
+    private boolean showAssetPerformance = false;
 
-    public PortfolioPerformanceRequest(Long requestorUserId, Long portfolioId, Long assetClassId, Date startDate, Date endDate) {
+    public PortfolioPerformanceRequest(Long requestorUserId, Long portfolioId, Long assetClassId, LocalDate startDate, LocalDate endDate, boolean showPortfolioPerformance, boolean showAllAssetsOfPortfolio, boolean showAssetPerformance) {
 		super("DAM 2.0");
 		setPortfolioId(portfolioId);
 		setRequestorUserId(requestorUserId);
+		setStartDate(startDate);
+		setEndDate(endDate);
+		setAssetClassId(assetClassId);
+		setShowPortfolioPerformance(showPortfolioPerformance);
+		setShowAllAssetsOfPortfolio(showAllAssetsOfPortfolio);
+		setShowAssetPerformance(showAssetPerformance);
 	}
 
 	public Long getPortfolioId() {
@@ -32,20 +41,44 @@ public class PortfolioPerformanceRequest extends RestRequest {
 		this.assetClassId = assetClassId;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
+	}
+
+	public boolean isShowPortfolioPerformance() {
+		return showPortfolioPerformance;
+	}
+
+	public void setShowPortfolioPerformance(boolean showPortfolioPerformance) {
+		this.showPortfolioPerformance = showPortfolioPerformance;
+	}
+
+	public boolean isShowAllAssetsOfPortfolio() {
+		return showAllAssetsOfPortfolio;
+	}
+
+	public void setShowAllAssetsOfPortfolio(boolean showAllAssetsOfPortfolio) {
+		this.showAllAssetsOfPortfolio = showAllAssetsOfPortfolio;
+	}
+
+	public boolean isShowAssetPerformance() {
+		return showAssetPerformance;
+	}
+
+	public void setShowAssetPerformance(boolean showAssetPerformance) {
+		this.showAssetPerformance = showAssetPerformance;
 	}
     
 }

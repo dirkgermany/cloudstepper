@@ -1,6 +1,6 @@
 package com.dam.portfolio.model.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.dam.portfolio.types.Symbol;
 
@@ -11,7 +11,7 @@ public class StockHistory {
 	private String wkn;
 	private Float open;
 	private Float close;
-	private Date historyDate;
+	private LocalDate historyDate;
 	
 	public StockHistory updateEntity (StockHistory container) {
 		setSymbol(container.getSymbol());
@@ -62,11 +62,11 @@ public class StockHistory {
 		this.close = close;
 	}
 
-	public Date getHistoryDate() {
+	public LocalDate getHistoryDate() {
 		return historyDate;
 	}
 
-	public void setHistoryDate(Date historyDate) {
+	public void setHistoryDate(LocalDate historyDate) {
 		this.historyDate = historyDate;
 	}
 

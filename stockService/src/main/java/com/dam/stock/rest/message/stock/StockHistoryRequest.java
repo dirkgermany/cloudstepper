@@ -1,5 +1,6 @@
 package com.dam.stock.rest.message.stock;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.dam.stock.model.entity.StockHistory;
@@ -7,20 +8,16 @@ import com.dam.stock.rest.message.RestRequest;
 
 public class StockHistoryRequest extends RestRequest {
 
-	private Date filterStartDate = new Date(0);
-	private Date filterEndDate = new Date(Long.MAX_VALUE);
+	private LocalDate filterStartDate;
+	private LocalDate filterEndDate;
 	private StockHistory stockHistory;
-
-	public StockHistoryRequest(StockHistory stockHistory, Date filterStartDate, Date filterEndDate) {
+	
+	public StockHistoryRequest(StockHistory stockHistory, LocalDate filterStartDate, LocalDate filterEndDate) {
 		super("DAM 2.0");
 		setStockHistory(stockHistory);
 
-		if (null != filterStartDate) {
 			setFilterStartDate(filterStartDate);
-		}
-		if (null != filterEndDate) {
 			setFilterEndDate(filterEndDate);
-		}
 	}
 
 	public StockHistory getStockHistory() {
@@ -31,19 +28,19 @@ public class StockHistoryRequest extends RestRequest {
 		this.stockHistory = stockHistory;
 	}
 
-	public Date getFilterStartDate() {
+	public LocalDate getFilterStartDate() {
 		return filterStartDate;
 	}
 
-	public void setFilterStartDate(Date filterStartDate) {
+	public void setFilterStartDate(LocalDate filterStartDate) {
 		this.filterStartDate = filterStartDate;
 	}
 
-	public Date getFilterEndDate() {
+	public LocalDate getFilterEndDate() {
 		return filterEndDate;
 	}
 
-	public void setFilterEndDate(Date filterEndDate) {
+	public void setFilterEndDate(LocalDate filterEndDate) {
 		this.filterEndDate = filterEndDate;
 	}
 }

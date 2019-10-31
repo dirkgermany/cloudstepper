@@ -1,20 +1,22 @@
 package com.dam.portfolio.performance;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.Month;
-import java.time.Year;
 import java.util.Date;
 
 public class StockQuotationDetail {
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	
 	private DayOfWeek dayOfWeek;
 	private Month monthOfYear;
-	private Year year;
+	private int year;
 	private Float open = 0F;
 	private Float close = 0F;
 	private Float performancePercent = 0F;
+	
+	private Long stockHistoryId;
 
 	public DayOfWeek getDayOfWeek() {
 		return dayOfWeek;
@@ -48,11 +50,11 @@ public class StockQuotationDetail {
 		this.close = close;
 	}
 
-	public Year getYear() {
+	public int getYear() {
 		return year;
 	}
 
-	public void setYear(Year year) {
+	public void setYear(int year) {
 		this.year = year;
 	}
 
@@ -64,19 +66,27 @@ public class StockQuotationDetail {
 		this.performancePercent = performancePercent;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
+	}
+
+	public Long getStockHistoryId() {
+		return stockHistoryId;
+	}
+
+	public void setStockHistoryId(Long stockHistoryId) {
+		this.stockHistoryId = stockHistoryId;
 	}
 }

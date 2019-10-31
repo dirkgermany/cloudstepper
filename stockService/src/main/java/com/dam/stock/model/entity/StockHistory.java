@@ -1,5 +1,6 @@
 package com.dam.stock.model.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -39,7 +40,7 @@ public class StockHistory {
 	private Float close;
 	
 	@Column(nullable = false)
-	private Date historyDate;
+	private LocalDate historyDate;
 	
 	public StockHistory updateEntity (StockHistory container) {
 		setSymbol(container.getSymbol());
@@ -90,11 +91,11 @@ public class StockHistory {
 		this.close = close;
 	}
 
-	public Date getHistoryDate() {
+	public LocalDate getHistoryDate() {
 		return historyDate;
 	}
 
-	public void setHistoryDate(Date historyDate) {
+	public void setHistoryDate(LocalDate historyDate) {
 		this.historyDate = historyDate;
 	}
 

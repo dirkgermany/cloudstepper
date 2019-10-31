@@ -1,6 +1,6 @@
 package com.dam.stock.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -20,18 +20,18 @@ public interface StockHistoryModel extends Repository<StockHistory, Long>, CrudR
 
 	@Query("SELECT stockHistory from StockHistory stockHistory WHERE stockHistory.symbol = :symbol " 
 			+ " AND stockHistory.historyDate = :historyDate")
-	StockHistory findBySymbolDate(@Param("symbol") Symbol symbol, @Param("historyDate") Date historyDate);
+	StockHistory findBySymbolDate(@Param("symbol") Symbol symbol, @Param("historyDate") LocalDate historyDate);
 
 	@Query("SELECT stockHistory from StockHistory stockHistory "
 			+ " WHERE stockHistory.symbol = :symbol "
 			+ " AND stockHistory.historyDate <= :endDate "
 			+ " AND stockHistory.historyDate >= :startDate "
 			+ " ORDER BY stockHistory.historyDate") // DESC")
-	List<StockHistory> findBySymbolStartEndDate(@Param("symbol") Symbol symbol, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+	List<StockHistory> findBySymbolStartEndDate(@Param("symbol") Symbol symbol, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 	
 	@Query("SELECT stockHistory from StockHistory stockHistory "
 			+ " WHERE stockHistory.historyDate <= :endDate "
 			+ " AND stockHistory.historyDate >= :startDate "
 			+ " ORDER BY stockHistory.historyDate") // DESC")
-	List<StockHistory> findByStartEndDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+	List<StockHistory> findByStartEndDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
