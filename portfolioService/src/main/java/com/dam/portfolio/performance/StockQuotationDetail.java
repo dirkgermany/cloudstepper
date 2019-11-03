@@ -16,6 +16,8 @@ public class StockQuotationDetail {
 	private int year;
 	private Float open;
 	private Float close;
+	private Float openWeighted;
+	private Float closeWeighted;
 
 	private Long stockHistoryId;
 
@@ -31,6 +33,20 @@ public class StockQuotationDetail {
 			this.close = 0F;
 		}
 		close += value;
+	}
+
+	public void addToOpenWeighted(Float value) {
+		if (null == this.openWeighted) {
+			this.openWeighted = 0F;
+		}
+		openWeighted += value;
+	}
+
+	public void addToCloseWeighted(Float value) {
+		if (null == this.closeWeighted) {
+			this.closeWeighted = 0F;
+		}
+		closeWeighted += value;
 	}
 
 	public DayOfWeek getDayOfWeek() {
@@ -111,5 +127,21 @@ public class StockQuotationDetail {
 
 	public void setStockHistoryId(Long stockHistoryId) {
 		this.stockHistoryId = stockHistoryId;
+	}
+
+	public Float getOpenWeighted() {
+		return openWeighted;
+	}
+
+	public void setOpenWeighted(Float openWeighted) {
+		this.openWeighted = openWeighted;
+	}
+
+	public Float getCloseWeighted() {
+		return closeWeighted;
+	}
+
+	public void setCloseWeighted(Float closeWeighted) {
+		this.closeWeighted = closeWeighted;
 	}
 }
