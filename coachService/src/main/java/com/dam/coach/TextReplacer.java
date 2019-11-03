@@ -1,6 +1,5 @@
 package com.dam.coach;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

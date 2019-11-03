@@ -1,7 +1,7 @@
 package com.dam.depot.store;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -102,7 +102,7 @@ public class IntentStore {
 		default:
 			break;
 		}
-		accountStatus.setLastUpdate(new Date());
+		accountStatus.setLastUpdate(LocalDateTime.now());
 		accountStatus.setCurrency(intent.getCurrency());
 		accountStatusStore.saveAccountStatus(accountStatus);
 
@@ -161,7 +161,7 @@ public class IntentStore {
 		AccountTransaction accountTransaction = new AccountTransaction();
 		accountTransaction.setUserId(storedIntent.getUserId());
 		accountTransaction.setRequestorUserId(storedIntent.getRequestorUserId());
-		accountTransaction.setActionDate(new Date());
+		accountTransaction.setActionDate(LocalDateTime.now());
 		accountTransaction.setReferenceType(ReferenceType.INTENT);
 		accountTransaction.setReferenceId(storedIntent.getIntentId());
 		accountTransaction.setRequestorUserId(confirmRequest.getRequestorUserId());
@@ -193,7 +193,7 @@ public class IntentStore {
 			accountStatus.setAmountDepot(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
-		accountStatus.setLastUpdate(new Date());
+		accountStatus.setLastUpdate(LocalDateTime.now());
 
 		switch (action) {
 		case INVEST_INTENT_CONFIRMED:
@@ -291,7 +291,7 @@ public class IntentStore {
 			accountStatus.setAmountDepot(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
-		accountStatus.setLastUpdate(new Date());
+		accountStatus.setLastUpdate(LocalDateTime.now());
 		accountStatus.setCurrency(storedIntent.getCurrency());
 
 		switch (action) {

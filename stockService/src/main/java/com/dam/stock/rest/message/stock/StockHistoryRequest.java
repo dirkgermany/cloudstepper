@@ -1,7 +1,6 @@
 package com.dam.stock.rest.message.stock;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import com.dam.stock.model.entity.StockHistory;
 import com.dam.stock.rest.message.RestRequest;

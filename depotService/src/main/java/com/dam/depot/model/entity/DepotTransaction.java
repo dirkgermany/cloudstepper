@@ -1,6 +1,6 @@
 package com.dam.depot.model.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,7 +51,7 @@ public class DepotTransaction {
 	private Long requestorUserId;
 	
 	@Column (nullable=false)
-	private Date actionDate;
+	private LocalDateTime actionDate;
 	
 	@Column
 	@Enumerated(EnumType.STRING)
@@ -108,11 +108,11 @@ public class DepotTransaction {
 		this.userId = userId;
 	}
 
-	public Date getActionDate() {
+	public LocalDateTime getActionDate() {
 		return actionDate;
 	}
 
-	public void setActionDate(Date actionDate) {
+	public void setActionDate(LocalDateTime actionDate) {
 		this.actionDate = actionDate;
 	}
 

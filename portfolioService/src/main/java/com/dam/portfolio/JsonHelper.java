@@ -6,14 +6,21 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JsonHelper {
 	
-	ObjectMapper objectMapper = new ObjectMapper();
+	ObjectMapper objectMapper = null;
 	
 	public ObjectMapper getObjectMapper () {
+		if (null == objectMapper) {
+			objectMapper = new ObjectMapper();
+			this.objectMapper.registerModule(new JavaTimeModule());
+			this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		}
 		return this.objectMapper;
 	}
 
@@ -23,7 +30,7 @@ public class JsonHelper {
 
 	public JsonNode convertStringToNode(String jsonString) {
 		try {
-			return objectMapper.readTree(jsonString);
+			return getObjectMapper().readTree(jsonString);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -33,7 +40,7 @@ public class JsonHelper {
 	}
 
 	public JsonNode createNodeFromMap(Map<String, String> keyValues) {
-		JsonNode responseNode = objectMapper.createObjectNode();
+		JsonNode responseNode = getObjectMapper().createObjectNode();
 
 		for (Map.Entry<String, String> entry : keyValues.entrySet()) {
 			((ObjectNode) responseNode).put(entry.getKey(), entry.getValue());
@@ -64,7 +71,7 @@ public class JsonHelper {
 		responseTree = convertStringToNode(jsonString);
 		((ObjectNode) responseTree).put(key, value);
 		try {
-			return objectMapper.writeValueAsString(responseTree);
+			return getObjectMapper().writeValueAsString(responseTree);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,7 +90,7 @@ public class JsonHelper {
 		JsonNode node;
 		Long longValue = null;
 		try {
-			node = objectMapper.readTree(jsonContent);
+			node = getObjectMapper().readTree(jsonContent);
 			if (null != node) {
 				JsonNode valueNode = node.path(key);
 				if (null != valueNode) {
@@ -105,7 +112,7 @@ public class JsonHelper {
 		JsonNode node;
 		String value = null;
 		try {
-			node = objectMapper.readTree(jsonContent);
+			node = getObjectMapper().readTree(jsonContent);
 			if (null != node) {
 				JsonNode valueNode = node.path(key);
 				if (null != valueNode) {
@@ -140,7 +147,7 @@ public class JsonHelper {
 	 */
 	public String extractStringFromJsonNode(JsonNode jsonContent) {
 		try {
-			return objectMapper.writeValueAsString(jsonContent);
+			return getObjectMapper().writeValueAsString(jsonContent);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -163,7 +170,7 @@ public class JsonHelper {
 	public Long extractLongFromNode(JsonNode jsonContent, String key) {
 		String stringContent = null;
 		try {
-			stringContent = objectMapper.writeValueAsString(jsonContent);
+			stringContent = getObjectMapper().writeValueAsString(jsonContent);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

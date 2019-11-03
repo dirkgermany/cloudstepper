@@ -1,7 +1,7 @@
 package com.dam.depot.store;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -88,7 +88,7 @@ public class IntentSellStore extends IntentStore {
 		AccountTransaction accountTransaction = new AccountTransaction();
 		accountTransaction.setUserId(storedIntent.getUserId());
 		accountTransaction.setRequestorUserId(storedIntent.getRequestorUserId());
-		accountTransaction.setActionDate(new Date());
+		accountTransaction.setActionDate(LocalDateTime.now());
 		accountTransaction.setReferenceType(ReferenceType.INTENT);
 		accountTransaction.setReferenceId(storedIntent.getIntentId());
 		accountTransaction.setRequestorUserId(confirmRequest.getRequestorUserId());
@@ -107,7 +107,7 @@ public class IntentSellStore extends IntentStore {
 			accountStatus.setAmountDepot(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
-		accountStatus.setLastUpdate(new Date());
+		accountStatus.setLastUpdate(LocalDateTime.now());
 		accountStatus.setAmountDepot(accountStatus.getAmountDepot() - Math.abs(storedIntent.getAmount()));
 		accountStatus.setAmountAccount(accountStatus.getAmountAccount() + Math.abs(storedIntent.getAmount()));
 		accountStatus.setAmountAccountIntent(accountStatus.getAmountAccountIntent() - Math.abs(storedIntent.getAmount()));
@@ -119,7 +119,7 @@ public class IntentSellStore extends IntentStore {
 		DepotTransaction depotTransaction = new DepotTransaction();
 		depotTransaction.setUserId(storedIntent.getUserId());
 		depotTransaction.setRequestorUserId(storedIntent.getRequestorUserId());
-		depotTransaction.setActionDate(new Date());
+		depotTransaction.setActionDate(LocalDateTime.now());
 		depotTransaction.setReferenceType(ReferenceType.INTENT);
 		depotTransaction.setReferenceId(storedIntent.getIntentId());
 		depotTransaction.setRequestorUserId(confirmRequest.getRequestorUserId());
@@ -140,7 +140,7 @@ public class IntentSellStore extends IntentStore {
 		}
 		float investValue = depot.getInvestValue() - storedIntent.getAmount();
 		depot.setInvestValue(investValue);
-		depot.setLastUpdate(new Date());
+		depot.setLastUpdate(LocalDateTime.now());
 
 		depotStore.saveDepot(depot);
 

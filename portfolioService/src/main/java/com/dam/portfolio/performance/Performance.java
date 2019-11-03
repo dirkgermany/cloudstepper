@@ -1,24 +1,39 @@
 package com.dam.portfolio.performance;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.math3.util.Precision;
+
 public class Performance {
-	
+
 	private Map<Month, StockQuotationDetail> monthlyDetails = new HashMap<>();
 	private Map<Integer, StockQuotationDetail> yearDetails = new HashMap<>();
 	private Map<LocalDate, StockQuotationDetail> dailyDetails = new TreeMap<>();
-	
+
 	private LocalDate startDate;
 	private LocalDate endDate;
-	
+
 	private Float open;
 	private Float close;
-	private Float performancePercentage;
+
+	public void addToOpen(Float value) {
+		if (null == this.open) {
+			this.open = 0F;
+		}
+		this.open += value;
+	}
+
+	public void addToClose(Float value) {
+		if (null == this.close) {
+			this.close = 0F;
+		}
+		this.close += value;
+	}
 
 	public Map<Month, StockQuotationDetail> getMonthlyDetails() {
 		return monthlyDetails;
@@ -76,11 +91,20 @@ public class Performance {
 		this.close = close;
 	}
 
-	public Float getPerformancePercentage() {
-		return performancePercentage;
+	public Float getPerformancePercent() {
+		if (null == this.open || null == this.close) {
+			return 0F;
+		}
+		
+		float calculated = ((this.close/this.open - 1) * 100);
+		return Precision.round(calculated, 6);
+	}
+	
+	public String getPerformanceAsString() {
+		DecimalFormat formatter = new DecimalFormat("#,##0.00'%'");
+		formatter.setMultiplier(1);
+
+		return formatter.format(getPerformancePercent());
 	}
 
-	public void setPerformancePercentage(Float performancePercentage) {
-		this.performancePercentage = performancePercentage;
-	}
 }

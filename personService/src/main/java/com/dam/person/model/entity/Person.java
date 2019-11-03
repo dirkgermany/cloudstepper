@@ -1,6 +1,6 @@
 package com.dam.person.model.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,7 +41,7 @@ public class Person {
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
-	private Date birthdate;
+	private LocalDate birthdate;
 	
 	public Person () {
 		
@@ -53,7 +53,7 @@ public class Person {
 		setLastName(lastName);
 	}
 	
-	public Person(Long userId, String givenName, String lastName, String personType, String gender, Date birthdate) {
+	public Person(Long userId, String givenName, String lastName, String personType, String gender, LocalDate birthdate) {
 		setUserId(userId);
 		setGivenName(givenName);
 		setLastName(lastName);
@@ -94,11 +94,11 @@ public class Person {
 		this.gender = gender;
 	}
 
-	public Date getBirthdate() {
+	public LocalDate getBirthdate() {
 		return birthdate;
 	}
 
-	public void setBirthdate(Date birthdate) {
+	public void setBirthdate(LocalDate birthdate) {
 		this.birthdate = birthdate;
 	}
 

@@ -16,8 +16,8 @@ public class Configuration {
 	@Value("${provider.service.port}")
 	private Long serviceProviderPort;
 	
-	@Value("${provider.user.name}")
-	private String userName;
+	@Value("${provider.bla.bla}")
+	private String bla;
 	
 	@Value("${provider.user.password}")
 	private String password;
@@ -58,12 +58,12 @@ public class Configuration {
 		this.serviceProviderPort = serviceProviderPort;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getHupsi() {
+		return this.bla;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setBla(String bla) {
+		this.bla = bla;
 	}
 
 	public String getPassword() {

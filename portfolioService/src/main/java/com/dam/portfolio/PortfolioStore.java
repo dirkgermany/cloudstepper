@@ -80,24 +80,22 @@ public class PortfolioStore {
 			assetStockHistory.put(asset, historyList);
 		}
 
-		calculator.generatePerformanceLists(portfolio, assetStockHistory);
+		calculator.generatePerformanceLists(portfolio, assetStockHistory, request.getStartDate(), request.getEndDate());
 		PortfolioPerformance portfolioPerformance = null;
 		List<AssetPerformance> assetPerformanceList = null;
 		AssetPerformance assetPerformance = null;
 
 		if (request.isShowPortfolioPerformance()) {
-			portfolioPerformance = calculator.getPortfolioPerformance(request.getPortfolioId(), request.getStartDate(),
-					request.getEndDate());
+			portfolioPerformance = calculator.getPortfolioPerformance();
 		}
 		
 		if (request.isShowAllAssetsOfPortfolio()) {
-			assetPerformanceList = calculator.getAssetPerformanceList(request.getStartDate(), request.getEndDate());
+			assetPerformanceList = calculator.getAssetPerformanceList();
 
 		}
 
 		if (null != request.getAssetClassId() && request.isShowAssetPerformance()) {
-			assetPerformance = calculator.getAssetPerformance(request.getAssetClassId(), request.getStartDate(),
-					request.getEndDate());
+			assetPerformance = calculator.getAssetPerformance(request.getAssetClassId());
 		}
 
 		return new PortfolioPerformanceResponse(200L, "OK", "Performance calculated", portfolioPerformance,

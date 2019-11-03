@@ -1,6 +1,6 @@
 package com.dam.depot.model.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,7 +45,7 @@ public class Intent {
 	private ActionType action;
 	
 	@Column(nullable = false)
-	private Date actionDate = new Date();
+	private LocalDateTime actionDate = LocalDateTime.now();
 	
 	@Column(nullable = true)
 	@Type (type="yes_no")
@@ -62,7 +62,7 @@ public class Intent {
 	 * The date when the record was booked
 	 */
 	@Column(nullable = true)
-	private Date bookingDate;
+	private LocalDateTime bookingDate;
 	
 	/**
 	 * External API response. Especially when the request was declined here the reason should be explained
@@ -142,11 +142,11 @@ public class Intent {
 		this.action = action;
 	}
 
-	public Date getActionDate() {
+	public LocalDateTime getActionDate() {
 		return actionDate;
 	}
 
-	public void setActionDate(Date actionDate) {
+	public void setActionDate(LocalDateTime actionDate) {
 		this.actionDate = actionDate;
 	}
 
@@ -158,11 +158,11 @@ public class Intent {
 		this.accepted = accepted;
 	}
 
-	public Date getBookingDate() {
+	public LocalDateTime getBookingDate() {
 		return bookingDate;
 	}
 
-	public void setBookingDate(Date bookingDate) {
+	public void setBookingDate(LocalDateTime bookingDate) {
 		this.bookingDate = bookingDate;
 	}
 

@@ -41,7 +41,7 @@ public class AccountStatusStore {
 	public AccountStatusResponse getAccountStatusSafe(AccountStatusRequest statusRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(statusRequest, statusRequest.getRequestorUserId(),
 				statusRequest.getRights());
-		PermissionCheck.isReadPermissionSet(statusRequest.getRequestorUserId(), null, statusRequest.getRights());
+		PermissionCheck.isReadPermissionSet(statusRequest.getRequestorUserId(), statusRequest.getAccountStatus().getUserId(), statusRequest.getRights());
 
 		AccountStatus accountStatus = getAccountStatusByUserId(statusRequest.getAccountStatus().getUserId());
 		if (null != accountStatus) {

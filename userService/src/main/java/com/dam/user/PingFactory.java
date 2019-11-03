@@ -4,7 +4,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class PingFactory {
 		pingInfo.put("port", configuration.getServerPort());
 
 		// Time
-		pingInfo.put("systime", new Date().toString());
+		pingInfo.put("systime", LocalDateTime.now().toString());
 
 		// Uptime
 		RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();

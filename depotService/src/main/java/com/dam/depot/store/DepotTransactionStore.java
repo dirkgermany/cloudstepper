@@ -1,6 +1,6 @@
 package com.dam.depot.store;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -122,11 +122,11 @@ public class DepotTransactionStore {
 				continue;
 			}
 			if (null != depotRequest.getFilter().getDateFrom()
-					&& depotTransaction.getActionDate().before(depotRequest.getFilter().getDateFrom())) {
+					&& depotTransaction.getActionDate().isBefore(depotRequest.getFilter().getDateFrom())) {
 				continue;
 			}
 			if (null != depotRequest.getFilter().getDateUntil()
-					&& depotTransaction.getActionDate().after(depotRequest.getFilter().getDateUntil())) {
+					&& depotTransaction.getActionDate().isAfter(depotRequest.getFilter().getDateUntil())) {
 				continue;
 			}
 			if (null != depotRequest.getFilter().getEventText() && !depotTransaction.getEventText().toUpperCase()
@@ -162,7 +162,7 @@ public class DepotTransactionStore {
 
 		Float amount = RequestHelper.setAmountNegative(depotTransactionRequest.getDepotTransaction().getAmount());
 		depotTransactionRequest.getDepotTransaction().setAmount(amount);
-		depotTransactionRequest.getDepotTransaction().setActionDate(new Date());
+		depotTransactionRequest.getDepotTransaction().setActionDate(LocalDateTime.now());
 
 		// store depot
 		DepotTransaction depotTransaction = createDepotTransactionSafe(depotTransactionRequest);		
@@ -235,24 +235,24 @@ public class DepotTransactionStore {
 		return depotTransactionModel.findByUserAction(userId, action);
 	}
 
-	private List<DepotTransaction> getDepotTransactionListByUserDateFrom(Long userId, Date dateFrom) {
+	private List<DepotTransaction> getDepotTransactionListByUserDateFrom(Long userId, LocalDateTime dateFrom) {
 		return depotTransactionModel.findByUserDateFrom(userId, dateFrom);
 	}
 
-	private List<DepotTransaction> getDepotTransactionListByUserDateUntil(Long userId, Date dateUntil) {
+	private List<DepotTransaction> getDepotTransactionListByUserDateUntil(Long userId, LocalDateTime dateUntil) {
 		return depotTransactionModel.findByUserDateUntil(userId, dateUntil);
 	}
 
-	private List<DepotTransaction> getDepotTransactionListByUserActionDateFrom(Long userId, ActionType action, Date dateFrom) {
+	private List<DepotTransaction> getDepotTransactionListByUserActionDateFrom(Long userId, ActionType action, LocalDateTime dateFrom) {
 		return depotTransactionModel.findByUserActionDateFrom(userId, action, dateFrom);
 	}
 
-	private List<DepotTransaction> getDepotTransactionListByUserActionDateUntil(Long userId, ActionType action, Date dateUntil) {
+	private List<DepotTransaction> getDepotTransactionListByUserActionDateUntil(Long userId, ActionType action, LocalDateTime dateUntil) {
 		return depotTransactionModel.findByUserActionDateUntil(userId, action, dateUntil);
 	}
 
-	private List<DepotTransaction> getDepotTransactionListByUserActionDateFromDateUntil(Long userId, ActionType action, Date dateFrom,
-			Date dateUntil) {
+	private List<DepotTransaction> getDepotTransactionListByUserActionDateFromDateUntil(Long userId, ActionType action, LocalDateTime dateFrom,
+			LocalDateTime dateUntil) {
 		return depotTransactionModel.findByUserActionDateFromDateUntil(userId, action, dateFrom, dateUntil);
 	}
 

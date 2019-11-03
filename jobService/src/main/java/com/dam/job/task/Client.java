@@ -139,7 +139,7 @@ public abstract class Client {
 	protected void confirmIntent(Intent intent, ActionType action, String domain, String path) throws DamServiceException {
 		intent.setAction(action);
 		intent.setAccepted(true);
-		intent.setBookingDate(new Date());
+		intent.setBookingDate(LocalDateTime.now());
 
 		RestRequestIntent restRequest = new RestRequestIntent(intent);
 
@@ -158,7 +158,7 @@ public abstract class Client {
 	protected void declineIntent(Intent intent, ActionType action, String domain, String path) throws DamServiceException {
 		intent.setAction(action);
 		intent.setAccepted(false);
-		intent.setBookingDate(new Date());
+		intent.setBookingDate(LocalDateTime.now());
 		
 		RestRequestIntent restRequest = new RestRequestIntent(intent);
 		JsonNode node = jsonHelper.getObjectMapper().valueToTree(restRequest);

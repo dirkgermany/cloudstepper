@@ -4,11 +4,10 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,7 +39,7 @@ public class PingFactory {
 		pingInfo.put("status", "OK");
 
 		// Time
-		pingInfo.put("systime", new Date().toString());
+		pingInfo.put("systime", LocalDateTime.now().toString());
 
 		// Uptime
 		RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();

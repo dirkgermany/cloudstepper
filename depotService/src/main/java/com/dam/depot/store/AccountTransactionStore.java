@@ -1,7 +1,7 @@
 package com.dam.depot.store;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -122,11 +122,11 @@ public class AccountTransactionStore {
 				continue;
 			}
 			if (null != accountRequest.getFilter().getDateFrom()
-					&& accountTransaction.getActionDate().before(accountRequest.getFilter().getDateFrom())) {
+					&& accountTransaction.getActionDate().isBefore(accountRequest.getFilter().getDateFrom())) {
 				continue;
 			}
 			if (null != accountRequest.getFilter().getDateUntil()
-					&& accountTransaction.getActionDate().after(accountRequest.getFilter().getDateUntil())) {
+					&& accountTransaction.getActionDate().isAfter(accountRequest.getFilter().getDateUntil())) {
 				continue;
 			}
 			if (null != accountRequest.getFilter().getEventText() && !accountTransaction.getEventText().toUpperCase()
@@ -233,24 +233,24 @@ public class AccountTransactionStore {
 		return accountTransactionModel.findByUserAction(userId, action);
 	}
 
-	private List<AccountTransaction> getAccountListByUserDateFrom(Long userId, Date dateFrom) {
+	private List<AccountTransaction> getAccountListByUserDateFrom(Long userId, LocalDateTime dateFrom) {
 		return accountTransactionModel.findByUserDateFrom(userId, dateFrom);
 	}
 
-	private List<AccountTransaction> getAccountListByUserDateUntil(Long userId, Date dateUntil) {
+	private List<AccountTransaction> getAccountListByUserDateUntil(Long userId, LocalDateTime dateUntil) {
 		return accountTransactionModel.findByUserDateUntil(userId, dateUntil);
 	}
 
-	private List<AccountTransaction> getAccountListByUserActionDateFrom(Long userId, ActionType action, Date dateFrom) {
+	private List<AccountTransaction> getAccountListByUserActionDateFrom(Long userId, ActionType action, LocalDateTime dateFrom) {
 		return accountTransactionModel.findByUserActionDateFrom(userId, action, dateFrom);
 	}
 
-	private List<AccountTransaction> getAccountListByUserActionDateUntil(Long userId, ActionType action, Date dateUntil) {
+	private List<AccountTransaction> getAccountListByUserActionDateUntil(Long userId, ActionType action, LocalDateTime dateUntil) {
 		return accountTransactionModel.findByUserActionDateUntil(userId, action, dateUntil);
 	}
 
-	private List<AccountTransaction> getAccountListByUserActionDateFromDateUntil(Long userId, ActionType action, Date dateFrom,
-			Date dateUntil) {
+	private List<AccountTransaction> getAccountListByUserActionDateFromDateUntil(Long userId, ActionType action, LocalDateTime dateFrom,
+			LocalDateTime dateUntil) {
 		return accountTransactionModel.findByUserActionDateFromDateUntil(userId, action, dateFrom, dateUntil);
 	}
 

@@ -6,14 +6,21 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JsonHelper {
 	
-	ObjectMapper objectMapper = new ObjectMapper();
-	
-	public ObjectMapper getObjectMapper () {
+	ObjectMapper objectMapper = null;
+
+	public ObjectMapper getObjectMapper() {
+		if (null == objectMapper) {
+			objectMapper = new ObjectMapper();
+			this.objectMapper.registerModule(new JavaTimeModule());
+			this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		}
 		return this.objectMapper;
 	}
 

@@ -1,13 +1,13 @@
 package com.dam.depot.rest.message.filter;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class RequestFilter {
 	
 	private Float amountFrom;
 	private Float amountUntil;
-	private Date dateFrom;
-	private Date dateUntil;
+	private LocalDateTime dateFrom;
+	private LocalDateTime dateUntil;
 	private String eventText;
 	
 	public Boolean isFiltered() {
@@ -26,16 +26,16 @@ public class RequestFilter {
 	public void setAmountUntil(Float amountUntil) {
 		this.amountUntil = amountUntil;
 	}
-	public Date getDateFrom() {
+	public LocalDateTime getDateFrom() {
 		return dateFrom;
 	}
-	public void setDateFrom(Date dateFrom) {
+	public void setDateFrom(LocalDateTime dateFrom) {
 		this.dateFrom = dateFrom;
 	}
-	public Date getDateUntil() {
+	public LocalDateTime getDateUntil() {
 		return dateUntil;
 	}
-	public void setDateUntil(Date dateUntil) {
+	public void setDateUntil(LocalDateTime dateUntil) {
 		this.dateUntil = dateUntil;
 	}
 	public String getEventText() {

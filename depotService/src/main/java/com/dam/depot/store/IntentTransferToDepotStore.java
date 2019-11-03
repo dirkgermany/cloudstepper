@@ -1,7 +1,7 @@
 package com.dam.depot.store;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -67,7 +67,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 		}
 		float amount = accountStatus.getAmountDepotIntent() - storedIntent.getAmount();
 		accountStatus.setAmountDepotIntent(amount);
-		accountStatus.setLastUpdate(new Date());
+		accountStatus.setLastUpdate(LocalDateTime.now());
 		accountStatus.setCurrency(storedIntent.getCurrency());
 		
 		accountStatusStore.saveAccountStatus(accountStatus);
@@ -113,7 +113,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 		accountTransaction.setUserId(storedIntent.getUserId());
 		accountTransaction.setRequestorUserId(storedIntent.getRequestorUserId());
 		accountTransaction.setAction(ActionType.DEPOT_TRANSFER);
-		accountTransaction.setActionDate(new Date());
+		accountTransaction.setActionDate(LocalDateTime.now());
 		accountTransaction.setReferenceType(ReferenceType.INTENT);
 		accountTransaction.setReferenceId(storedIntent.getIntentId());
 		accountTransaction.setAmount(storedIntent.getAmount() *-1);
@@ -137,7 +137,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 		accountStatus.setAmountAccount(amountAccount);
 		accountStatus.setAmountDepotIntent(amountDepotIntent);
 		accountStatus.setAmountDepot(amountDepot);
-		accountStatus.setLastUpdate(new Date());
+		accountStatus.setLastUpdate(LocalDateTime.now());
 		
 		accountStatusStore.saveAccountStatus(accountStatus);
 		
@@ -146,7 +146,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 		depotTransaction.setUserId(storedIntent.getUserId());
 		depotTransaction.setRequestorUserId(storedIntent.getRequestorUserId());
 		depotTransaction.setAction(ActionType.DEPOT_TRANSFER);
-		depotTransaction.setActionDate(new Date());
+		depotTransaction.setActionDate(LocalDateTime.now());
 		depotTransaction.setReferenceType(ReferenceType.INTENT);
 		depotTransaction.setReferenceId(storedIntent.getIntentId());
 		depotTransaction.setAmount(storedIntent.getAmount());
@@ -166,7 +166,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 		}
 		float investValue = depot.getInvestValue() + storedIntent.getAmount();
 		depot.setInvestValue(investValue);
-		depot.setLastUpdate(new Date());
+		depot.setLastUpdate(LocalDateTime.now());
 		
 		depotStore.saveDepot(depot);
 		

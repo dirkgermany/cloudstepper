@@ -1,6 +1,6 @@
 package com.dam.job.messageClass;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.dam.job.type.ActionType;
 import com.dam.job.type.Currency;
@@ -13,10 +13,10 @@ public class Intent {
 	private Float amount;
 	private Currency currency;
 	private ActionType action;
-	private Date actionDate;
+	private LocalDateTime actionDate;
 	private Boolean booked = false;
 	private Boolean accepted;
-	private Date bookingDate;
+	private LocalDateTime bookingDate;
 	private String finishResponse;
 	private Long referenceId;
 	private Long portfolioId;
@@ -58,10 +58,10 @@ public class Intent {
 	public void setAction(ActionType action) {
 		this.action = action;
 	}
-	public Date getActionDate() {
+	public LocalDateTime getActionDate() {
 		return actionDate;
 	}
-	public void setActionDate(Date actionDate) {
+	public void setActionDate(LocalDateTime actionDate) {
 		this.actionDate = actionDate;
 	}
 	public Boolean getBooked() {
@@ -76,10 +76,10 @@ public class Intent {
 	public void setAccepted(Boolean accepted) {
 		this.accepted = accepted;
 	}
-	public Date getBookingDate() {
+	public LocalDateTime getBookingDate() {
 		return bookingDate;
 	}
-	public void setBookingDate(Date bookingDate) {
+	public void setBookingDate(LocalDateTime bookingDate) {
 		this.bookingDate = bookingDate;
 	}
 	public String getFinishResponse() {

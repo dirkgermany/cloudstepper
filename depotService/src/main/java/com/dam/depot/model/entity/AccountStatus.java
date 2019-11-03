@@ -1,7 +1,6 @@
 package com.dam.depot.model.entity;
 
-import java.util.Date;
-
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -47,7 +46,7 @@ public class AccountStatus {
 	private Currency currency = Currency.EUR;
 	
 	@Column(nullable = true)
-	private Date lastUpdate;
+	private LocalDateTime lastUpdate;
 	
 	@Transient
 	private Float amountDisposable = new Float(0);
@@ -118,11 +117,11 @@ public class AccountStatus {
 		this.amountDepotIntent = amountDepotIntent;
 	}
 
-	public Date getLastUpdate() {
+	public LocalDateTime getLastUpdate() {
 		return lastUpdate;
 	}
 
-	public void setLastUpdate(Date lastUpdate) {
+	public void setLastUpdate(LocalDateTime lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
 

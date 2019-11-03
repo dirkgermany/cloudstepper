@@ -1,22 +1,37 @@
 package com.dam.portfolio.performance;
 
+import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Date;
+
+import org.apache.commons.math3.util.Precision;
 
 public class StockQuotationDetail {
 	private LocalDate startDate;
 	private LocalDate endDate;
-	
+
 	private DayOfWeek dayOfWeek;
 	private Month monthOfYear;
 	private int year;
-	private Float open = 0F;
-	private Float close = 0F;
-	private Float performancePercent = 0F;
-	
+	private Float open;
+	private Float close;
+
 	private Long stockHistoryId;
+
+	public void addToOpen(Float value) {
+		if (null == this.open) {
+			this.open = 0F;
+		}
+		open += value;
+	}
+
+	public void addToClose(Float value) {
+		if (null == this.close) {
+			this.close = 0F;
+		}
+		close += value;
+	}
 
 	public DayOfWeek getDayOfWeek() {
 		return dayOfWeek;
@@ -59,11 +74,19 @@ public class StockQuotationDetail {
 	}
 
 	public Float getPerformancePercent() {
-		return performancePercent;
+		if (null == this.open || null == this.close) {
+			return 0F;
+		}
+		
+		float calculated = ((this.close/this.open - 1) * 100);
+		return Precision.round(calculated, 6);
 	}
+	
+	public String getPerformanceAsString() {
+		DecimalFormat formatter = new DecimalFormat("#,##0.00'%'");
+		formatter.setMultiplier(1);
 
-	public void setPerformancePercent(Float performancePercent) {
-		this.performancePercent = performancePercent;
+		return formatter.format(getPerformancePercent());
 	}
 
 	public LocalDate getStartDate() {
