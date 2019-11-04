@@ -77,7 +77,7 @@ public class IntentStore {
 			accountStatus.setUserId(intentCreateRequest.getIntent().getUserId());
 			accountStatus.setAmountAccount(0f);
 			accountStatus.setAmountAccountIntent(0f);
-			accountStatus.setAmountDepot(0f);
+			accountStatus.setAmountInvest(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
 		switch (action) {
@@ -190,7 +190,7 @@ public class IntentStore {
 			accountStatus.setUserId(confirmRequest.getIntent().getUserId());
 			accountStatus.setAmountAccount(0f);
 			accountStatus.setAmountAccountIntent(0f);
-			accountStatus.setAmountDepot(0f);
+			accountStatus.setAmountInvest(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
 		accountStatus.setLastUpdate(LocalDateTime.now());
@@ -288,7 +288,7 @@ public class IntentStore {
 			accountStatus.setUserId(declineRequest.getIntent().getUserId());
 			accountStatus.setAmountAccount(0f);
 			accountStatus.setAmountAccountIntent(0f);
-			accountStatus.setAmountDepot(0f);
+			accountStatus.setAmountInvest(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
 		accountStatus.setLastUpdate(LocalDateTime.now());

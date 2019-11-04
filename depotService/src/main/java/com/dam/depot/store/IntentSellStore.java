@@ -104,11 +104,11 @@ public class IntentSellStore extends IntentStore {
 			accountStatus.setUserId(confirmRequest.getIntent().getUserId());
 			accountStatus.setAmountAccount(0f);
 			accountStatus.setAmountAccountIntent(0f);
-			accountStatus.setAmountDepot(0f);
+			accountStatus.setAmountInvest(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
 		accountStatus.setLastUpdate(LocalDateTime.now());
-		accountStatus.setAmountDepot(accountStatus.getAmountDepot() - Math.abs(storedIntent.getAmount()));
+		accountStatus.setAmountInvest(accountStatus.getAmountInvest() - Math.abs(storedIntent.getAmount()));
 		accountStatus.setAmountAccount(accountStatus.getAmountAccount() + Math.abs(storedIntent.getAmount()));
 		accountStatus.setAmountAccountIntent(accountStatus.getAmountAccountIntent() - Math.abs(storedIntent.getAmount()));
 		accountStatus.setAmountDepotIntent(accountStatus.getAmountDepotIntent() + Math.abs(storedIntent.getAmount()));

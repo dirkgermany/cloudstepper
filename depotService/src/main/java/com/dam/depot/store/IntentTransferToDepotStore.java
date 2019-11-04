@@ -62,7 +62,7 @@ public class IntentTransferToDepotStore extends IntentStore {
 			accountStatus.setUserId(storedIntent.getUserId());
 			accountStatus.setAmountAccount(0f);
 			accountStatus.setAmountAccountIntent(0f);
-			accountStatus.setAmountDepot(0f);
+			accountStatus.setAmountInvest(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
 		float amount = accountStatus.getAmountDepotIntent() - storedIntent.getAmount();
@@ -128,15 +128,15 @@ public class IntentTransferToDepotStore extends IntentStore {
 			accountStatus.setUserId(storedIntent.getUserId());
 			accountStatus.setAmountAccount(0f);
 			accountStatus.setAmountAccountIntent(0f);
-			accountStatus.setAmountDepot(0f);
+			accountStatus.setAmountInvest(0f);
 			accountStatus.setAmountDepotIntent(0f);
 		}
 		float amountAccount = accountStatus.getAmountAccount() - storedIntent.getAmount();
 		float amountDepotIntent = accountStatus.getAmountDepotIntent() - storedIntent.getAmount();
-		float amountDepot = accountStatus.getAmountDepot() + storedIntent.getAmount();
+		float amountDepot = accountStatus.getAmountInvest() + storedIntent.getAmount();
 		accountStatus.setAmountAccount(amountAccount);
 		accountStatus.setAmountDepotIntent(amountDepotIntent);
-		accountStatus.setAmountDepot(amountDepot);
+		accountStatus.setAmountInvest(amountDepot);
 		accountStatus.setLastUpdate(LocalDateTime.now());
 		
 		accountStatusStore.saveAccountStatus(accountStatus);

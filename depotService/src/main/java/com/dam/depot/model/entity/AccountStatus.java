@@ -30,16 +30,24 @@ public class AccountStatus {
 	private Long userId;
 
 	@Column(nullable = true)
-	private Float amountAccount;
+	private Float amountAccount = 0F;
 
 	@Column(nullable = true)
-	private Float amountDepot;
+	private Float amountInvest = 0F;
+	
+	// whole money in depot
+//	@Transient
+//	private Float amountDepot = 0F;
+	
+	// free call money
+//	@Transient
+//	private Float amountDisposable = 0F;
 	
 	@Column(nullable = true)
-	private Float amountAccountIntent;
+	private Float amountAccountIntent = 0F;
 	
 	@Column(nullable = true)
-	private Float amountDepotIntent;
+	private Float amountDepotIntent = 0F;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -49,25 +57,22 @@ public class AccountStatus {
 	private LocalDateTime lastUpdate;
 	
 	@Transient
-	private Float amountDisposable = new Float(0);
+	private Float amountInvestIntent = 0F;
 	
 	@Transient
-	private Float amountInvestIntent = new Float(0);
+	private Float amountSellIntent = 0F;
 	
 	@Transient
-	private Float amountSellIntent = new Float(0);
+	private Float amountDepositIntent = 0F;
 	
 	@Transient
-	private Float amountDepositIntent = new Float(0);
+	private Float amountDebitIntent = 0F;
 	
 	@Transient
-	private Float amountDebitIntent = new Float(0);
+	private Float amountTransferToAccountIntent = 0F;
 	
 	@Transient
-	private Float amountTransferToAccountIntent = new Float(0);
-	
-	@Transient
-	private Float amountTransferToDepotIntent = new Float(0);
+	private Float amountTransferToDepotIntent = 0F;
 
 	public Long getUserId() {
 		return userId;
@@ -85,20 +90,21 @@ public class AccountStatus {
 			this.amountAccount = amountAccount;
 	}
 
+	public Float getAmountInvest() {
+		return amountInvest;
+	}
+
+	public void setAmountInvest(Float amountInvest) {
+		this.amountInvest = amountInvest;
+	}
+
 	public Float getAmountDepot() {
-		return amountDepot;
+		return amountInvest + amountAccount;
 	}
 
-	public void setAmountDepot(Float amountDepot) {
-		this.amountDepot = amountDepot;
-	}
-
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
+	public Float getAmountDisposable() {
+		Float dispo = getAmountAccount() - getAmountInvest() - Math.abs(getAmountDepotIntent());
+		return dispo < 0? 0f : dispo;
 	}
 
 	public Float getAmountAccountIntent() {
@@ -115,19 +121,6 @@ public class AccountStatus {
 
 	public void setAmountDepotIntent(Float amountDepotIntent) {
 		this.amountDepotIntent = amountDepotIntent;
-	}
-
-	public LocalDateTime getLastUpdate() {
-		return lastUpdate;
-	}
-
-	public void setLastUpdate(LocalDateTime lastUpdate) {
-		this.lastUpdate = lastUpdate;
-	}
-
-	@Transient
-	public Float getAmountDisposable() {
-		return getAmountAccount() - getAmountDepot() - Math.abs(getAmountDepotIntent());
 	}
 
 	public Float getAmountInvestIntent() {
@@ -162,10 +155,6 @@ public class AccountStatus {
 		this.amountSellIntent = amountSellIntent;
 	}
 
-	public void setAmountDisposable(Float amountDisposable) {
-		this.amountDisposable = amountDisposable;
-	}
-
 	public Float getAmountTransferToAccountIntent() {
 		return amountTransferToAccountIntent;
 	}
@@ -180,5 +169,20 @@ public class AccountStatus {
 
 	public void setAmountTransferToDepotIntent(Float amountTransferToDepotIntent) {
 		this.amountTransferToDepotIntent = amountTransferToDepotIntent;
+	}
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+
+	public LocalDateTime getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(LocalDateTime lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 }

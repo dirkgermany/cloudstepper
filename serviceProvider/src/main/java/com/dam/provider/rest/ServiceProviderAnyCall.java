@@ -96,23 +96,7 @@ public class ServiceProviderAnyCall {
 					"Der aufgerufene Pfad existiert nicht: " + requestUri);
 		}
 
-		String domain = pathParts[1];
-
-		// Ausnahmefälle - direkte interne Bearbeitung
-//		if (domain.equalsIgnoreCase("login")) {
-//			int index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
-//			JsonNode response = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "login");
-//
-//			return response;			
-//		}
-//		
-//		if (domain.equalsIgnoreCase("logout")) {
-//			int index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
-//			JsonNode response = consumer.retrieveResponse(requestBody, config.getServiceUrl(index), "logout");
-//
-//			return response;			
-//		}
-				
+		String domain = pathParts[1];				
 		
 		ServiceDomain serviceDomain = null;
 		try {

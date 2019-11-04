@@ -1,0 +1,19 @@
+package com.dam.coach.types;
+
+public enum Category {
+
+	BASICS,
+	CAL,
+	GREETING,
+	EDITORIAL,
+	PORTFOLIO,
+	DEPOT,
+	LAST_MONTHNAME,
+	RETURN_OF_INVEST,
+	PERFORMANCE,
+	FIRSTINVESTDATE,
+	INCREASE,
+	USER,
+	FIRSTNAME,
+	DEFAULT;
+}
