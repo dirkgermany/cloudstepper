@@ -24,13 +24,11 @@ public class TextReplacerEditorialInfoInvestmal extends TextReplacerEditorialInf
 
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 	
-	private String investmalInfoBasics(String[] localVariables) {
-		Long index = Long.valueOf(localVariables[0].trim());
-		
+	private String investmalInfoBasics(String[] localVariables) {		
 		return Replacements.getReplacement("editorial.info.investmal.basics(" + localVariables[0].trim() + ")");
 	}
 	

@@ -22,7 +22,7 @@ public class TextReplacerBasicsCal extends TextReplacerBasics {
 			
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 	

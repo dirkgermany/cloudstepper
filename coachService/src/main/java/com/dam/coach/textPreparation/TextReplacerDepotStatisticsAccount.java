@@ -13,7 +13,7 @@ public class TextReplacerDepotStatisticsAccount extends TextReplacerDepotStatist
 
 		case DEFAULT:
 		default:	
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 	

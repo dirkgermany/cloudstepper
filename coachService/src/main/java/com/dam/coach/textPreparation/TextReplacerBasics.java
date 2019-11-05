@@ -17,7 +17,7 @@ public class TextReplacerBasics extends TextReplacerImpl {
 
 		case DEFAULT:
 		default:
-			return "";
+			return defaultReplacement();
 		}
 	}
 }

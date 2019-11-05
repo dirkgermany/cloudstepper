@@ -3,9 +3,6 @@ package com.dam.coach.textPreparation;
 import com.dam.coach.types.Category;
 
 public class TextReplacerImpl implements TextReplacer {
-//	protected String alterablePlaceholder;
-//	protected String categoryPlaceholder;
-//	protected String[] variable;
 	protected Long userId;
 
 	private String seperatePlaceholder(String textForPreparation, String replacedText) {
@@ -24,6 +21,10 @@ public class TextReplacerImpl implements TextReplacer {
 			replacedText += textForPreparation;
 		}
 		return replacedText;
+	}
+	
+	protected String defaultReplacement() {
+		return "???";
 	}
 
 	private String partialReplace(String stringToReplace) {

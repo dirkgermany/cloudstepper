@@ -18,7 +18,7 @@ public class TextReplacerPortfolioStatistics extends TextReplacerDepotStatistics
 			
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 	

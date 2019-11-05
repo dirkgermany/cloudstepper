@@ -19,7 +19,7 @@ public class TextReplacerPortfolioPerformance extends TextReplacerPortfolio{
 			
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 
 		return null;

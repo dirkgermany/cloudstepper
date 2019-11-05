@@ -19,7 +19,7 @@ public class TextReplacerPortfolio extends TextReplacerImpl {
 						
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 }

@@ -22,7 +22,7 @@ public class TextReplacerDepotStatistics extends TextReplacerDepot {
 
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 }

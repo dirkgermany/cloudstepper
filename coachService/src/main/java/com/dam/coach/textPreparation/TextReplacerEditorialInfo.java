@@ -14,6 +14,7 @@ public class TextReplacerEditorialInfo extends TextReplacerEditorial {
 			return new TextReplacerEditorialInfoPortfolio().replace(path, subVariables);
 			
 		case LOAN:
+			return new TextReplacerEditorialInfoLoan().replace(path, subVariables);
 			
 		case INVESTMAL:
 			return new TextReplacerEditorialInfoInvestmal().replace(path, subVariables);
@@ -23,7 +24,7 @@ public class TextReplacerEditorialInfo extends TextReplacerEditorial {
 
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 

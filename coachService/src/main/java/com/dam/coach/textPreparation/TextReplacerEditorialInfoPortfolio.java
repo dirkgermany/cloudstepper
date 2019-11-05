@@ -19,7 +19,7 @@ public class TextReplacerEditorialInfoPortfolio extends TextReplacerEditorialInf
 
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 	

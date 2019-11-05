@@ -18,7 +18,7 @@ public class TextReplacerEditorial extends TextReplacerImpl {
 
 		case DEFAULT:
 		default:
-			return stringToReplace;
+			return defaultReplacement();
 		}
 	}
 
