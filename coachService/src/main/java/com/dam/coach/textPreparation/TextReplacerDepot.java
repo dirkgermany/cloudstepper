@@ -4,25 +4,19 @@ import com.dam.coach.types.Category;
 
 public class TextReplacerDepot extends TextReplacerImpl {
 
-	public String replace() {
+	public String replace(String stringToReplace, String[] localVariables) {
 		// find out matching replacer
-		Category category = lookupCategory();
+		Category category = lookupCategory(stringToReplace);
+		String path = lookupCategoryPath(stringToReplace);
+		String []subVariables = lookupVariable(path);
 
 		switch (category) {
-		case RETURN_OF_INVEST:
-			return returnOfInvest();
+		case STATISTICS:
+			return new TextReplacerDepotStatistics().replace(path, subVariables);
 
 		case DEFAULT:
 		default:
-			
-			break;
+			return stringToReplace;
 		}
-
-		return null;
 	}
-	
-	private String returnOfInvest() {
-		return "2.077";
-	}
-
 }

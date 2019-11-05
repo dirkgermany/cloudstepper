@@ -2,8 +2,7 @@ package com.dam.coach.textPreparation;
 
 import com.dam.coach.types.Category;
 
-public class TextReplacerPortfolioPerformance extends TextReplacerPortfolio{
-
+public class TextReplacerPortfolioStatistics extends TextReplacerDepotStatistics{
 	public String replace(String stringToReplace, String[] localVariables) {
 		// find out matching replacer
 		Category category = lookupCategory(stringToReplace);
@@ -12,7 +11,7 @@ public class TextReplacerPortfolioPerformance extends TextReplacerPortfolio{
 
 		switch (category) {
 		case PERFORMANCE:
-			break;
+			return portfolioPerformancePercentage();
 		
 		case INCREASE:
 			return portfolioIncrease(localVariables);
@@ -21,8 +20,10 @@ public class TextReplacerPortfolioPerformance extends TextReplacerPortfolio{
 		default:
 			return stringToReplace;
 		}
-
-		return null;
+	}
+	
+	private String portfolioPerformancePercentage() {
+		return "4.77";
 	}
 	
 	private String firstInvestDate() {

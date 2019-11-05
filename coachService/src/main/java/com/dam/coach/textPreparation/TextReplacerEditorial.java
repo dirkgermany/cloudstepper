@@ -2,7 +2,7 @@ package com.dam.coach.textPreparation;
 
 import com.dam.coach.types.Category;
 
-public class TextReplacerPortfolio extends TextReplacerImpl {
+public class TextReplacerEditorial extends TextReplacerImpl {
 
 	public String replace(String stringToReplace, String[] localVariables) {
 		// find out matching replacer
@@ -11,15 +11,15 @@ public class TextReplacerPortfolio extends TextReplacerImpl {
 		String []subVariables = lookupVariable(path);
 
 		switch (category) {
-		case STATISTICS:
-			return new TextReplacerPortfolioStatistics().replace(path, subVariables);
-		
-		case PERFORMANCE:
-			return new TextReplacerPortfolioPerformance().replace(path, subVariables);
-						
+		case INFO:
+			return new TextReplacerEditorialInfo().replace(path, subVariables);
+			
+		case LOAN:
+
 		case DEFAULT:
 		default:
 			return stringToReplace;
 		}
 	}
+
 }

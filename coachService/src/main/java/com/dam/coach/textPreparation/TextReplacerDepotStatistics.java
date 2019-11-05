@@ -2,8 +2,7 @@ package com.dam.coach.textPreparation;
 
 import com.dam.coach.types.Category;
 
-public class TextReplacerPortfolio extends TextReplacerImpl {
-
+public class TextReplacerDepotStatistics extends TextReplacerDepot {
 	public String replace(String stringToReplace, String[] localVariables) {
 		// find out matching replacer
 		Category category = lookupCategory(stringToReplace);
@@ -11,12 +10,16 @@ public class TextReplacerPortfolio extends TextReplacerImpl {
 		String []subVariables = lookupVariable(path);
 
 		switch (category) {
-		case STATISTICS:
-			return new TextReplacerPortfolioStatistics().replace(path, subVariables);
-		
-		case PERFORMANCE:
-			return new TextReplacerPortfolioPerformance().replace(path, subVariables);
-						
+		case ACCOUNT:
+			return new TextReplacerDepotStatisticsAccount().replace(path, subVariables);
+
+		case LOAN:
+			return new TextReplacerDepotStatisticsLoan().replace(path, subVariables);
+			
+		case DEPOT:
+			return new TextReplacerDepotStatisticsDepot().replace(path, subVariables);
+
+
 		case DEFAULT:
 		default:
 			return stringToReplace;

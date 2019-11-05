@@ -8,22 +8,22 @@ import com.dam.coach.types.Category;
 
 public class TextReplacerBasicsCal extends TextReplacerBasics {
 	
-	public String replace() {
+	public String replace(String stringToReplace, String[] localVariables) {
 		// find out matching replacer
-		Category category = lookupCategory();
+		String []subVariables = lookupVariable(stringToReplace);
+		Category category = lookupCategory(stringToReplace);
 
 		switch (category) {
 		case GREETING:
 			return calculateGreeting();
 			
-		case LAST_MONTHNAME:
+		case LASTMONTHNAME:
 			return calculateLastMonthName();
 			
+		case DEFAULT:
 		default:
-			break;
+			return stringToReplace;
 		}
-
-		return null;
 	}
 	
 	private String calculateLastMonthName () {

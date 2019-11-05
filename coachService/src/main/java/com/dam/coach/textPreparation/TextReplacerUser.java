@@ -3,19 +3,20 @@ package com.dam.coach.textPreparation;
 import com.dam.coach.types.Category;
 
 public class TextReplacerUser extends TextReplacerImpl{
-	public String replace() {
+	public String replace(String stringToReplace, String[] localVariables) {
 		// find out matching replacer
-		Category category = lookupCategory();
+		Category category = lookupCategory(stringToReplace);
+		String path = lookupCategoryPath(stringToReplace);
+		String []subVariables = lookupVariable(path);
 
 		switch (category) {
 		case FIRSTNAME:
 			return getUserFirstName();
-						
+				
+		case DEFAULT:
 		default:
-			break;
+			return stringToReplace;
 		}
-
-		return null;
 	}
 
 	private String getUserFirstName() {

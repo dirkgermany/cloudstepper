@@ -11,6 +11,8 @@ import com.dam.coach.PermissionCheck;
 import com.dam.coach.model.CoachActionModel;
 import com.dam.coach.model.entity.CoachAction;
 import com.dam.coach.rest.message.coachAction.CoachActionRequest;
+import com.dam.coach.textPreparation.TextReplacer;
+import com.dam.coach.textPreparation.TextReplacerImpl;
 import com.dam.exception.DamServiceException;
 
 /**
@@ -60,8 +62,15 @@ public class CoachActionStore {
 	}
 	
 	public List<CoachAction>getActionList() {
+		TextReplacer replacer = new TextReplacerImpl();
 		List<CoachAction> actions = new ArrayList<>();		
-		coachActionModel.findAll().iterator().forEachRemaining(actions::add);
+		coachActionModel.findAll().iterator().forEachRemaining(actions::add);		
+		Iterator<CoachAction> it = actions.iterator();
+		while (it.hasNext()) {
+			CoachAction action = it.next();
+			action.setMessage(replacer.replace(action.getMessage()));
+		}
+
 		return actions;
 	}
 

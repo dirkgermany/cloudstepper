@@ -12,6 +12,8 @@ import com.dam.coach.rest.message.coachAction.CoachActionListResponse;
 import com.dam.coach.rest.message.coachAction.CoachActionRequest;
 import com.dam.coach.rest.message.coachAction.CoachActionResponse;
 import com.dam.coach.store.CoachActionStore;
+import com.dam.coach.textPreparation.PlaceholderHelper;
+import com.dam.coach.textPreparation.TextReplacer;
 import com.dam.coach.textPreparation.TextReplacerImpl;
 import com.dam.exception.DamServiceException;
 
@@ -29,28 +31,30 @@ public class CoachActionController {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
-	
+
 	@PostMapping("/getActionList")
-	public RestResponse getCoachActionList(@RequestBody CoachActionRequest coachActionRequest) throws DamServiceException {
+	public RestResponse getCoachActionList(@RequestBody CoachActionRequest coachActionRequest)
+			throws DamServiceException {
 		try {
 			return new CoachActionListResponse(coachActionStore.getActionListSafe(coachActionRequest));
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
-	
+
 	@PostMapping("/getActionReplaced")
 
-	public RestResponse getActionReplaced(@RequestBody CoachActionRequest coachActionRequest) throws DamServiceException {
+	public RestResponse getActionReplaced(@RequestBody CoachActionRequest coachActionRequest)
+			throws DamServiceException {
 		try {
 			CoachAction coachAction = coachActionStore.getActionSafe(coachActionRequest);
-			coachAction.setMessage(TextReplacerImpl.dayTime(coachAction.getMessage()));
-			
+			TextReplacer replacer = new TextReplacerImpl();
+			coachAction.setMessage(replacer.replace(coachAction.getMessage()));
+
 			return new CoachActionResponse(coachAction);
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 
-		
 	}
 }
