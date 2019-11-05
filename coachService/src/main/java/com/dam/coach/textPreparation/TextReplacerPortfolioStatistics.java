@@ -2,7 +2,7 @@ package com.dam.coach.textPreparation;
 
 import com.dam.coach.types.Category;
 
-public class TextReplacerPortfolioStatistics extends TextReplacerDepotStatistics{
+public class TextReplacerPortfolioStatistics extends TextReplacerPortfolio{
 	public String replace(String stringToReplace, String[] localVariables) {
 		// find out matching replacer
 		Category category = lookupCategory(stringToReplace);
@@ -34,8 +34,7 @@ public class TextReplacerPortfolioStatistics extends TextReplacerDepotStatistics
 		// Month is part of the variable
 		// basic.cal.lastMonthName
 		TextReplacerImpl textReplacer = new TextReplacerImpl();
-		textReplacer.replace(localVariables[0]);
-		String Month = textReplacer.replace("");
+		String Month = textReplacer.replace("{" + localVariables[0] + "}");
 		
 		return "3.47";
 	}
