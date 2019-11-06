@@ -13,7 +13,7 @@ public enum Symbol {
 	BND ("BND"),
 	IBCD_DE ("IBCD.DE"),
 	IGLN_L ("IGLN.L"),
-	NA ("N/A"); 
+	NA ("NA"); 
 
 	private String requestSymbol;
 	
