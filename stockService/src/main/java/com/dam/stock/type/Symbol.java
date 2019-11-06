@@ -12,7 +12,8 @@ public enum Symbol {
 	SXRT_DE ("SXRT.DE"),
 	BND ("BND"),
 	IBCD_DE ("IBCD.DE"),
-	IGLN_L ("IGLN.L"); 
+	IGLN_L ("IGLN.L"),
+	NA ("N/A"); 
 
 	private String requestSymbol;
 	
