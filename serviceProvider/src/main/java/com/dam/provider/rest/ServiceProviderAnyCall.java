@@ -84,7 +84,7 @@ public class ServiceProviderAnyCall {
 	public ResponseEntity<JsonNode> anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
-		logger.debug("RequestHeader {}", requestBody);
+		logger.info("RequestHeader {}", requestBody);
 
 		String requestUri = servletRequest.getRequestURI();
 		String[] pathParts = null;

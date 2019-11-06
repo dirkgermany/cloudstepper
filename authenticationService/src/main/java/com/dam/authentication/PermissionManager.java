@@ -27,7 +27,7 @@ public class PermissionManager {
 
 	private static Map<Role, Map<ServiceDomain, Permission>> rightsAndRoles = new HashMap<>();
 	private static Long lastUpdate = new Long(0);
-	private static final Long UPDATE_INTERVAL = new Long(1000); // 60 * 1000 * 15 = 900000 5 Minuten
+	private static final Long UPDATE_INTERVAL = new Long(30000); // 60 * 1000 * 15 = 900000 5 Minuten
 	
 	private void updatePermissionMap() throws PermissionCheckException {
 		if (!isTimeForUpdate()) {
