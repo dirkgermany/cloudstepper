@@ -32,8 +32,11 @@ public class Consumer {
 
 		String serviceResponse = null;
 		try {
+			System.out.println("Porfolioservice::retrieveResponse URI=" + URI + "; request=" + request);
 			serviceResponse = sendMessage(URI, request);
 		} catch (Exception e) {
+			e.printStackTrace();
+
 			throw new DamServiceException(new Long(500), "Message could not be send. URI: " + URI, e.getMessage());
 		}
 
