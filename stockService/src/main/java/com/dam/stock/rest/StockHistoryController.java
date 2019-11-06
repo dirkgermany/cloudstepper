@@ -18,8 +18,9 @@ public class StockHistoryController {
 	private StockHistoryStore stockHistoryStore;
 
 	@PostMapping("/getStockHistory")
-	public RestResponse getAccountStatus (@RequestBody StockHistoryRequest stockHistoryRequest) throws DamServiceException {
+	public RestResponse getStockHistory (@RequestBody StockHistoryRequest stockHistoryRequest) throws DamServiceException {
 		try {
+			System.out.println ("Stock Service::getStockHistory request: " + stockHistoryRequest);
 			return new StockHistoryResponse(stockHistoryStore.getStockHistorySafe(stockHistoryRequest));
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
