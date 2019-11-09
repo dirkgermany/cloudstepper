@@ -63,7 +63,9 @@ public class CoachActionStore {
 	
 	public CoachAction getActionByReference(String actionReference) {
 		CoachAction action = coachActionModel.findByActionReference(actionReference);
-		action.setMessage(replaceMessage(action.getMessage()));
+		if (null != action) {
+			action.setMessage(replaceMessage(action.getMessage()));
+		}
 		return action;
 	}
 	
@@ -132,7 +134,7 @@ public class CoachActionStore {
 		PermissionCheck.isDeletePermissionSet(dropRequest.getRequestorUserId(), null,
 				dropRequest.getRights());
 
-		CoachAction existingAction = getActionByReference(dropRequest.getActionReference());
+		CoachAction existingAction = getRawActionByReference(dropRequest.getActionReference());
 
 		if (null == existingAction) {
 			throw new DamServiceException(new Long(404), "CoachAction could not be dropped",
