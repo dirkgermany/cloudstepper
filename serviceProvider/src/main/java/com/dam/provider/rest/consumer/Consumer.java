@@ -1,18 +1,25 @@
 package com.dam.provider.rest.consumer;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.dam.exception.AuthorizationServiceException;
 import com.dam.exception.DamServiceException;
@@ -30,12 +37,17 @@ public class Consumer {
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	public ResponseEntity<JsonNode> retrieveWrappedResponse (String request, String url, String action) throws DamServiceException {
-		return new ResponseEntity<>(retrieveResponse(request, url, action), new HttpHeaders(), HttpStatus.OK);
+		return new ResponseEntity<>(retrievePostResponse(request, url, action), new HttpHeaders(), HttpStatus.OK);
 	}
 	
-	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedResponse (String request, String serviceUrl, String action,
+	public ResponseEntity<String> retrieveWrappedAuthorizedGetResponse (Map<String, String> requestParams, String serviceUrl, String action,
 	ServiceDomain serviceDomain) throws DamServiceException{
-		return new ResponseEntity<>(retrieveAuthorizedResponse(request, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
+		return new ResponseEntity<>(retrieveAuthorizedGetResponse(requestParams, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
+	}
+
+	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedPostResponse (String request, String serviceUrl, String action,
+	ServiceDomain serviceDomain) throws DamServiceException{
+		return new ResponseEntity<>(retrieveAuthorizedPostResponse(request, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
 	}
 
 	/**
@@ -46,7 +58,7 @@ public class Consumer {
 	 * @param action
 	 * @return
 	 */
-	public JsonNode retrieveResponse(String request, String url, String action) throws DamServiceException {
+	public JsonNode retrievePostResponse(String request, String url, String action) throws DamServiceException {
 		JsonHelper jsonHelper = new JsonHelper();
 
 		action = action.replace("/", "");
@@ -59,7 +71,7 @@ public class Consumer {
 
 		String serviceResponse = null;
 		try {
-			serviceResponse = sendMessage(URI, request);
+			serviceResponse = sendPostMessage(URI, request);
 		} catch (Exception e) {
 			logger.error("Service Provider :: Consumer {}: Message could not be send. URI {} - Request: {}", dateTimeFormatter.format(LocalDateTime.now()), URI, request);
 			throw new DamServiceException(new Long(500), "Message could not be send. URI: " + URI, e.getMessage());
@@ -72,15 +84,8 @@ public class Consumer {
 		return null;
 	}
 
-	public JsonNode retrieveGetResponse(String url, String action) {
-		JsonHelper jsonHelper = new JsonHelper();
-		String URI = url + "/" + action;
-
-		String serviceResponse = getMessage(URI);
-		if (null != serviceResponse) {
-			return jsonHelper.convertStringToNode(serviceResponse);
-		}
-		return null;
+	public String retrieveGetResponse(Map<String, String> requestParams, String url, String action) throws DamServiceException {
+		return getMessage(url, action, requestParams);
 	}
 
 	/**
@@ -95,8 +100,41 @@ public class Consumer {
 	 * @return
 	 * @throws DamServiceException 
 	 */
-	public JsonNode retrieveAuthorizedResponse(String request, String serviceUrl, String action,
+	public JsonNode retrieveAuthorizedPostResponse(String request, String serviceUrl, String action,
 			ServiceDomain serviceDomain) throws DamServiceException{
+		
+		request = buildCompletedRequest(request, serviceDomain);
+
+		// DomainService call
+		JsonNode response = retrievePostResponse(request, serviceUrl, action);
+
+		return response;
+	}
+
+	public String retrieveAuthorizedGetResponse(Map<String, String> requestParams, String serviceUrl, String action, ServiceDomain serviceDomain) throws DamServiceException {
+		JsonHelper jsonHelper = new JsonHelper();
+		
+		JsonNode node = jsonHelper.createNodeFromMap(requestParams);
+		JsonNode validatedTokenNode = validateToken(node.toString());
+		Long returnCode = jsonHelper.extractLongFromNode(validatedTokenNode, "returnCode");
+
+		if (null == returnCode || 200 != returnCode.longValue()) {
+			// token could not be validated
+			throw new DamServiceException(440L, "Invalid Token", "Token invalid, user not logged in");
+		}
+		String validatedToken= jsonHelper.extractStringFromJsonNode(validatedTokenNode, "tokenId");
+		requestParams.put("tokenId", validatedToken);
+
+		// calls AuthenticationService again
+		Long loggedInUserId = new JsonHelper().extractLongFromNode(validatedTokenNode, "userId");
+		String rights = requestPermission(loggedInUserId, serviceDomain.toString());
+		requestParams.put("requestorUserId", loggedInUserId.toString());
+		requestParams.put("rights", rights);
+		
+		return retrieveGetResponse(requestParams, serviceUrl, action);
+	}
+	
+	private String buildCompletedRequest(String request, ServiceDomain serviceDomain) throws DamServiceException {
 		// calls AuthenticationService
 		// and validates token
 		JsonNode validatedToken = validateToken(request);
@@ -105,24 +143,18 @@ public class Consumer {
 		if (null == returnCode || 200 != returnCode.longValue()) {
 			// token could not be validated
 			throw new DamServiceException(440L, "Invalid Token", "Token invalid, user not logged in");
-//			return validatedToken;
 		}
 
 		// calls AuthenticationService again
 		// to get the rights (RWD-RWD) dependent to the user role
-		Long userId = new JsonHelper().extractLongFromNode(validatedToken, "userId");
-		String rights = requestPermission(userId, serviceDomain.toString());
+		Long loggedInUserId = new JsonHelper().extractLongFromNode(validatedToken, "userId");
+		String rights = requestPermission(loggedInUserId, serviceDomain.toString());
 
 		// Lookup for logged in user id and
 		// enrich the request with the user id and rights
-		request = enrichRequest(request, validatedToken, rights);
-
-		// DomainService call
-		JsonNode response = retrieveResponse(request, serviceUrl, action);
-
-		return response;
+		return enrichRequest(request, validatedToken, rights);
 	}
-
+	
 	private String requestPermission(Long userId, String serviceDomain) throws DamServiceException{
 		JsonHelper jsonHelper = new JsonHelper();
 
@@ -131,7 +163,7 @@ public class Consumer {
 		jsonHelper.addToJsonNode(node, "serviceDomain", serviceDomain);
 
 		Integer index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
-		JsonNode response = retrieveResponse(jsonHelper.extractStringFromJsonNode(node),
+		JsonNode response = retrievePostResponse(jsonHelper.extractStringFromJsonNode(node),
 				config.getServiceUrl(index), "getUserPermission");
 
 		if (null != response && !response.isMissingNode()) {
@@ -152,14 +184,11 @@ public class Consumer {
 	 */
 	private JsonNode validateToken(String request) throws  DamServiceException {
 		Integer index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
-		JsonNode response = retrieveResponse(request, config.getServiceUrl(index),
+		JsonNode response = retrievePostResponse(request, config.getServiceUrl(index),
 				"validateToken");
 		return response;
 	}
 
-	/*
-	 * 
-	 */
 	private String enrichRequest(String request, JsonNode validatedToken, String rights) {
 		JsonHelper jsonHelper = new JsonHelper();
 		Long loggedInUserId = jsonHelper.extractLongFromNode(validatedToken, "userId");
@@ -198,11 +227,26 @@ public class Consumer {
 		return response;
 	}
 
-	private String sendMessage(String URI, String request) {
-		if (null == request || request.isEmpty()) {
-			return getMessage(URI);
-		} else {
-			return postMessage(URI, request);
+	private String getMessage(String URI, String action, Map<String, String> requestParams) {
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+
+		String url = URI + action;	
+		if (null != requestParams && !requestParams.isEmpty()) {
+			url+="/?";
+
+			String empersant = "";
+			Iterator<Map.Entry<String, String>> it = requestParams.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry<String, String> entry = it.next();
+				url+=empersant + entry.getKey()+"="+entry.getValue();
+						empersant = "&";
+			}
 		}
+		return restTemplate.getForObject(url, String.class);
+	}
+
+	private String sendPostMessage(String URI, String request) {
+			return postMessage(URI, request);
 	}
 }

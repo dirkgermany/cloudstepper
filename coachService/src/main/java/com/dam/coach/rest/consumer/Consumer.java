@@ -1,12 +1,13 @@
-package com.dam.portfolio.rest.consumer;
+package com.dam.coach.rest.consumer;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import com.dam.coach.JsonHelper;
 import com.dam.exception.DamServiceException;
-import com.dam.portfolio.JsonHelper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component

@@ -234,6 +234,7 @@ public class PortfolioStore {
 
 		if (200 == dropPortfolio(existingPortfolio)) {
 			mapStore.dropMapEntriesByPortfolioId(portfolioDropRequest.getPortfolio().getPortfolioId());
+			dropPortfolio(existingPortfolio);
 		}
 
 		return 200L;
@@ -302,7 +303,7 @@ public class PortfolioStore {
 			}
 		}
 
-		return new Long(10);
+		return new Long(404);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.dam.provider.rest;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
@@ -33,10 +36,10 @@ public class ServiceProviderAnyCall {
 	ServiceProviderPing serviceProviderPing;
 	
 	@GetMapping("/*/*")
-	public ResponseEntity<JsonNode> doubleSlashGet(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<String> doubleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest)
 			throws DamServiceException {
 				
-		return anyPost(requestBody, servletRequest);
+		return anyGet(params, servletRequest);
 		
 	}
 
@@ -49,23 +52,15 @@ public class ServiceProviderAnyCall {
 	}
 
 	@GetMapping("/*/*/*")
-	public ResponseEntity<JsonNode> tripleSlashGet(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<String> tripleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
-		return anyPost(requestBody, servletRequest);
+		return anyGet(params, servletRequest);
 		
 	}
 
 	@PostMapping("/*/*/*")
 	public ResponseEntity<JsonNode> tripleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
-			throws DamServiceException {
-		
-		return anyPost(requestBody, servletRequest);
-		
-	}
-
-	@GetMapping("*")
-	public ResponseEntity<JsonNode> singleSlashGet(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
 		return anyPost(requestBody, servletRequest);
@@ -79,32 +74,47 @@ public class ServiceProviderAnyCall {
 		return anyPost(requestBody, servletRequest);
 		
 	}
+	
+	@GetMapping("*")
+	public ResponseEntity<String> singleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest) throws DamServiceException {
+		return anyGet(params, servletRequest);
+	}
+
+	private ResponseEntity<String> anyGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest) throws DamServiceException {
+		String requestUri = servletRequest.getRequestURI();
+		String[] pathParts = getPathParts(servletRequest);
+		ServiceDomain serviceDomain = getServiceDomain(pathParts);
+		String subPath = getSubPath(pathParts);
+		String apiMethod = getApiMethod(pathParts, requestUri);
+
+		return consumer.retrieveWrappedAuthorizedGetResponse(params, getServiceUrl(serviceDomain), subPath + apiMethod,	serviceDomain);
+	}
 
 
 	public ResponseEntity<JsonNode> anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
 			throws DamServiceException {
 		
-		logger.info("RequestHeader {}", requestBody);
-
 		String requestUri = servletRequest.getRequestURI();
-		String[] pathParts = null;
+		String[] pathParts = getPathParts(servletRequest);
+		ServiceDomain serviceDomain = getServiceDomain(pathParts);
+		String subPath = getSubPath(pathParts);
+		String apiMethod = getApiMethod(pathParts, requestUri);
 
-		if (requestUri.contains("/")) {
-			pathParts = requestUri.split("/");
-		} else {
+		return consumer.retrieveWrappedAuthorizedPostResponse(requestBody, getServiceUrl(serviceDomain), subPath + apiMethod,
+				serviceDomain);
+	}
+	
+	private String getApiMethod(String[] pathParts, String requestUri) throws DamServiceException {
+		try {
+			return pathParts[pathParts.length -1];
+
+		} catch (Exception e) {
 			throw new DamServiceException(500L, "Ungültiger Pfad",
 					"Der aufgerufene Pfad existiert nicht: " + requestUri);
 		}
-
-		String domain = pathParts[1];				
-		
-		ServiceDomain serviceDomain = null;
-		try {
-			serviceDomain = ServiceDomain.valueOf(domain.toUpperCase());
-		} catch (Exception e) {
-			throw new DamServiceException(500L, "Ungültiger Pfad", "Domäne existiert nicht: " + requestUri);
-		}
-		
+	}
+	
+	private String getSubPath(String[] pathParts) throws DamServiceException {
 		String subPath = "/";
 		try {
 			int index = 2;
@@ -114,18 +124,28 @@ public class ServiceProviderAnyCall {
 		}catch (Exception e) {
 			// nothing to do
 		}
-
-		String apiMethod = null;
+		return subPath;
+	}
+	
+	private ServiceDomain getServiceDomain(String[]pathParts) throws DamServiceException {
+		String domain = pathParts[1];				
+		
 		try {
-			apiMethod = pathParts[pathParts.length -1];
-
+			return ServiceDomain.valueOf(domain.toUpperCase());
 		} catch (Exception e) {
+			throw new DamServiceException(500L, "Ungültiger Pfad", "Domäne existiert nicht: " + domain.toUpperCase());
+		}
+	}
+	
+	private String[] getPathParts(HttpServletRequest servletRequest) throws DamServiceException {
+		String requestUri = servletRequest.getRequestURI();
+
+		if (requestUri.contains("/")) {
+			return requestUri.split("/");
+		} else {
 			throw new DamServiceException(500L, "Ungültiger Pfad",
 					"Der aufgerufene Pfad existiert nicht: " + requestUri);
 		}
-
-		return consumer.retrieveWrappedAuthorizedResponse(requestBody, getServiceUrl(serviceDomain), subPath + apiMethod,
-				serviceDomain);
 	}
 
 	protected String getServiceUrl(ServiceDomain domain) throws DamServiceException {

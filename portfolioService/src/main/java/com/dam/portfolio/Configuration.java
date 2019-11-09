@@ -16,11 +16,11 @@ public class Configuration {
 	@Value("${provider.service.port}")
 	private Long serviceProviderPort;
 	
-	@Value("${provider.bla.bla}")
-	private String bla;
+	@Value("${provider.auth.name}")
+	private String authName;
 	
-	@Value("${provider.user.password}")
-	private String password;
+	@Value("${provider.auth.password}")
+	private String authPassword;
 	
 	@Value("${server.port}")
 	String serverPort;
@@ -58,21 +58,15 @@ public class Configuration {
 		this.serviceProviderPort = serviceProviderPort;
 	}
 
-	public String getHupsi() {
-		return this.bla;
-	}
-
-	public void setBla(String bla) {
-		this.bla = bla;
+	public String getAuthName() {
+		return this.authName;
 	}
 
 	public String getPassword() {
-		return password;
+		return authPassword;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassword(String authPassword) {
+		this.authPassword = authPassword;
 	}
-
-
 }

@@ -21,13 +21,15 @@ public class PermissionManager {
 	
     Logger logger = LogManager.getLogger(getClass());
 
+	@Autowired
+	ConfigProperties config;
 
 	@Autowired
 	PermissionStore permissionStore;
 
 	private static Map<Role, Map<ServiceDomain, Permission>> rightsAndRoles = new HashMap<>();
 	private static Long lastUpdate = new Long(0);
-	private static final Long UPDATE_INTERVAL = new Long(30000); // 60 * 1000 * 15 = 900000 5 Minuten
+//	private static final Long UPDATE_INTERVAL = new Long(30000); // 60 * 1000 * 15 = 900000 15 Minuten
 	
 	private void updatePermissionMap() throws PermissionCheckException {
 		if (!isTimeForUpdate()) {
@@ -60,7 +62,7 @@ public class PermissionManager {
 	 * Calculates if the time for an update has come
 	 */
 	private  Boolean isTimeForUpdate() {
-		if (System.currentTimeMillis() - lastUpdate > UPDATE_INTERVAL) {
+		if (System.currentTimeMillis() - lastUpdate > config.getPermissionUpdateInterval()) {
 			lastUpdate = System.currentTimeMillis();
 			return true;
 		}

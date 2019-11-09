@@ -1,4 +1,4 @@
-package com.dam.portfolio.rest.consumer;
+package com.dam.coach.rest.consumer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,11 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.dam.coach.Configuration;
+import com.dam.coach.JsonHelper;
 import com.dam.exception.DamServiceException;
-import com.dam.portfolio.Configuration;
-import com.dam.portfolio.JsonHelper;
-import com.dam.portfolio.model.entity.StockHistory;
-import com.dam.portfolio.rest.message.portfolio.StockHistoryRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -36,13 +34,13 @@ public class Client {
 	Consumer consumer;
 
 	private static String token;
-	private JsonHelper jsonHelper = new JsonHelper();
+	protected JsonHelper jsonHelper = new JsonHelper();
 
 	private static final Logger logger = LoggerFactory.getLogger(Client.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	public void logout(String className) throws DamServiceException {
-		logger.info("Portfolio Service Client :: {}: Logout {}", dateTimeFormatter.format(LocalDateTime.now()), className);
+		logger.info("Coach Service Client :: {}: Logout {}", dateTimeFormatter.format(LocalDateTime.now()), className);
 		token = null;
 	}
 
@@ -81,36 +79,36 @@ public class Client {
 
 	}
 
-	public List<StockHistory> readAssetStockHistory(StockHistory stockHistory, LocalDate startDate, LocalDate endDate)
-			throws DamServiceException {
-		login();
-
-		StockHistoryRequest historyRequest = new StockHistoryRequest(stockHistory, startDate, endDate);
-
-//		jsonHelper.getObjectMapper().registerModule(new JavaTimeModule());
-//		jsonHelper.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-		JsonNode node = jsonHelper.getObjectMapper().valueToTree(historyRequest);
-		JsonNode response = sendRequest(node, "STOCK" + "/" + "getStockHistory");
-
-		JsonNode jsonHistoryList = jsonHelper.extractNodeFromNode(response, "stockHistoryList");
-		List<StockHistory> historyList = new ArrayList<>();
-		if (null != jsonHistoryList) {
-			try {
-				if (jsonHistoryList.isArray()) {
-					for (JsonNode arrayItem : jsonHistoryList) {
-						historyList.add(jsonHelper.getObjectMapper().treeToValue(arrayItem, StockHistory.class));
-					}
-				} else if (jsonHistoryList.isObject()) {
-					historyList.add(jsonHelper.getObjectMapper().treeToValue(jsonHistoryList, StockHistory.class));
-				}
-			} catch (JsonProcessingException e) {
-				throw new DamServiceException(500L, "Portfolio :: Fehler bei Bearbeitung der Response", e.getMessage());
-			}
-		}
-
-		return historyList;
-	}
+//	public List<StockHistory> readAssetStockHistory(StockHistory stockHistory, LocalDate startDate, LocalDate endDate)
+//			throws DamServiceException {
+//		login();
+//
+//		StockHistoryRequest historyRequest = new StockHistoryRequest(stockHistory, startDate, endDate);
+//
+////		jsonHelper.getObjectMapper().registerModule(new JavaTimeModule());
+////		jsonHelper.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//
+//		JsonNode node = jsonHelper.getObjectMapper().valueToTree(historyRequest);
+//		JsonNode response = sendRequest(node, "STOCK" + "/" + "getStockHistory");
+//
+//		JsonNode jsonHistoryList = jsonHelper.extractNodeFromNode(response, "stockHistoryList");
+//		List<StockHistory> historyList = new ArrayList<>();
+//		if (null != jsonHistoryList) {
+//			try {
+//				if (jsonHistoryList.isArray()) {
+//					for (JsonNode arrayItem : jsonHistoryList) {
+//						historyList.add(jsonHelper.getObjectMapper().treeToValue(arrayItem, StockHistory.class));
+//					}
+//				} else if (jsonHistoryList.isObject()) {
+//					historyList.add(jsonHelper.getObjectMapper().treeToValue(jsonHistoryList, StockHistory.class));
+//				}
+//			} catch (JsonProcessingException e) {
+//				throw new DamServiceException(500L, "Portfolio :: Fehler bei Bearbeitung der Response", e.getMessage());
+//			}
+//		}
+//
+//		return historyList;
+//	}
 
 	/*
 	 * Send request to Service Provider.

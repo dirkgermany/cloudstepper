@@ -64,6 +64,16 @@ public class CoachAction {
 			}
 		}
 	}
+	
+	public CoachAction updateEntity(CoachAction container) {
+		this.setActionReference(container.getActionReference());
+		this.setBtnText(container.getBtnText());
+		this.setMessage(container.getMessage());
+		this.setOptions(container.getOptions());
+		this.setText(text);
+
+		return this;
+	}
 
 	public Long getActionId() {
 		return actionId;

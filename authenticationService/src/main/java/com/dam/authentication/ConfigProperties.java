@@ -10,6 +10,9 @@ public class ConfigProperties {
 	
 	@Value("${server.port}")
 	String serverPort;
+	
+	@Value("${permission.updateInterval}")
+	Long permissionUpdateInterval;
 
 	
 	// Superclass
@@ -85,6 +88,14 @@ public class ConfigProperties {
 
 	public void setServerPort(String serverPort) {
 		this.serverPort = serverPort;
+	}
+	
+	public Long getPermissionUpdateInterval() {
+		return this.permissionUpdateInterval;
+	}
+	
+	public void setPermissionUpdateInterval(Long updateInterval) {
+		this.permissionUpdateInterval = updateInterval;
 	}
 	
 }

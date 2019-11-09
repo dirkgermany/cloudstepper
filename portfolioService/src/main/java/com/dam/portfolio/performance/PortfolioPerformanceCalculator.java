@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.springframework.stereotype.Component;
 
@@ -19,11 +18,8 @@ import com.dam.portfolio.model.entity.StockHistory;
 @Component
 public class PortfolioPerformanceCalculator {
 
-//	private Map<Long, PortfolioPerformance> portfolioPerformanceMap;
 	private PortfolioPerformance portfolioPerformance;
 	private Map<Long, AssetPerformance> assetPerformanceMap;
-	private final Map<LocalDate, StockQuotationDetail> calculationMap = new TreeMap<>();
-//	private static Map<Long, Long> processedStockDetailEntryMap = new HashMap<>();
 
 	/**
 	 * Summary over all asset details.
@@ -123,10 +119,6 @@ public class PortfolioPerformanceCalculator {
 		return value * portfolioWeighting * assetWeighting / 1000;
 	}
 
-	private float calculateWeightedValueOfAssetClass(Float value, Float portfolioWeighting) {
-		return value * portfolioWeighting / 100;
-	}
-	
 	private Float lookupForAssetPercentage(AssetPerformance assetPerformance, PortfolioPerformance portfolioPerformance) {
 		Float percentage = 0F;
 		switch (assetPerformance.getAssetClassType()) {
@@ -163,7 +155,6 @@ public class PortfolioPerformanceCalculator {
 		if (portfolioPerformance.getStartDate().isEqual(assetPerformance.getStartDate())) {			
 			Float assetWeightedValueOpen = calculateWeightedValueOfAsset(assetPerformance.getOpen(),assetPerformance.getWeighting(), lookupForAssetPercentage(assetPerformance, portfolioPerformance));
 
-//			portfolioPerformance.addToOpen(calculateWeightedValueOfAsset(assetPerformance.getOpen(), assetPerformance.getWeighting()));
 			portfolioPerformance.addToOpen(assetPerformance.getOpen());
 
 			ClassTypeValues values = portfolioPerformance.getClassTypeValuesMap()
@@ -181,10 +172,10 @@ public class PortfolioPerformanceCalculator {
 			}
 			assetValues.setOpen(assetPerformance.getOpen());
 			assetValues.setOpenWeighted(assetWeightedValueOpen);
+			assetValues.setWeighting(assetPerformance.getWeighting());
 		}
 		if (portfolioPerformance.getEndDate().isEqual(assetPerformance.getEndDate())) {
 			Float assetWeightedValueClose = calculateWeightedValueOfAsset(assetPerformance.getOpen(), assetPerformance.getWeighting(), lookupForAssetPercentage(assetPerformance, portfolioPerformance));
-//			portfolioPerformance.addToClose(calculateWeightedValueOfAsset(assetPerformance.getClose(), assetPerformance.getWeighting()));
 			portfolioPerformance.addToClose(assetPerformance.getClose());
 
 			ClassTypeValues values = portfolioPerformance.getClassTypeValuesMap()
@@ -202,6 +193,7 @@ public class PortfolioPerformanceCalculator {
 			}
 			assetValues.setClose(assetPerformance.getClose());
 			assetValues.setCloseWeighted(assetWeightedValueClose);
+			assetValues.setWeighting(assetPerformance.getWeighting());
 		}
 
 		Iterator<StockQuotationDetail> it = assetPerformance.getDailyDetails().values().iterator();
@@ -267,130 +259,4 @@ public class PortfolioPerformanceCalculator {
 
 		return assetPerformance;
 	}
-
-//	private AssetPerformance prepareAssetPerformanceByMonth(AssetPerformance assetPerformance,
-//			StockHistory stockHistory) {
-//
-//		Month month = stockHistory.getHistoryDate().getMonth();
-//
-//		StockQuotationDetail assetPerformanceDetail = assetPerformance.getMonthlyDetails().get(month);
-//		if (null == assetPerformanceDetail) {
-//			assetPerformanceDetail = new StockQuotationDetail();
-//			assetPerformanceDetail.setMonthOfYear(month);
-//			assetPerformance.getMonthlyDetails().put(month, assetPerformanceDetail);
-//		}
-//		if (null == assetPerformanceDetail.getStartDate()
-//				|| assetPerformanceDetail.getStartDate().isAfter(stockHistory.getHistoryDate())) {
-//			assetPerformanceDetail.setStartDate(stockHistory.getHistoryDate());
-//			assetPerformanceDetail.setOpen(stockHistory.getOpen());
-//		}
-//		if (null == assetPerformanceDetail.getEndDate()
-//				|| assetPerformanceDetail.getEndDate().isBefore(stockHistory.getHistoryDate())) {
-//			assetPerformanceDetail.setEndDate(stockHistory.getHistoryDate());
-//			assetPerformanceDetail.setClose(stockHistory.getClose());
-//		}
-//
-//		return assetPerformance;
-//	}
-//
-//	private AssetPerformance prepareAssetPerformanceByYear(AssetPerformance assetPerformance,
-//			StockHistory stockHistory) {
-//
-//		int year = stockHistory.getHistoryDate().getYear();
-//
-//		StockQuotationDetail assetPerformanceDetail = assetPerformance.getYearDetails().get(year);
-//		if (null == assetPerformanceDetail) {
-//			assetPerformanceDetail = new StockQuotationDetail();
-//			assetPerformance.getYearDetails().put(year, assetPerformanceDetail);
-//			assetPerformanceDetail.setYear(year);
-//		}
-//		if (null == assetPerformanceDetail.getStartDate()
-//				|| assetPerformanceDetail.getStartDate().isAfter(stockHistory.getHistoryDate())) {
-//			assetPerformanceDetail.setStartDate(stockHistory.getHistoryDate());
-//			assetPerformanceDetail.setOpen(stockHistory.getOpen());
-//		}
-//		if (null == assetPerformanceDetail.getEndDate()
-//				|| assetPerformanceDetail.getEndDate().isBefore(stockHistory.getHistoryDate())) {
-//			assetPerformanceDetail.setEndDate(stockHistory.getHistoryDate());
-//			assetPerformanceDetail.setClose(stockHistory.getClose());
-//		}
-//
-//		return assetPerformance;
-//	}
-
-//	private PortfolioPerformance preparePortfolioPerformanceByYear(PortfolioPerformance portfolioPerformance,
-//	AssetPerformance assetPerformance) {
-//if (null == portfolioPerformance.getStartDate()
-//		|| portfolioPerformance.getStartDate().isAfter(assetPerformance.getStartDate())) {
-//	portfolioPerformance.setStartDate(assetPerformance.getStartDate());
-//}
-//
-//if (null == portfolioPerformance.getEndDate()
-//		|| portfolioPerformance.getEndDate().isBefore(assetPerformance.getEndDate())) {
-//	portfolioPerformance.setEndDate(assetPerformance.getEndDate());
-//}
-//
-//Iterator<StockQuotationDetail> it = assetPerformance.getYearDetails().values().iterator();
-//while (it.hasNext()) {
-//	StockQuotationDetail assetDetail = it.next();
-//
-//	if (processedStockDetailEntryMap.containsKey(assetDetail.getStockHistoryId())) {
-//		continue;
-//	}
-//
-//	StockQuotationDetail portfolioDetail = portfolioPerformance.getYearDetails().get(assetDetail.getYear());
-//	if (null == portfolioDetail) {
-//		portfolioDetail = new StockQuotationDetail();
-//		portfolioDetail.setStartDate(assetDetail.getStartDate());
-//		portfolioDetail.setEndDate(assetDetail.getEndDate());
-//		portfolioDetail.setYear(assetDetail.getYear());
-//		portfolioPerformance.getYearDetails().put(portfolioDetail.getYear(), portfolioDetail);
-//	}
-//	portfolioDetail.setOpen(portfolioDetail.getOpen() + assetDetail.getOpen());
-//	portfolioDetail.setClose(portfolioDetail.getClose() + assetDetail.getClose());
-//}
-//
-//if (portfolioPerformance.getStartDate().isAfter(assetPerformance.getStartDate())) {
-//	portfolioPerformance.setStartDate(assetPerformance.getStartDate());
-//}
-//if (portfolioPerformance.getEndDate().isBefore(assetPerformance.getEndDate())) {
-//	portfolioPerformance.setEndDate(assetPerformance.getEndDate());
-//}
-//return portfolioPerformance;
-//}
-
-//private PortfolioPerformance preparePortfolioPerformanceByMonth(PortfolioPerformance portfolioPerformance,
-//	AssetPerformance assetPerformance) {
-//if (null == portfolioPerformance.getStartDate()
-//		|| portfolioPerformance.getStartDate().isAfter(assetPerformance.getStartDate())) {
-//	portfolioPerformance.setStartDate(assetPerformance.getStartDate());
-//}
-//
-//if (null == portfolioPerformance.getEndDate()
-//		|| portfolioPerformance.getEndDate().isBefore(assetPerformance.getEndDate())) {
-//	portfolioPerformance.setEndDate(assetPerformance.getEndDate());
-//}
-//
-//Iterator<StockQuotationDetail> it = assetPerformance.getMonthlyDetails().values().iterator();
-//while (it.hasNext()) {
-//	StockQuotationDetail assetDetail = it.next();
-//
-//	if (processedStockDetailEntryMap.containsKey(assetDetail.getStockHistoryId())) {
-//		continue;
-//	}
-//
-//	StockQuotationDetail portfolioDetail = portfolioPerformance.getMonthlyDetails()
-//			.get(assetDetail.getMonthOfYear());
-//	if (null == portfolioDetail) {
-//		portfolioDetail = new StockQuotationDetail();
-//		portfolioDetail.setStartDate(assetDetail.getStartDate());
-//		portfolioDetail.setEndDate(assetDetail.getEndDate());
-//		portfolioDetail.setMonthOfYear(assetDetail.getMonthOfYear());
-//		portfolioPerformance.getMonthlyDetails().put(portfolioDetail.getMonthOfYear(), portfolioDetail);
-//	}
-//	portfolioDetail.setOpen(portfolioDetail.getOpen() + assetDetail.getOpen());
-//	portfolioDetail.setClose(portfolioDetail.getClose() + assetDetail.getClose());
-//}
-//return portfolioPerformance;
-//}
 }
