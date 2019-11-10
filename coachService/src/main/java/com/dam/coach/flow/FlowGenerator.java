@@ -69,9 +69,9 @@ public class FlowGenerator {
 			"        <style type=\"text/css\">\n" + 
 			"          .end-element { fill : #FFCCFF; }\n" + 
 			"        </style>\n" + 
-			"        <script src=\"http://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.0/raphael-min.js\"></script>\n" + 
-			"        <script src=\"http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js\"></script>\n" + 
-			"        <script src=\"http://flowchart.js.org/flowchart-latest.js\"></script>\n" + 
+			"        <script src=\"https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.0/raphael-min.js\"></script>\n" + 
+			"        <script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js\"></script>\n" + 
+			"        <script src=\"https://flowchart.js.org/flowchart-latest.js\"></script>\n" + 
 			"        <!-- <script src=\"../release/flowchart.min.js\"></script> -->\n" + 
 			"        <script>\n" + 
 			"            window.onload = function () {\n" + 
