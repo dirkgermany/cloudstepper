@@ -14,7 +14,7 @@ public class FlowGenerator {
 	@Autowired
 	CoachActionStore coachActionStore;
 	
-	private final static String URI = "https://investmal.de:8087/getFlow?actionReference";
+	private final static String URI = "https://investmal.de:6250/coach/getFlow?actionReference";
 	
 	public String getHtml(String actionReference, String tokenId) {
 		return HTML_START + generateHtml(actionReference, tokenId) + HTML_END;
