@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.dam.coach.model.entity.CoachAction;
 import com.dam.coach.store.CoachActionStore;
+import com.dam.exception.DamServiceException;
 
 @Component
 public class FlowGenerator {
@@ -18,13 +19,17 @@ public class FlowGenerator {
 	
 	private final static String URI_MSG = "https://investmal.de:6250/coach/getActionReplaced?actionReference";
 	
-	public String getHtml(String actionReference, String tokenId) {
+	public String getHtml(String actionReference, String tokenId) throws DamServiceException {
 		return HTML_START + generateHtml(actionReference, tokenId) + HTML_END;
 	}
 	
-	private String generateHtml(String actionReference, String tokenId) {
+	private String generateHtml(String actionReference, String tokenId) throws DamServiceException {
 		String flowBody = "";
 		CoachAction action = coachActionStore.getRawActionByReference(actionReference);
+		if (null == action) {
+			throw new DamServiceException(404L, "Coach Action not found", "Unknown actionReference " + actionReference);
+		}
+		
 		flowBody+= "st=>start: " + action.getActionReference() + "\n";
 		flowBody+= "e=>end:>http://www.google.com\n";
 		flowBody+= "investorText=>operation: Investor: " + action.getText() + "\n";

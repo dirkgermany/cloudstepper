@@ -31,7 +31,7 @@ import com.dam.exception.DamServiceException;
 @CrossOrigin
 @RestController
 @ComponentScan
-public class AuthenticationController {
+public class AuthenticationController extends MasterController{
 
 	@Autowired
 	TokenStore tokenStore;
@@ -50,6 +50,8 @@ public class AuthenticationController {
 	
 	@GetMapping("/login")
 	public String loginGet(@RequestParam String userName, @RequestParam String password) throws DamServiceException {
+		userName = decode(userName);
+		password = decode(password);
 		LoginRequest loginRequest = new LoginRequest(userName, password, null);
 		return ((TokenValidationResponse)login(loginRequest)).getTokenId().toString();
 	}

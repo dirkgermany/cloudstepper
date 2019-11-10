@@ -10,14 +10,17 @@ import com.dam.exception.DamServiceException;
 
 @CrossOrigin
 @RestController
-public class CoachFlowController extends CoachController{
-	
+public class CoachFlowController extends CoachController {
+
 	@Autowired
 	FlowGenerator flowGenerator;
-	
+
 	@GetMapping("/getFlow")
-	public String getFlow(@RequestParam String actionReference, @RequestParam String tokenId) throws DamServiceException {
-			return flowGenerator.getHtml(actionReference, tokenId);
+	public String getFlow(@RequestParam String actionReference, @RequestParam String tokenId)
+			throws DamServiceException {
+		actionReference = decode(actionReference);
+		tokenId = decode(tokenId);
+		return flowGenerator.getHtml(actionReference, tokenId);
 	}
 
 }
