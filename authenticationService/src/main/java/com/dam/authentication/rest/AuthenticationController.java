@@ -5,8 +5,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.authentication.ConfigProperties;
@@ -45,21 +47,16 @@ public class AuthenticationController {
 
 	@Autowired
 	ConfigProperties config;
+	
+	@GetMapping("/login")
+	public String loginGet(@RequestParam String userName, @RequestParam String password) throws DamServiceException {
+		LoginRequest loginRequest = new LoginRequest(userName, password, null);
+		return ((TokenValidationResponse)login(loginRequest)).getTokenId().toString();
+	}
 
 	@PostMapping("/login")
 	public RestResponse loginResponse(@RequestBody LoginRequest loginRequest) throws DamServiceException {
-		// Erst mit dem ersten Login werden die Rollen und Rechte aus der DB geholt
-		try {
-			User user = userServiceConsumer.readUser(loginRequest);
-			Token token = createToken(user);
-			if (null == token) {
-				return new RestResponse(new Long(400), "Request Invalid", "Missing values or format error");
-			}
-			return new TokenValidationResponse(token.getUser().getUserId(), token.getTokenId());
-
-		} catch (DamServiceException e) {
-			return new RestResponse(new Long(420), e.getShortMsg(), e.getMessage());
-		}
+		return login(loginRequest);
 	}
 
 	@PostMapping("/logout")
@@ -109,6 +106,21 @@ public class AuthenticationController {
 		Permission permission = permissionManager.getRolePermission(user.getRole(), serviceDomain);
 
 		return new PermissionResponse(userId, permission);
+	}
+	
+	private RestResponse login (LoginRequest loginRequest) throws DamServiceException {
+		// Erst mit dem ersten Login werden die Rollen und Rechte aus der DB geholt
+		try {
+			User user = userServiceConsumer.readUser(loginRequest);
+			Token token = createToken(user);
+			if (null == token) {
+				return new RestResponse(new Long(400), "Request Invalid", "Missing values or format error");
+			}
+			return new TokenValidationResponse(token.getUser().getUserId(), token.getTokenId());
+
+		} catch (DamServiceException e) {
+			return new RestResponse(new Long(420), e.getShortMsg(), e.getMessage());
+		}
 	}
 
 	private Token validateAndRefresh(String tokenRequest) throws DamServiceException {

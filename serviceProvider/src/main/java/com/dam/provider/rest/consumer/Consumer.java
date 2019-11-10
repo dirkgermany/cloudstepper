@@ -40,6 +40,10 @@ public class Consumer {
 		return new ResponseEntity<>(retrievePostResponse(request, url, action), new HttpHeaders(), HttpStatus.OK);
 	}
 	
+	public ResponseEntity<String> retrieveWrappedGetResponse (Map<String,String>requestParams, String url, String action) throws DamServiceException {
+		return new ResponseEntity<>(retrieveGetResponse(requestParams, url, action), new HttpHeaders(), HttpStatus.OK);
+	}
+	
 	public ResponseEntity<String> retrieveWrappedAuthorizedGetResponse (Map<String, String> requestParams, String serviceUrl, String action,
 	ServiceDomain serviceDomain) throws DamServiceException{
 		return new ResponseEntity<>(retrieveAuthorizedGetResponse(requestParams, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
