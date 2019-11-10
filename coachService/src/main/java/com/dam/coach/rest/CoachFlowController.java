@@ -10,7 +10,7 @@ import com.dam.exception.DamServiceException;
 
 @CrossOrigin
 @RestController
-public class CoachFlowController {
+public class CoachFlowController extends CoachController{
 	
 	@Autowired
 	FlowGenerator flowGenerator;

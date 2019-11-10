@@ -1,6 +1,9 @@
 package com.dam.provider.rest.consumer;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
@@ -46,12 +49,15 @@ public class Consumer {
 	
 	public ResponseEntity<String> retrieveWrappedAuthorizedGetResponse (Map<String, String> requestParams, String serviceUrl, String action,
 	ServiceDomain serviceDomain) throws DamServiceException{
-		return new ResponseEntity<>(retrieveAuthorizedGetResponse(requestParams, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
+		ResponseEntity<String> bla = new ResponseEntity<>(retrieveAuthorizedGetResponse(requestParams, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
+		return bla;
 	}
 
 	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedPostResponse (String request, String serviceUrl, String action,
 	ServiceDomain serviceDomain) throws DamServiceException{
-		return new ResponseEntity<>(retrieveAuthorizedPostResponse(request, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
+		
+		ResponseEntity<JsonNode> bla = new ResponseEntity<JsonNode>(retrieveAuthorizedPostResponse(request, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
+		return bla;
 	}
 
 	/**
@@ -231,7 +237,7 @@ public class Consumer {
 		return response;
 	}
 
-	private String getMessage(String URI, String action, Map<String, String> requestParams) {
+	private String getMessage(String URI, String action, Map<String, String> requestParams) throws DamServiceException {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 
@@ -243,11 +249,19 @@ public class Consumer {
 			Iterator<Map.Entry<String, String>> it = requestParams.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry<String, String> entry = it.next();
-				url+=empersant + entry.getKey()+"="+entry.getValue();
+				url+=empersant + entry.getKey()+ "= "+ encodeValue(entry.getValue());
 						empersant = "&";
 			}
 		}
 		return restTemplate.getForObject(url, String.class);
+	}
+	
+	private String encodeValue(String value) throws DamServiceException {
+	    try {
+			return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			throw new DamServiceException(404L, "Value could not be encoded for URL", e.getMessage());
+		}
 	}
 
 	private String sendPostMessage(String URI, String request) {

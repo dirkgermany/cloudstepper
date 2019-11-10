@@ -34,6 +34,17 @@ public class CoachActionStore {
 		return coachActionModel.count();
 	}
 
+	public CoachAction getRawActionSafe(CoachActionRequest request) throws DamServiceException {
+		PermissionCheck.checkRequestedParams(request, request.getRequestorUserId(),
+				request.getRights());
+
+		// Check if the permissions is set
+		PermissionCheck.isReadPermissionSet(request.getRequestorUserId(), null,
+				request.getRights());
+		
+		return getRawActionByReference(request.getCoachAction().getActionReference());
+	}
+	
 	public CoachAction getActionSafe(CoachActionRequest request) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(request, request.getRequestorUserId(),
 				request.getRights());

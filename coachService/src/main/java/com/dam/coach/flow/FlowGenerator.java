@@ -14,7 +14,9 @@ public class FlowGenerator {
 	@Autowired
 	CoachActionStore coachActionStore;
 	
-	private final static String URI = "https://investmal.de:6250/coach/getFlow?actionReference";
+	private final static String URI_FLOW = "https://investmal.de:6250/coach/getFlow?actionReference";
+	
+	private final static String URI_MSG = "https://investmal.de:6250/coach/getActionReplaced?actionReference";
 	
 	public String getHtml(String actionReference, String tokenId) {
 		return HTML_START + generateHtml(actionReference, tokenId) + HTML_END;
@@ -27,14 +29,14 @@ public class FlowGenerator {
 		flowBody+= "e=>end:>http://www.google.com\n";
 		flowBody+= "investorText=>operation: Investor: " + action.getText() + "\n";
 		flowBody+= "btn=>operation: Button: " + action.getBtnText() + "\n";
-		flowBody+= "msg=>operation: Coach: " + action.getMessage() + "\n";
+		flowBody+= "msg=>subroutine: Coach: " + action.getMessage() + ":>" + URI_MSG + "=" + action.getActionReference()  + "\n";
 		flowBody+= "cond0=>condition: options=0\n";
 
 		Iterator<String> options = action.getOptionList().iterator();
 		int index = 0;
 		while (options.hasNext()) {
 			String option = options.next();
-			flowBody+= "sub" + String.valueOf(index+1)+ "=>subroutine: "+ option + ":>" + URI + "=" + option + "&tokenId=" + tokenId + "\n";
+			flowBody+= "sub" + String.valueOf(index+1)+ "=>subroutine: "+ option + ":>" + URI_FLOW + "=" + option + "&tokenId=" + tokenId + "\n";
 			
 			flowBody+= "cond" + String.valueOf(index+1)+ "=>condition: options=" + String.valueOf(index+1) + "\n";
 			index++;
