@@ -16,9 +16,9 @@ public class CoachFlowController {
 	FlowGenerator flowGenerator;
 	
 	@GetMapping("/getFlow")
-	public String getFlow(@RequestParam String actionReference) throws DamServiceException {
+	public String getFlow(@RequestParam String actionReference, @RequestParam String tokenId) throws DamServiceException {
 		System.out.println("------------------- Im Controller angekommen");
-			return flowGenerator.getHtml(actionReference);
+			return flowGenerator.getHtml(actionReference, tokenId);
 	}
 
 }
