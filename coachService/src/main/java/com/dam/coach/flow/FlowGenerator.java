@@ -34,7 +34,7 @@ public class FlowGenerator {
 		flowBody+= "e=>end:>http://www.google.com\n";
 		flowBody+= "investorText=>operation: Investor: " + action.getText() + "\n";
 		flowBody+= "btn=>operation: Button: " + action.getBtnText() + "\n";
-		flowBody+= "msg=>subroutine: Coach: " + action.getMessage() + ":>" + URI_MSG + "=" + action.getActionReference()  + "\n";
+		flowBody+= "msg=>subroutine: Coach: " + action.getMessage() + ":>" + URI_MSG + "=" + action.getActionReference() + "&tokenId="+ tokenId + "\n";
 		flowBody+= "cond0=>condition: options=0\n";
 
 		Iterator<String> options = action.getOptionList().iterator();
