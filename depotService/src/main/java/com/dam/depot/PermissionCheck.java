@@ -25,6 +25,18 @@ public class PermissionCheck {
 		if (null == rights || rights.isEmpty()) {
 			throw new DamServiceException(new Long(400), "Invalid Request",
 					"User rights are recommended but are null or empty.");
+		}		
+	}
+	
+	public static void checkRequestedParams(String requestorUserId, String rights)
+			throws DamServiceException {
+		if (null == requestorUserId) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"requestorUserId is recommended but not set.");
+		}
+		if (null == rights || rights.isEmpty()) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"User rights are recommended but are null or empty.");
 		}
 	}
 	

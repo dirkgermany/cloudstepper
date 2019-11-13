@@ -1,10 +1,14 @@
 package com.dam.portfolio.rest;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.dam.exception.DamServiceException;
 import com.dam.portfolio.PortfolioStore;
 import com.dam.portfolio.rest.message.RestResponse;
@@ -19,15 +23,27 @@ import com.dam.portfolio.rest.message.portfolio.PortfolioUpdateRequest;
 import com.dam.portfolio.rest.message.portfolio.PortfolioUpdateResponse;
 
 @RestController
-public class PortfolioController {
+public class PortfolioController extends MasterController {
 	@Autowired
 	private PortfolioStore portfolioStore;
 
 	@PostMapping("/getPortfolioPerformance")
-	public RestResponse getPortfolioPerformance(@RequestBody PortfolioPerformanceRequest portfolioPerformanceRequest)
+	public RestResponse getPortfolioPerformanceByPost(@RequestBody PortfolioPerformanceRequest portfolioPerformanceRequest, @RequestHeader(name = "tokenId", required = false) String tokenId)
 			throws DamServiceException {
 		try {
-			return portfolioStore.getPortfolioPerformanceSafe(portfolioPerformanceRequest);
+			return portfolioStore.getPortfolioPerformanceSafe(portfolioPerformanceRequest, tokenId);
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
+
+	@GetMapping("/getPortfolioPerformance")
+	public RestResponse getPortfolioPerformance(@RequestParam Map<String, String> params, @RequestHeader(name = "tokenId", required = false) String tokenId)
+			throws DamServiceException {
+		
+		Map<String, String> decodedMap = decodeUrlMap(params);
+		try {
+			return portfolioStore.getPortfolioPerformanceSafe(decodedMap, tokenId);
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}

@@ -1,5 +1,6 @@
 package com.dam.portfolio;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,20 +54,25 @@ public class PortfolioStore {
 		return portfolioModel.count();
 	}
 
-	public PortfolioPerformanceResponse getPortfolioPerformanceSafe(PortfolioPerformanceRequest request)
+	public PortfolioPerformanceResponse getPortfolioPerformanceSafe(Map<String, String> params, String tokenId)
 			throws DamServiceException {
 
-		PermissionCheck.checkRequestedParams(request, request.getRequestorUserId(), request.getRights());
-		if (null == request.getPortfolioId() && null == request.getAssetClassId()) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "portfolioId must be set.");
-		}
+		PermissionCheck.checkRequestedParams(params.get("requestorUserId"), params.get("rights"));
+		Long requestorUserId = extractLong(params.get("requestorUserId"));
+
+		Long portfolioId = extractLong(params.get("portfolioId"));
+		LocalDate startDate = extractDate(params.get("startDate"));
+		LocalDate endDate = extractDate(params.get("endDate"));
+
+		Long assetClassId = extractLong(params.get("assetClassId"), false);
+
 		// Check if the permissions is set
-		PermissionCheck.isReadPermissionSet(request.getRequestorUserId(), null, request.getRights());
+		PermissionCheck.isReadPermissionSet(requestorUserId, null, params.get("rights"));
 
 		// Portfolio and assets
 		Map<AssetClass, List<StockHistory>> assetStockHistory = new HashMap<>();
 
-		ConstructionMap map = mapStore.getConstructionMap(request.getPortfolioId());
+		ConstructionMap map = mapStore.getConstructionMap(portfolioId);
 		Portfolio portfolio = map.getPortfolio();
 		Iterator<AssetClass> it = map.getAssetClasses().iterator();
 		while (it.hasNext()) {
@@ -75,31 +81,42 @@ public class PortfolioStore {
 			history.setSymbol(asset.getSymbol());
 			history.setWkn(asset.getWkn());
 
-			List<StockHistory> historyList = client.readAssetStockHistory(history, request.getStartDate(),
-					request.getEndDate());
+			List<StockHistory> historyList = client.readAssetStockHistory(history, startDate, endDate, tokenId);
 			assetStockHistory.put(asset, historyList);
 		}
 
-		calculator.generatePerformanceLists(portfolio, assetStockHistory, request.getStartDate(), request.getEndDate());
+		calculator.generatePerformanceLists(portfolio, assetStockHistory, startDate, endDate);
 		PortfolioPerformance portfolioPerformance = null;
 		List<AssetPerformance> assetPerformanceList = null;
 		AssetPerformance assetPerformance = null;
 
-		if (request.isShowPortfolioPerformance()) {
-			portfolioPerformance = calculator.getPortfolioPerformance();
-		}
-		
-		if (request.isShowAllAssetsOfPortfolio()) {
+		portfolioPerformance = calculator.getPortfolioPerformance();
+
+		if (extractBoolean(params.get("showAllAssetsOfPortfolio"), false)) {
 			assetPerformanceList = calculator.getAssetPerformanceList();
-
 		}
 
-		if (null != request.getAssetClassId() && request.isShowAssetPerformance()) {
-			assetPerformance = calculator.getAssetPerformance(request.getAssetClassId());
+		Boolean showAssetPerformance = extractBoolean(params.get("showAssetPerformance"), false);
+		if (null != assetClassId && showAssetPerformance) {
+			assetPerformance = calculator.getAssetPerformance(assetClassId);
 		}
 
 		return new PortfolioPerformanceResponse(200L, "OK", "Performance calculated", portfolioPerformance,
 				assetPerformance, assetPerformanceList);
+
+	}
+
+	public PortfolioPerformanceResponse getPortfolioPerformanceSafe(PortfolioPerformanceRequest request, String tokenId)
+			throws DamServiceException {
+		Map<String, String> params = new HashMap<>();
+		params.put("rights", request.getRights());
+		params.put("assetClassId",  null == request.getAssetClassId()? null : request.getAssetClassId().toString());
+		params.put("portfolioId",  null == request.getPortfolioId()? null : request.getPortfolioId().toString());
+		params.put("clientSource", request.getClientSource());
+		params.put("requestorUserId", null == request.getRequestorUserId()? null : request.getRequestorUserId().toString());
+		params.put("startDate", null == request.getStartDate()? null : request.getStartDate().toString());
+		params.put("endDate", null == request.getEndDate()? null : request.getEndDate().toString());
+		return getPortfolioPerformanceSafe(params, tokenId);
 	}
 
 	public Portfolio getPortfolioSafe(PortfolioRequest portfolioRequest) throws DamServiceException {
@@ -269,6 +286,40 @@ public class PortfolioStore {
 			return optionalPortfolio.get();
 		}
 		return null;
+	}
+
+	private Long extractLong(String longString, Boolean... required) throws DamServiceException {
+		try {
+			return Long.valueOf(longString);
+		} catch (Exception e) {
+			if (required.length >0 && required[0].booleanValue()) {
+				throw new DamServiceException(404L, "Extraction Long from String failed",
+						"Parameter is required but null or does not represent a Long value");
+			} else
+				return null;
+		}
+	}
+
+	private LocalDate extractDate(String dateString) throws DamServiceException {
+		try {
+			return LocalDate.parse(dateString);
+		} catch (Exception e) {
+			throw new DamServiceException(404L, "Extraction LocalDate from String failed",
+					"Parameter is required but null or does not represent a LocalDate value");
+		}
+	}
+
+	private Boolean extractBoolean(String booleanString, Boolean defaultValue) throws DamServiceException {
+		if (null == booleanString || booleanString.isEmpty()) {
+			return defaultValue;
+		}
+
+		try {
+			return Boolean.valueOf(booleanString);
+		} catch (Exception e) {
+			throw new DamServiceException(404L, "Extraction LocalDate from String failed",
+					"Parameter is required but null or does not represent a LocalDate value");
+		}
 	}
 
 	/**

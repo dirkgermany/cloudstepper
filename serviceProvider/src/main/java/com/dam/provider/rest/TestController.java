@@ -3,18 +3,14 @@ package com.dam.provider.rest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
-import com.dam.provider.JsonHelper;
 import com.dam.provider.rest.consumer.Consumer;
 import com.dam.provider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,7 +35,7 @@ public class TestController {
 //			HttpHeaders headers = new HttpHeaders();
 //			headers.add("Access-Control-Allow-Origin", httpRequest.getHeader("Origin"));
 
-			return consumer.retrieveWrappedResponse(requestBody, config.getServiceUrl(index), "login");
+			return consumer.retrieveWrappedResponse(requestBody, config.getServiceUrl(index), "login", null);
 
 	}
 

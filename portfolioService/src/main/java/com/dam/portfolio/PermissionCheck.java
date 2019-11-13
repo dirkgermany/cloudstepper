@@ -5,13 +5,6 @@ import com.dam.portfolio.rest.message.RestRequest;
 
 public class PermissionCheck {
 	
-	/**
-	 * Checks preconditions
-	 * @param request
-	 * @param requestorUserId
-	 * @param rights
-	 * @throws DamServiceException
-	 */
 	public static void checkRequestedParams(RestRequest request, Long requestorUserId, String rights)
 			throws DamServiceException {
 		if (null == request) {
@@ -26,6 +19,19 @@ public class PermissionCheck {
 					"User rights are recommended but are null or empty.");
 		}
 	}
+	
+	public static void checkRequestedParams(String requestorUserId, String rights)
+			throws DamServiceException {
+		if (null == requestorUserId) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"requestorUserId is recommended but not set.");
+		}
+		if (null == rights || rights.isEmpty()) {
+			throw new DamServiceException(new Long(400), "Invalid Request",
+					"User rights are recommended but are null or empty.");
+		}
+	}
+
 	
 	/**
 	 * Checks if a required object is existing

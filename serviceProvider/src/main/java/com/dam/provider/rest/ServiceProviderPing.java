@@ -64,7 +64,7 @@ public class ServiceProviderPing {
 		JsonNode response = null;
 
 		try {
-			response = consumer.retrievePostResponse(null, url, "ping");
+			response = consumer.retrievePostResponse(null, url, "ping", null);
 			pingResponse.getServiceInfos().add(response);
 		} catch (Exception ex) {
 			pingResponse.setMessage("WARNING");

@@ -36,7 +36,7 @@ public class Client {
 	Consumer consumer;
 
 	private static final Integer MAX_RETRIES = 10;
-	private static String token;
+	private String token;
 	private JsonHelper jsonHelper = new JsonHelper();
 
 	private static final Logger logger = LoggerFactory.getLogger(Client.class);
@@ -51,9 +51,9 @@ public class Client {
 	/*
 	 * Login to Service Provider. Tries to use the Token if set.
 	 */
-	protected void login() throws DamServiceException {
+	protected String login() throws DamServiceException {
 		if (null != token) {
-			return;
+			return token;
 		}
 		logger.info("Portfolio Client :: {}: Login {}", dateTimeFormatter.format(LocalDateTime.now()),
 				this.getClass().getName());
@@ -68,7 +68,7 @@ public class Client {
 		String url = getServiceProviderUrl();
 
 		try {
-			JsonNode response = consumer.retrieveResponse(jsonHelper.extractStringFromJsonNode(node), url, "login");
+			JsonNode response = consumer.retrieveResponse(jsonHelper.extractStringFromJsonNode(node), url, "login", null);
 			long returnCode = jsonHelper.extractLongFromNode(response, "returnCode");
 			if (200L != returnCode) {
 				String result = jsonHelper.extractStringFromJsonNode(response, "result");
@@ -77,14 +77,21 @@ public class Client {
 						result + "; Service: " + serviceName);
 			}
 			token = jsonHelper.extractStringFromJsonNode(response, "tokenId");
+			return token;
 		} catch (Exception e) {
 			token = null;
+			return token;
 		}
 
 	}
 
-	public List<StockHistory> readAssetStockHistory(StockHistory stockHistory, LocalDate startDate, LocalDate endDate)
+	public List<StockHistory> readAssetStockHistory(StockHistory stockHistory, LocalDate startDate, LocalDate endDate, String tokenId)
 			throws DamServiceException {
+		if (null == tokenId || tokenId.isEmpty()) {
+			tokenId = login();
+		} else {
+			this.token = tokenId;
+		}
 
 		StockHistoryRequest historyRequest = new StockHistoryRequest(stockHistory, startDate, endDate);
 
@@ -99,12 +106,12 @@ public class Client {
 		JsonNode response = null;
 		while (!success && retryCount++ < MAX_RETRIES) {
 			try {
-				login();
-				response = sendRequest(node, "STOCK" + "/" + "getStockHistory");
+				response = sendRequest(node, "STOCK" + "/" + "getStockHistory", tokenId);
 				success = true;
 			} catch (DamServiceException d) {
 				logger.info("Portfolio Service Client :: {}: readAssetStockHistory retry {} of {}",
 						dateTimeFormatter.format(LocalDateTime.now()), retryCount, MAX_RETRIES);
+				login();
 			}
 		}
 		if (retryCount >= MAX_RETRIES) {
@@ -134,13 +141,13 @@ public class Client {
 	/*
 	 * Send request to Service Provider.
 	 */
-	protected JsonNode sendRequest(JsonNode node, String path) throws DamServiceException {
+	protected JsonNode sendRequest(JsonNode node, String path, String tokenId) throws DamServiceException {
 		String url = getServiceProviderUrl();
 
-		jsonHelper.addToJsonNode(node, "tokenId", Client.token);
+		jsonHelper.addToJsonNode(node, "tokenId", this.token);
 
 		try {
-			JsonNode response = consumer.retrieveResponse(jsonHelper.extractStringFromJsonNode(node), url, path);
+			JsonNode response = consumer.retrieveResponse(jsonHelper.extractStringFromJsonNode(node), url, path, tokenId);
 			long returnCode = jsonHelper.extractLongFromNode(response, "returnCode");
 			if (200L != returnCode) {
 				String result = jsonHelper.extractStringFromJsonNode(response, "result");
@@ -151,7 +158,7 @@ public class Client {
 			}
 			return response;
 		} catch (Exception ex) {
-			Client.token = null;
+			this.token = null;
 			throw new DamServiceException(400L, "Sending request to " + url + path + " failed.", ex.getMessage());
 		}
 	}

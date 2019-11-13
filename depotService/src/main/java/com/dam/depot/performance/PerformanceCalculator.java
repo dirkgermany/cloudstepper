@@ -9,7 +9,7 @@ import com.dam.depot.model.entity.DepotTransaction;
 
 public class PerformanceCalculator {
 
-	public static List<DepotPerformanceDetail> calculateDepotPerformance(LocalDate startDate, LocalDate endDate,
+	public List<DepotPerformanceDetail> calculateDepotPerformance(LocalDate startDate, LocalDate endDate,
 			List<DepotTransaction> depotTransactionList, Map<LocalDate, StockQuotationDetail> dailyStockDetails) {
 		LocalDate calculationDate = startDate;
 		int depotIndex = 0;

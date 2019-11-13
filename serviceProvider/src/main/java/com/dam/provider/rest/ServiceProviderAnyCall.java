@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
+import com.dam.provider.JsonHelper;
 import com.dam.provider.rest.consumer.Consumer;
 import com.dam.provider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,51 +40,51 @@ public class ServiceProviderAnyCall extends MasterController{
 	ServiceProviderPing serviceProviderPing;
 	
 	@GetMapping("/*/*")
-	public ResponseEntity<String> doubleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest)
+	public ResponseEntity<String> doubleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest, @RequestHeader(name = "tokenId", required = false) String tokenId)
 			throws DamServiceException {
 				
-		return anyGet(params, servletRequest);
+		return anyGet(params, servletRequest, tokenId);
 		
 	}
 
 	@PostMapping("/*/*")
-	public ResponseEntity<JsonNode> doubleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<JsonNode> doubleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest, @RequestHeader(name = "tokenId", required = false) String tokenId)
 			throws DamServiceException {
 				
-		return anyPost(requestBody, servletRequest);
+		return anyPost(requestBody, servletRequest, tokenId);
 		
 	}
 
 	@GetMapping("/*/*/*")
-	public ResponseEntity<String> tripleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest)
+	public ResponseEntity<String> tripleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest, @RequestHeader(name = "tokenId", required = false) String tokenId)
 			throws DamServiceException {
 		
-		return anyGet(params, servletRequest);
+		return anyGet(params, servletRequest, tokenId);
 		
 	}
 
 	@PostMapping("/*/*/*")
-	public ResponseEntity<JsonNode> tripleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<JsonNode> tripleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest, @RequestHeader(name = "tokenId", required = false) String tokenId)
 			throws DamServiceException {
 		
-		return anyPost(requestBody, servletRequest);
+		return anyPost(requestBody, servletRequest, tokenId);
 		
 	}
 
 	@PostMapping("*")
-	public ResponseEntity<JsonNode> singleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<JsonNode> singleSlashPost(@RequestBody String requestBody, HttpServletRequest servletRequest, @RequestHeader(name = "tokenId", required = false) String tokenId)
 			throws DamServiceException {
 		
-		return anyPost(requestBody, servletRequest);
+		return anyPost(requestBody, servletRequest, tokenId);
 		
 	}
 	
 	@GetMapping("*")
-	public ResponseEntity<String> singleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest) throws DamServiceException {
-		return anyGet(params, servletRequest);
+	public ResponseEntity<String> singleSlashGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest, @RequestHeader(name = "tokenId", required = false) String tokenId) throws DamServiceException {
+		return anyGet(params, servletRequest, tokenId);
 	}
 
-	private ResponseEntity<String> anyGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest) throws DamServiceException {
+	private ResponseEntity<String> anyGet(@RequestParam Map<String,String> params, HttpServletRequest servletRequest, String tokenId) throws DamServiceException {
 		String requestUri = servletRequest.getRequestURI();
 		String[] pathParts = getPathParts(servletRequest);
 		ServiceDomain serviceDomain = getServiceDomain(pathParts);
@@ -96,11 +98,11 @@ public class ServiceProviderAnyCall extends MasterController{
 			decodedParams.put(decode(entry.getKey()), decode(entry.getValue()));
 		}
 
-		return consumer.retrieveWrappedAuthorizedGetResponse(decodedParams, getServiceUrl(serviceDomain), subPath + apiMethod,	serviceDomain);
+		return consumer.retrieveWrappedAuthorizedGetResponse(decodedParams, getServiceUrl(serviceDomain), subPath + apiMethod,	serviceDomain, tokenId);
 	}
 
 
-	public ResponseEntity<JsonNode> anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest)
+	public ResponseEntity<JsonNode> anyPost(@RequestBody String requestBody, HttpServletRequest servletRequest, String tokenId)
 			throws DamServiceException {
 		
 		String requestUri = servletRequest.getRequestURI();
@@ -108,9 +110,20 @@ public class ServiceProviderAnyCall extends MasterController{
 		ServiceDomain serviceDomain = getServiceDomain(pathParts);
 		String subPath = getSubPath(pathParts);
 		String apiMethod = getApiMethod(pathParts, requestUri);
+		
+		if (null == tokenId || tokenId.isEmpty()) {
+			tokenId = extractTokenFromRequest(requestBody);
+		}
 
 		return consumer.retrieveWrappedAuthorizedPostResponse(requestBody, getServiceUrl(serviceDomain), subPath + apiMethod,
-				serviceDomain);
+				serviceDomain, tokenId);
+	}
+	
+	private String extractTokenFromRequest(String requestBody) throws DamServiceException {
+		if (null != requestBody && !requestBody.isEmpty()) {
+			return new JsonHelper().extractStringFromRequest(requestBody, "tokenId");
+		}
+		throw new DamServiceException(404L, "Missing tokenId", "Request not processed while tokenId was not received");
 	}
 	
 	private String getApiMethod(String[] pathParts, String requestUri) throws DamServiceException {

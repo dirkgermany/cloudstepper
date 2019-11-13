@@ -32,21 +32,21 @@ public class ServiceProviderAuthentication {
 	private static ServiceDomain serviceDomain = ServiceDomain.AUTHENTICATION;
 	
 	@GetMapping("/login")
-	public ResponseEntity<String> loginGet(@RequestParam Map<String, String> requestParams, HttpServletRequest bla) throws DamServiceException {
+	public ResponseEntity<String> loginGet(@RequestParam Map<String, String> requestParams) throws DamServiceException {
 		int index = config.getIndexPerDomain(serviceDomain.name());
-		return consumer.retrieveWrappedGetResponse(requestParams, config.getServiceUrl(index), "login");
+		return consumer.retrieveWrappedGetResponse(requestParams, config.getServiceUrl(index), "login", null);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<JsonNode> loginPost(@RequestBody String request, HttpServletRequest bla) throws DamServiceException {
+	public ResponseEntity<JsonNode> loginPost(@RequestBody String request) throws DamServiceException {
 		int index = config.getIndexPerDomain(serviceDomain.name());
-		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "login");
+		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "login", null);
 	}
 
 	@GetMapping("/logout")
 	public ResponseEntity<JsonNode> logout(@RequestBody String request) throws DamServiceException {
 		int index = config.getIndexPerDomain(serviceDomain.name());
-		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "logout");
+		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "logout", null);
 
 	}
 
