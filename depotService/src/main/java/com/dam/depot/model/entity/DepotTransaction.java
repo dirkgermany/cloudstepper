@@ -13,7 +13,6 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Type;
 import org.springframework.stereotype.Component;
 
 import com.dam.depot.types.ActionType;

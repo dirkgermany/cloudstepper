@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import com.dam.depot.PermissionCheck;
@@ -25,7 +26,7 @@ import com.dam.exception.PermissionCheckException;
  * @author dirk
  *
  */
-@Controller
+@Component
 public class DepotTransactionStore {
 
 	@Autowired
@@ -254,6 +255,10 @@ public class DepotTransactionStore {
 	private List<DepotTransaction> getDepotTransactionListByUserActionDateFromDateUntil(Long userId, ActionType action, LocalDateTime dateFrom,
 			LocalDateTime dateUntil) {
 		return depotTransactionModel.findByUserActionDateFromDateUntil(userId, action, dateFrom, dateUntil);
+	}
+
+	public List<DepotTransaction> getDepotTransactionListByUserPortfolio(Long userId, Long portfolioId) {
+		return depotTransactionModel.findByUserPortfolio(userId, portfolioId);
 	}
 
 	private List<DepotTransaction> getDepotTransactionListByUser(Long userId) {

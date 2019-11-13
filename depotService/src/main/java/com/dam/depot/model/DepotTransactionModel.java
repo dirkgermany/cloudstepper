@@ -40,4 +40,9 @@ public interface DepotTransactionModel extends Repository<DepotTransaction, Long
 	@Query("SELECT depotTransaction from DepotTransaction depotTransaction WHERE depotTransaction.userId = :userId  AND depotTransaction.actionDate <= :dateUntil")
 	List<DepotTransaction> findByUserDateUntil(@Param("userId") Long userId, @Param("dateUntil") LocalDateTime dateUntil);
 
+	@Query("SELECT depotTransaction from DepotTransaction depotTransaction WHERE depotTransaction.userId = :userId "
+			+ " AND depotTransaction.portfolioId = :portfolioId "
+			+ " ORDER BY depotTransaction.actionDate")
+	List<DepotTransaction> findByUserPortfolio(@Param("userId") Long userId, @Param("portfolioId") Long portfolioId);
+
 }

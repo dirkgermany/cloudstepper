@@ -1,5 +1,7 @@
 package com.dam.provider.rest;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins="*")
 @RestController
-public class ServiceProviderAnyCall {
+public class ServiceProviderAnyCall extends MasterController{
 	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCall.class);
 	
 	
@@ -86,8 +88,15 @@ public class ServiceProviderAnyCall {
 		ServiceDomain serviceDomain = getServiceDomain(pathParts);
 		String subPath = getSubPath(pathParts);
 		String apiMethod = getApiMethod(pathParts, requestUri);
+		
+		Map<String, String>decodedParams = new HashMap<>();
+		Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, String> entry = it.next();
+			decodedParams.put(decode(entry.getKey()), decode(entry.getValue()));
+		}
 
-		return consumer.retrieveWrappedAuthorizedGetResponse(params, getServiceUrl(serviceDomain), subPath + apiMethod,	serviceDomain);
+		return consumer.retrieveWrappedAuthorizedGetResponse(decodedParams, getServiceUrl(serviceDomain), subPath + apiMethod,	serviceDomain);
 	}
 
 
@@ -106,7 +115,7 @@ public class ServiceProviderAnyCall {
 	
 	private String getApiMethod(String[] pathParts, String requestUri) throws DamServiceException {
 		try {
-			return pathParts[pathParts.length -1];
+			return decode(pathParts[pathParts.length -1]);
 
 		} catch (Exception e) {
 			throw new DamServiceException(500L, "Ungültiger Pfad",
@@ -119,7 +128,7 @@ public class ServiceProviderAnyCall {
 		try {
 			int index = 2;
 			while (pathParts.length > index+1) {
-				subPath+= pathParts[index] + "/";
+				subPath+= decode(pathParts[index]) + "/";
 			}
 		}catch (Exception e) {
 			// nothing to do
@@ -128,7 +137,7 @@ public class ServiceProviderAnyCall {
 	}
 	
 	private ServiceDomain getServiceDomain(String[]pathParts) throws DamServiceException {
-		String domain = pathParts[1];				
+		String domain = decode(pathParts[1]);				
 		
 		try {
 			return ServiceDomain.valueOf(domain.toUpperCase());

@@ -49,15 +49,13 @@ public class Consumer {
 	
 	public ResponseEntity<String> retrieveWrappedAuthorizedGetResponse (Map<String, String> requestParams, String serviceUrl, String action,
 	ServiceDomain serviceDomain) throws DamServiceException{
-		ResponseEntity<String> bla = new ResponseEntity<>(retrieveAuthorizedGetResponse(requestParams, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
-		return bla;
+		return new ResponseEntity<>(retrieveAuthorizedGetResponse(requestParams, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
 	}
 
 	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedPostResponse (String request, String serviceUrl, String action,
 	ServiceDomain serviceDomain) throws DamServiceException{
 		
-		ResponseEntity<JsonNode> bla = new ResponseEntity<JsonNode>(retrieveAuthorizedPostResponse(request, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
-		return bla;
+		return new ResponseEntity<JsonNode>(retrieveAuthorizedPostResponse(request, serviceUrl, action, serviceDomain), new HttpHeaders(), HttpStatus.OK);
 	}
 
 	/**

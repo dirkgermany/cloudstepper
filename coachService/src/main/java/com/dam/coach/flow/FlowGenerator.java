@@ -47,7 +47,7 @@ public class FlowGenerator {
 			index++;
 		}
 		
-		flowBody+= "st->investorText->btn->msg->cond0\n";
+		flowBody+= "st->btn->investorText->msg->cond0\n";
 		flowBody+= "cond0(yes)->e\n";
 		
 		options = action.getOptionList().iterator();
@@ -79,7 +79,6 @@ public class FlowGenerator {
 			"        <script src=\"https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.0/raphael-min.js\"></script>\n" + 
 			"        <script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js\"></script>\n" + 
 			"        <script src=\"https://flowchart.js.org/flowchart-latest.js\"></script>\n" + 
-			"        <!-- <script src=\"../release/flowchart.min.js\"></script> -->\n" + 
 			"        <script>\n" + 
 			"            window.onload = function () {\n" + 
 			"                var btn = document.getElementById(\"run\"),\n" + 

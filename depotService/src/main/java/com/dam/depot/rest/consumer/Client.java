@@ -1,4 +1,4 @@
-package com.dam.portfolio.rest.consumer;
+package com.dam.depot.rest.consumer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.dam.depot.Configuration;
+import com.dam.depot.JsonHelper;
+import com.dam.depot.performance.PortfolioPerformance;
+import com.dam.depot.rest.message.performance.PortfolioPerformanceRequest;
 import com.dam.exception.DamServiceException;
-import com.dam.portfolio.Configuration;
-import com.dam.portfolio.JsonHelper;
-import com.dam.portfolio.model.entity.StockHistory;
-import com.dam.portfolio.rest.message.portfolio.StockHistoryRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -43,7 +43,7 @@ public class Client {
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	public void logout(String className) throws DamServiceException {
-		logger.info("Portfolio Service Client :: {}: Logout {}", dateTimeFormatter.format(LocalDateTime.now()),
+		logger.info("Depot Service Client :: {}: Logout {}", dateTimeFormatter.format(LocalDateTime.now()),
 				className);
 		token = null;
 	}
@@ -59,7 +59,7 @@ public class Client {
 				this.getClass().getName());
 
 		String anotherUserName = configuration.getAuthName();
-		String password = configuration.getPassword();
+		String password = configuration.getAuthPassword();
 
 		JsonNode node = jsonHelper.createEmptyNode();
 		node = jsonHelper.addToJsonNode(node, "userName", anotherUserName);
@@ -83,12 +83,11 @@ public class Client {
 
 	}
 
-	public List<StockHistory> readAssetStockHistory(StockHistory stockHistory, LocalDate startDate, LocalDate endDate)
+	public PortfolioPerformance readPortfolioPerformance(Long userId, Long portfolioId, LocalDate startDate, LocalDate endDate)
 			throws DamServiceException {
 
-		StockHistoryRequest historyRequest = new StockHistoryRequest(stockHistory, startDate, endDate);
-
-		JsonNode node = jsonHelper.getObjectMapper().valueToTree(historyRequest);
+		PortfolioPerformanceRequest performanceRequest = new PortfolioPerformanceRequest(null, portfolioId, null, startDate, endDate, true, false, false);
+		JsonNode node = jsonHelper.getObjectMapper().valueToTree(performanceRequest);
 
 		// If the same system user is used by different microservices for login as
 		// clients
@@ -100,35 +99,27 @@ public class Client {
 		while (!success && retryCount++ < MAX_RETRIES) {
 			try {
 				login();
-				response = sendRequest(node, "STOCK" + "/" + "getStockHistory");
+				response = sendRequest(node, "portfolio" + "/" + "getPortfolioPerformance");
 				success = true;
 			} catch (DamServiceException d) {
-				logger.info("Portfolio Service Client :: {}: readAssetStockHistory retry {} of {}",
+				logger.info("Depot Service Client :: {}: readPortfolioPerformance retry {} of {}",
 						dateTimeFormatter.format(LocalDateTime.now()), retryCount, MAX_RETRIES);
 			}
 		}
 		if (retryCount >= MAX_RETRIES) {
-			throw new DamServiceException(400L, "Reading StockHistory failed",
-					"Max. retries reached but access to StockHistory was not successfull");
+			throw new DamServiceException(400L, "Reading Portfolio Performance failed",
+					"Max. retries reached but request to Portfolio Service was not successfull");
 		}
 
-		JsonNode jsonHistoryList = jsonHelper.extractNodeFromNode(response, "stockHistoryList");
-		List<StockHistory> historyList = new ArrayList<>();
-		if (null != jsonHistoryList) {
-			try {
-				if (jsonHistoryList.isArray()) {
-					for (JsonNode arrayItem : jsonHistoryList) {
-						historyList.add(jsonHelper.getObjectMapper().treeToValue(arrayItem, StockHistory.class));
-					}
-				} else if (jsonHistoryList.isObject()) {
-					historyList.add(jsonHelper.getObjectMapper().treeToValue(jsonHistoryList, StockHistory.class));
-				}
-			} catch (JsonProcessingException e) {
-				throw new DamServiceException(500L, "Portfolio :: Fehler bei Bearbeitung der Response", e.getMessage());
-			}
+		JsonNode jsonPerformance = jsonHelper.extractNodeFromNode(response, "portfolioPerformance");
+		PortfolioPerformance performance;
+		try {
+			performance = jsonHelper.getObjectMapper().treeToValue(jsonPerformance, PortfolioPerformance.class);
+		} catch (JsonProcessingException e) {
+			throw new DamServiceException(404L, "Object Mapping failed", e.getStackTrace().toString());
 		}
 
-		return historyList;
+		return performance;
 	}
 
 	/*
