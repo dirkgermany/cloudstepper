@@ -50,11 +50,11 @@ public class JobSellIntentFinalize extends DepotClient {
 			try {
 				it = getIntentList(ActionType.SELL_INTENT, DOMAIN_DEPOT, PATH_LIST_INTENT, NODE_RESPONSE_INTENT_LIST)
 						.iterator();
+				success = true;
 			} catch (DamServiceException d) {
 				logger.info("Job Service Client :: {}: JobSellIntentFinalize retry {} of {}",
 						dateTimeFormatter.format(LocalDateTime.now()), retryCount, MAX_RETRIES);
 			}
-			success = true;
 		}
 		if (retryCount >= MAX_RETRIES) {
 			throw new DamServiceException(400L, "Reading intents of selling assets failed",
