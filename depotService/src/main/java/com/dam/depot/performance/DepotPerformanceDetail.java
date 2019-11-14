@@ -6,39 +6,26 @@ import java.time.LocalDate;
 public class DepotPerformanceDetail {
 	private LocalDate startDate;
 	private LocalDate endDate;
-	private Float open;
-	private Float close;
+	private Float invest;
+	private Float investAtAll;
+	private Float amountAtBegin;
+//	private Float amountAtEnd;
 	private Float performancePercent;
+	private Boolean marketOpen = true;
 
-	public void addToOpen(Float value) {
-		if (null == this.open) {
-			this.open = 0F;
+	public void addToInvest(Float value) {
+		if (null == this.invest) {
+			this.invest = 0F;
 		}
-		open += value;
+		invest += value;
 	}
 
-	public void addToClose(Float value) {
-		if (null == this.close) {
-			this.close = 0F;
-		}
-		close += value;
+	public Float getAmountAtBegin() {
+		return amountAtBegin;
 	}
 
-
-	public Float getOpen() {
-		return open;
-	}
-
-	public void setOpen(Float open) {
-		this.open = open;
-	}
-
-	public Float getClose() {
-		return close;
-	}
-
-	public void setClose(Float close) {
-		this.close = close;
+	public void setAmountAtBegin(Float open) {
+		this.amountAtBegin = open;
 	}
 
 	public void setPerformanceAsString(String performanceAsString) {
@@ -75,9 +62,33 @@ public class DepotPerformanceDetail {
 	public void setPerformancePercent(Float performancePercent) {
 		this.performancePercent = performancePercent;
 	}
+	
+	public Float getAmountAtEnd() {
+		return (getAmountAtBegin() + getInvest()) * (1+(getPerformancePercent()/100));
+	}
 
-	public Float getDepotValue() {
-		return getClose()*(1+getPerformancePercent());
+	public Float getInvest() {
+		return invest == null ? 0F : invest;
+	}
+
+	public void setInvest(Float invest) {
+		this.invest = invest;
+	}
+
+	public Boolean getMarketOpen() {
+		return marketOpen;
+	}
+
+	public void setMarketOpen(Boolean marketOpen) {
+		this.marketOpen = marketOpen;
+	}
+
+	public Float getInvestAtAll() {
+		return investAtAll;
+	}
+
+	public void setInvestAtAll(Float investAtAll) {
+		this.investAtAll = investAtAll;
 	}
 
 }

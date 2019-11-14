@@ -130,7 +130,7 @@ public abstract class Client {
 					intentList.add(jsonHelper.getObjectMapper().treeToValue(jsonIntentList, Intent.class));
 				}
 			} catch (JsonProcessingException e) {
-				throw new DamServiceException(500L, "Job :: Fehler bei Bearbeitung der Response", e.getMessage());
+			throw new DamServiceException(500L, "Job :: Fehler bei Bearbeitung der Response", e.getMessage());
 			}
 		}
 		return intentList;

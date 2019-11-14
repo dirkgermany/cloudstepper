@@ -15,20 +15,25 @@ public class PerformanceCalculator {
 		int depotIndex = 0;
 		Float accountAmount = 0F;
 		List<DepotPerformanceDetail> dailyDetails = new ArrayList<>();
-		Float fakePerformancePercent = 0F; // no data for weekend
+//		Float fakePerformancePercent = 0F; // no data for weekend
+		Float investAtAll = 0F;
+		
+		// VALUES FROM PORTFOLIO
 		// day by day
 		// from first invest date until today
 		while (calculationDate.isBefore(endDate) || calculationDate.isEqual(endDate)) {
 			DepotPerformanceDetail dailyDetail = new DepotPerformanceDetail();
 			dailyDetail.setStartDate(calculationDate);
 			dailyDetail.setEndDate(calculationDate);
-			dailyDetail.setOpen(accountAmount);
-			dailyDetail.setClose(accountAmount);
+			dailyDetail.setAmountAtBegin(accountAmount);
+			
+			// Free day, no change
 			if (null != dailyStockDetails.get(calculationDate)) {
 				dailyDetail.setPerformancePercent(dailyStockDetails.get(calculationDate).getPerformancePercent());
-				fakePerformancePercent = dailyStockDetails.get(calculationDate).getPerformancePercent();
+//				fakePerformancePercent = dailyStockDetails.get(calculationDate).getPerformancePercent();
 			} else {
-				dailyDetail.setPerformancePercent(fakePerformancePercent);
+				dailyDetail.setMarketOpen(false);
+				dailyDetail.setPerformancePercent(0F);
 			}
 
 			// also valid for the first time because the first entry of depotTransactions
@@ -37,11 +42,14 @@ public class PerformanceCalculator {
 			if (depotIndex < depotTransactionList.size()) {
 				if (depotTransactionList.get(depotIndex).getActionDate().toLocalDate().isEqual(calculationDate)) {
 					// consider payment
-					accountAmount += depotTransactionList.get(depotIndex).getAmount();
-					dailyDetail.setClose(accountAmount);
+					dailyDetail.addToInvest(depotTransactionList.get(depotIndex).getAmount());
 					depotIndex++;
 				}
 			}
+			investAtAll += dailyDetail.getInvest();
+			accountAmount = dailyDetail.getAmountAtEnd();
+			dailyDetail.setInvestAtAll(investAtAll);
+
 			dailyDetails.add(dailyDetail);
 			calculationDate = calculationDate.plusDays(1);
 		}

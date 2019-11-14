@@ -16,11 +16,6 @@ import com.dam.depot.types.ActionType;
 public interface IntentModel extends Repository<Intent, Long>, CrudRepository<Intent, Long> {
 	
 	@Query("SELECT intent from Intent intent WHERE intent.userId = :userId " + " AND intent.action = :action "
-			+ " AND intent.bookingDate = :bookingDate")
-	List<Intent> findByUserActionBookingDate(@Param("userId") Long userId, @Param("action") ActionType action,
-			@Param("bookingDate") Boolean bookingDate);
-	
-	@Query("SELECT intent from Intent intent WHERE intent.userId = :userId " + " AND intent.action = :action "
 			+ " AND UPPER(intent.booked) = 'Y' ")
 	List<Intent> findByUserActionBooked(@Param("userId") Long userId, @Param("action") ActionType action);
 	

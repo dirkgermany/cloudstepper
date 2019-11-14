@@ -203,6 +203,9 @@ public class Consumer {
 	 * ignore invalid Tokens
 	 */
 	private JsonNode validateToken(String request, String tokenId) throws DamServiceException {
+		// as long as Authentication Server doesn't works with GET the tokenId must be part of the request
+		request = new JsonHelper().putToJsonNode(request, "tokenId", tokenId);
+		
 		Integer index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
 		JsonNode response = retrievePostResponse(request, config.getServiceUrl(index), "validateToken", tokenId);
 		return response;
