@@ -2,12 +2,10 @@ package com.dam.portfolio.model.entity;
 
 import java.time.LocalDate;
 
-import com.dam.portfolio.types.Symbol;
-
 public class StockHistory {	
 
 	private Long stockHistoryId;
-	private Symbol symbol;
+	private String symbol;
 	private String wkn;
 	private Float open;
 	private Float close;
@@ -30,11 +28,11 @@ public class StockHistory {
 		this.stockHistoryId = stockHistoryId;
 	}
 
-	public com.dam.portfolio.types.Symbol getSymbol() {
+	public String getSymbol() {
 		return symbol;
 	}
 
-	public void setSymbol(com.dam.portfolio.types.Symbol symbol) {
+	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
 

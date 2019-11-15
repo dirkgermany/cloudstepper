@@ -16,7 +16,6 @@ import com.dam.exception.DamServiceException;
 import com.dam.stock.Configuration;
 import com.dam.stock.model.entity.StockHistory;
 import com.dam.stock.task.Client;
-import com.dam.stock.type.Symbol;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
@@ -34,8 +33,8 @@ public class AlphaVantageClient extends Client {
 	/*
 	 * Requests the Service Provider for a List with TransferToDepot Intents.
 	 */
-	public List<StockHistory> getStockData(Symbol symbol, String wkn) throws DamServiceException {
-		JsonNode response = sendGetRequest(getStockProviderUrl(), getStockParams(symbol.getRequestSymbol()));
+	public List<StockHistory> getStockData(String symbol, String wkn) throws DamServiceException {
+		JsonNode response = sendGetRequest(getStockProviderUrl(), getStockParams(symbol));
 		JsonNode jsonHistoryList = jsonHelper.extractNodeFromNode(response, NODE_RESPONSE_DAILY_LIST);
 
 		List<StockHistory> result = new ArrayList<>();

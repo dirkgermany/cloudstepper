@@ -13,7 +13,7 @@ public class TextReplacerDepotStatistics extends TextReplacerDepot {
 		case ACCOUNT:
 			return new TextReplacerDepotStatisticsAccount().replace(path, subVariables);
 
-		case LOAN:
+		case BOND:
 			return new TextReplacerDepotStatisticsLoan().replace(path, subVariables);
 			
 		case DEPOT:

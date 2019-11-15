@@ -13,7 +13,7 @@ public class TextReplacerEditorialInfo extends TextReplacerEditorial {
 		case PORTFOLIO:
 			return new TextReplacerEditorialInfoPortfolio().replace(path, subVariables);
 			
-		case LOAN:
+		case BOND:
 			return new TextReplacerEditorialInfoLoan().replace(path, subVariables);
 			
 		case INVESTMAL:

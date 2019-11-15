@@ -4,7 +4,7 @@ public enum AssetClassType {
 	
 	ETF,
 	SHARE,
-	LOAN,
+	BOND,
 	GOLD,
 	CASH,
 	CALL_MONEY;

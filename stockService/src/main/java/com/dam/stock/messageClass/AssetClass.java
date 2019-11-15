@@ -1,9 +1,6 @@
 package com.dam.stock.messageClass;
 
-import javax.persistence.Transient;
-
 import com.dam.stock.type.AssetClassType;
-import com.dam.stock.type.Symbol;
 
 public class AssetClass {	
 
@@ -14,7 +11,7 @@ public class AssetClass {
 	private AssetClassType assetClassType;
 	private String description;
 	private String wkn;
-	private Symbol symbol;
+	private String symbol;
 	private String link;
 	private Float portfolioWeighting;
 	
@@ -85,11 +82,11 @@ public class AssetClass {
 		this.link = link;
 	}
 
-	public Symbol getSymbol() {
+	public String getSymbol() {
 		return symbol;
 	}
 
-	public void setSymbol(Symbol symbol) {
+	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
 

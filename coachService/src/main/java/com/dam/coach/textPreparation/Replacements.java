@@ -11,7 +11,7 @@ public class Replacements {
 	private final static String EDITORIAL_PORTFOLIO_STATISTICS_1 = "60";
 	private final static String EDITORIAL_PORTFOLIO_STATISTICS_2 = "USA";
 	private final static String EDITORIAL_INFO_INVESTMAL_BASICS_0 = "Das Konzept nennt sich Diversifikation. Du legst nicht nur in einige wenige Aktien an, sondern streust Dein Geld breit in verschiedene Anlageklassen wie Aktien, Anleihen und Gold. Außerdem sind die Anlagen auf über 50 verschiedene Länder verteilt. So machst Du Dein Portfolio nicht so abhängig von einzelnen großen Ereignissen.";
-	private final static String EDITORIAL_INFO_LOAN = "Eine Anleihe berechtigt - im Gegensatz zu einer Aktie - zum Erhalt eines jährlichen Kupons. Das kannst Du dir als eine Art Verzinsung vorstellen. Im Gegensatz zu einer Aktie bist Du damit aber nicht Teileigentümer des Unternehmens.";
+	private final static String EDITORIAL_INFO_BOND = "Eine Anleihe berechtigt - im Gegensatz zu einer Aktie - zum Erhalt eines jährlichen Kupons. Das kannst Du dir als eine Art Verzinsung vorstellen. Im Gegensatz zu einer Aktie bist Du damit aber nicht Teileigentümer des Unternehmens.";
 	private final static String EDITORIAL_INFO_INVESTMAL_BASICS_1 = "Unser Ziel ist, dass Dein Geld langfristig produktiv für Dich arbeitet. Dafür legen wir es in Portfolios an.";
 	private final static String EDITORIAL_INFO_INVESTMAL_COACH = "Meine Aufgabe als Coach ist, Dir jederzeit mit interessanten Nachrichten zu deinem Portfolio zur Verfügung zu stehen.";
 	private final static String EDITORIAL_INFO_INVESTMAL_CREDITCARD_0 = "Deine Bankkarte ermöglicht Dir, jederzeit auf Dein Geld zugreifen zu können. Und das überall auf der Welt. Und das Beste daran? Dein Geld ist gleichzeitig investiert und arbeitet für Dich. Zusätzliche Kosten fallen dafür nicht an.";
@@ -24,7 +24,7 @@ public class Replacements {
 	private final static String BASICS_CAL_GREETING= "Guten Morgen";
 	private final static String PORTFOLIO_PERFORMANCE_BASIC_CAL_LAST_MONTH_DATE = "3,07";
 	private final static String DEPOT_RETURN = "2.467,54";
-	private final static String DEPOT_LOAN_INVEST_PERCENTAGE = "15";
+	private final static String DEPOT_BOND_INVEST_PERCENTAGE = "15";
 	
 	private static void initMap () {
 		replacementMap.put("editorial.info.news", EDITORIAL_INFO_NEWS);
@@ -38,14 +38,14 @@ public class Replacements {
 		replacementMap.put("editorial.info.investmal.creditCard(0)", EDITORIAL_INFO_INVESTMAL_CREDITCARD_0);
 		replacementMap.put("editorial.info.investmal.creditCard(1)", EDITORIAL_INFO_INVESTMAL_CREDITCARD_1);
 		replacementMap.put("editorial.info.investmal.goal", EDITORIAL_INFO_INVESTMAL_GOAL);
-		replacementMap.put("editorial.info.loan.basics", EDITORIAL_INFO_LOAN);
+		replacementMap.put("editorial.info.loan.basics", EDITORIAL_INFO_BOND);
 		
 		replacementMap.put("portfolio.performance.firstInvestDate", PORTFOLIO_PERFORMANCE_FIRST_INVEST_DATE);
 		replacementMap.put("basics.cal.lastMonthName", BASICS_CAL_LAST_MONTH);
 		replacementMap.put("basics.cal.greeting", BASICS_CAL_GREETING);
 		replacementMap.put("portfolio.performance(basic.cal.lastMonthDate)", PORTFOLIO_PERFORMANCE_BASIC_CAL_LAST_MONTH_DATE);
 		replacementMap.put("depot_return", DEPOT_RETURN);	
-		replacementMap.put("depot.loan.investPercentage", DEPOT_LOAN_INVEST_PERCENTAGE);
+		replacementMap.put("depot.loan.investPercentage", DEPOT_BOND_INVEST_PERCENTAGE);
 	}
 	
 	public static String getReplacement(String replacement) {

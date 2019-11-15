@@ -9,7 +9,6 @@ import com.dam.exception.DamServiceException;
 import com.dam.stock.messageClass.AssetClass;
 import com.dam.stock.model.entity.StockHistory;
 import com.dam.stock.store.StockHistoryStore;
-import com.dam.stock.type.Symbol;
 
 /**
  * Charge money from house bank. Send Update Requests to ServiceProvider. Works

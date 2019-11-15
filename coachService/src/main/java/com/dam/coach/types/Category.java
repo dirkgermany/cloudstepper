@@ -17,7 +17,7 @@ public enum Category {
 	USER,
 	FIRSTNAME,
 	INVESTMAL,
-	LOAN,
+	BOND,
 	NEWS,
 	STATISTICS,
 	COACH,

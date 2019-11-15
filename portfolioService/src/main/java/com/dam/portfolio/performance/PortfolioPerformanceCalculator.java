@@ -126,7 +126,7 @@ public class PortfolioPerformanceCalculator {
 			percentage = portfolioPerformance.getEtfPct();
 			break;
 			
-		case LOAN:
+		case BOND:
 			percentage = portfolioPerformance.getLoanPct();
 			break;
 

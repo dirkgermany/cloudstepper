@@ -3,15 +3,13 @@ package com.dam.depot.performance;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dam.depot.types.Symbol;
-
 public class ClassTypeValues {
 	
 	private Float open;
 	private Float close;
 	private Float openWeighted;
 	private Float closeWeighted;
-	private Map<Symbol, AssetClassValues> assetClassValues = new HashMap<>();
+	private Map<String, AssetClassValues> assetClassValues = new HashMap<>();
 	
 	public Float getOpen() {
 		return open;
@@ -52,10 +50,10 @@ public class ClassTypeValues {
 		}
 		this.closeWeighted += value;
 	}
-	public Map<Symbol, AssetClassValues> getAssetClassValues() {
+	public Map<String, AssetClassValues> getAssetClassValues() {
 		return assetClassValues;
 	}
-	public void setAssetClassValues(Map<Symbol, AssetClassValues> assetClassValues) {
+	public void setAssetClassValues(Map<String, AssetClassValues> assetClassValues) {
 		this.assetClassValues = assetClassValues;
 	}
 	public Float getOpenWeighted() {

@@ -4,16 +4,12 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import org.springframework.stereotype.Component;
-
-import com.dam.stock.type.Symbol;
 
 @Entity
 @Component
@@ -26,8 +22,7 @@ public class StockHistory {
 	private Long stockHistoryId;
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Symbol symbol;
+	private String symbol;
 
 	@Column(nullable = false)
 	private String wkn;
@@ -58,11 +53,11 @@ public class StockHistory {
 		this.stockHistoryId = stockHistoryId;
 	}
 
-	public Symbol getSymbol() {
+	public String getSymbol() {
 		return symbol;
 	}
 
-	public void setSymbol(Symbol symbol) {
+	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
 

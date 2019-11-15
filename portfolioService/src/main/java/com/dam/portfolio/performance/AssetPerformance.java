@@ -1,7 +1,6 @@
 package com.dam.portfolio.performance;
 
 import com.dam.portfolio.types.AssetClassType;
-import com.dam.portfolio.types.Symbol;
 
 public class AssetPerformance extends Performance {
 
@@ -9,7 +8,7 @@ public class AssetPerformance extends Performance {
 	private String assetClassName;
 	private Float weighting;
 	private AssetClassType assetClassType;
-	private Symbol symbol;
+	private String symbol;
 	
 	public Long getAssetClassId() {
 		return assetClassId;
@@ -35,10 +34,10 @@ public class AssetPerformance extends Performance {
 	public void setAssetClassType(AssetClassType assetClassType) {
 		this.assetClassType = assetClassType;
 	}
-	public Symbol getSymbol() {
+	public String getSymbol() {
 		return symbol;
 	}
-	public void setSymbol(Symbol symbol) {
+	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
 

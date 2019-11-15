@@ -14,7 +14,7 @@ public class TextReplacerEditorial extends TextReplacerImpl {
 		case INFO:
 			return new TextReplacerEditorialInfo().replace(path, subVariables);
 			
-		case LOAN:
+		case BOND:
 
 		case DEFAULT:
 		default:
