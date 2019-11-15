@@ -31,4 +31,11 @@ public interface StockHistoryModel extends Repository<StockHistory, Long>, CrudR
 			+ " AND stockHistory.historyDate >= :startDate "
 			+ " ORDER BY stockHistory.historyDate") // DESC")
 	List<StockHistory> findByStartEndDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+	
+	@Query("SELECT stockHistory from StockHistory stockHistory "
+			+ " WHERE stockHistory.symbol = :symbol "
+			+ " AND   stockHistory.historyDate = "
+			+ " (SELECT MAX(history.historyDate) FROM StockHistory history "
+			+ " where history.symbol = :symbol)")
+	StockHistory findLastEntryForAsset(@Param("symbol") String symbol);
 }

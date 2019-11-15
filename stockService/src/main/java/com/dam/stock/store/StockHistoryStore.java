@@ -27,6 +27,10 @@ public class StockHistoryStore {
 	public long count() {
 		return stockHistoryModel.count();
 	}
+	
+	public StockHistory findLastEntryForAsset (String symbol) throws DamServiceException {
+		return stockHistoryModel.findLastEntryForAsset (symbol);
+	}
 
 	public List<StockHistory> getStockHistorySafe(StockHistoryRequest historyRequest) throws DamServiceException {
 		PermissionCheck.checkRequestedParams(historyRequest, historyRequest.getRequestorUserId(),

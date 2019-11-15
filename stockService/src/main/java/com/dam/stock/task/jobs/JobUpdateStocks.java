@@ -48,10 +48,15 @@ public class JobUpdateStocks extends Job {
 			AssetClass asset = it.next();
 			if (null != asset.getSymbol()) {
 				Iterator<StockHistory> itStockHistory = alphaVantageProvider.getStockData(asset.getSymbol(), asset.getWkn()).iterator();
+				
+				// last date for asset
+				StockHistory newestWrittenEntry = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
 
 				while (itStockHistory.hasNext()) {
 					StockHistory entry = itStockHistory.next();
-					stockHistoryStore.storeStockHistory(entry);
+					if (null == newestWrittenEntry || entry.getHistoryDate().isAfter(newestWrittenEntry.getHistoryDate())) {
+						stockHistoryStore.storeStockHistory(entry);
+					}
 				}
 			}
 		}
