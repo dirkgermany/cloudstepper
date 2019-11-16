@@ -52,6 +52,10 @@ public class JobUpdateStocks extends Job {
 				// last date for asset
 				// process only if for this asset there are no actual informations in database
 				StockHistory lastEntryForAssetInDB = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
+				
+				if (null != lastEntryForAssetInDB) {
+					System.out.println ("Asset Symbol: " + asset.getSymbol() + "; Last Symbol: " + lastEntryForAssetInDB.getSymbol() + "; LastDate: " + lastEntryForAssetInDB.getHistoryDate());
+				}
 
 				if (null == lastEntryForAssetInDB || (null != lastEntryForAssetInDB
 						&& LocalDate.now().isAfter(lastEntryForAssetInDB.getHistoryDate()))) {
