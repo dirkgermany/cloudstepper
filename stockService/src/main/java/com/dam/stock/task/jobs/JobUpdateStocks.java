@@ -1,5 +1,6 @@
 package com.dam.stock.task.jobs;
 
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 
@@ -47,37 +48,27 @@ public class JobUpdateStocks extends Job {
 		while (it.hasNext()) {
 			AssetClass asset = it.next();
 			if (null != asset.getSymbol()) {
-				Iterator<StockHistory> itStockHistory = alphaVantageProvider
-						.getStockData(asset.getSymbol(), asset.getWkn()).iterator();
-				
-				if (asset.getSymbol().equals("BND")) {
-					System.out.println("------------------------------- BND ------------------------------ ");
-				}
 
 				// last date for asset
-				StockHistory newestWrittenEntry = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
-//				if (null != newestWrittenEntry) {
-//					System.out.println ("------------> lastEntry: for " + asset.getSymbol() + newestWrittenEntry.getHistoryDate());
-//				}
-//				else {
-//					System.out.println ("------------> lastEntry: for " + asset.getSymbol() + "not found");
-//
-//				}
+				// process only if for this asset there are no actual informations in database
+				StockHistory lastEntryForAssetInDB = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
 
-				while (itStockHistory.hasNext()) {
-					StockHistory entry = itStockHistory.next();
-//					System.out.println ("; entry in loop " + entry.getHistoryDate());
-					if (null != newestWrittenEntry) {
-						if (entry.getSymbol().equals("BND") && entry.getHistoryDate().isAfter(newestWrittenEntry.getHistoryDate())) {
-							System.out.println("AFTER " + entry.getHistoryDate() + "  " + newestWrittenEntry.getHistoryDate());
+				if (null == lastEntryForAssetInDB || (null != lastEntryForAssetInDB
+						&& LocalDate.now().isAfter(lastEntryForAssetInDB.getHistoryDate()))) {
+					
+					Iterator<StockHistory> itStockHistory = alphaVantageProvider
+							.getStockData(asset.getSymbol(), asset.getWkn()).iterator();
+
+					while (itStockHistory.hasNext()) {
+						StockHistory entry = itStockHistory.next();
+						if (null == lastEntryForAssetInDB
+								|| (entry.getHistoryDate().isAfter(lastEntryForAssetInDB.getHistoryDate()))) {
+							stockHistoryStore.storeStockHistory(entry);
 						}
-						if (entry.getSymbol().equals("BND") && entry.getHistoryDate().isBefore(newestWrittenEntry.getHistoryDate())) {
-							System.out.println("BEFORE " + entry.getHistoryDate() + "  " + newestWrittenEntry.getHistoryDate());
-						}
-						stockHistoryStore.storeStockHistory(entry);
 					}
 				}
 			}
+
 		}
 	}
 
