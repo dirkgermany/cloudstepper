@@ -51,10 +51,13 @@ public class JobUpdateStocks extends Job {
 				
 				// last date for asset
 				StockHistory newestWrittenEntry = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
-
+				System.out.println ("------------> lastEntry: " + newestWrittenEntry.getHistoryDate());
+						
 				while (itStockHistory.hasNext()) {
 					StockHistory entry = itStockHistory.next();
+					System.out.println ("; entry in loop " + entry.getHistoryDate());
 					if (null == newestWrittenEntry || entry.getHistoryDate().isAfter(newestWrittenEntry.getHistoryDate())) {
+						System.out.println ("ach, get doch");
 						stockHistoryStore.storeStockHistory(entry);
 					}
 				}
