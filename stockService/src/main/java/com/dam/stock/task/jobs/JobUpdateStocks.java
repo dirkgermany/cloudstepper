@@ -49,6 +49,10 @@ public class JobUpdateStocks extends Job {
 			if (null != asset.getSymbol()) {
 				Iterator<StockHistory> itStockHistory = alphaVantageProvider
 						.getStockData(asset.getSymbol(), asset.getWkn()).iterator();
+				
+				if (asset.getSymbol().equals("BND")) {
+					System.out.println("------------------------------- BND ------------------------------ ");
+				}
 
 				// last date for asset
 				StockHistory newestWrittenEntry = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
@@ -64,10 +68,10 @@ public class JobUpdateStocks extends Job {
 					StockHistory entry = itStockHistory.next();
 //					System.out.println ("; entry in loop " + entry.getHistoryDate());
 					if (null != newestWrittenEntry) {
-						if (entry.getHistoryDate().isAfter(newestWrittenEntry.getHistoryDate())) {
+						if (entry.getSymbol().equals("BND") && entry.getHistoryDate().isAfter(newestWrittenEntry.getHistoryDate())) {
 							System.out.println("AFTER " + entry.getHistoryDate() + "  " + newestWrittenEntry.getHistoryDate());
 						}
-						if (entry.getHistoryDate().isBefore(newestWrittenEntry.getHistoryDate())) {
+						if (entry.getSymbol().equals("BND") && entry.getHistoryDate().isBefore(newestWrittenEntry.getHistoryDate())) {
 							System.out.println("BEFORE " + entry.getHistoryDate() + "  " + newestWrittenEntry.getHistoryDate());
 						}
 						stockHistoryStore.storeStockHistory(entry);
