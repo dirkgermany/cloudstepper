@@ -47,9 +47,12 @@ public class ServiceProviderConsumer {
 	public JsonNode retrieveGetResponse(String url, String params) {
 		JsonHelper jsonHelper = new JsonHelper();
 		String URI = url + "/" + params;
+		
+		System.out.println ("RetrieveGetResponse: " + URI);
 
 		String serviceResponse = getMessage(URI);
 		if (null != serviceResponse) {
+			System.out.println("Response: " + serviceResponse);
 			return jsonHelper.convertStringToNode(serviceResponse);
 		}
 		return null;
