@@ -25,7 +25,7 @@ public class JobUpdateStocks extends Job {
 
 	@Autowired
 	ServiceProviderClient serviceProviderClient;
-	
+
 	@Autowired
 	StockHistoryStore stockHistoryStore;
 
@@ -47,23 +47,29 @@ public class JobUpdateStocks extends Job {
 		while (it.hasNext()) {
 			AssetClass asset = it.next();
 			if (null != asset.getSymbol()) {
-				Iterator<StockHistory> itStockHistory = alphaVantageProvider.getStockData(asset.getSymbol(), asset.getWkn()).iterator();
-				
+				Iterator<StockHistory> itStockHistory = alphaVantageProvider
+						.getStockData(asset.getSymbol(), asset.getWkn()).iterator();
+
 				// last date for asset
 				StockHistory newestWrittenEntry = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
-				if (null != newestWrittenEntry) {
-					System.out.println ("------------> lastEntry: for " + asset.getSymbol() + newestWrittenEntry.getHistoryDate());
-				}
-				else {
-					System.out.println ("------------> lastEntry: for " + asset.getSymbol() + "not found");
+//				if (null != newestWrittenEntry) {
+//					System.out.println ("------------> lastEntry: for " + asset.getSymbol() + newestWrittenEntry.getHistoryDate());
+//				}
+//				else {
+//					System.out.println ("------------> lastEntry: for " + asset.getSymbol() + "not found");
+//
+//				}
 
-				}
-						
 				while (itStockHistory.hasNext()) {
 					StockHistory entry = itStockHistory.next();
-					System.out.println ("; entry in loop " + entry.getHistoryDate());
-					if (null == newestWrittenEntry || entry.getHistoryDate().isAfter(newestWrittenEntry.getHistoryDate())) {
-						System.out.println (".");
+//					System.out.println ("; entry in loop " + entry.getHistoryDate());
+					if (null != newestWrittenEntry) {
+						if (entry.getHistoryDate().isAfter(newestWrittenEntry.getHistoryDate())) {
+							System.out.println("AFTER " + entry.getHistoryDate() + "  " + newestWrittenEntry.getHistoryDate());
+						}
+						if (entry.getHistoryDate().isBefore(newestWrittenEntry.getHistoryDate())) {
+							System.out.println("BEFORE " + entry.getHistoryDate() + "  " + newestWrittenEntry.getHistoryDate());
+						}
 						stockHistoryStore.storeStockHistory(entry);
 					}
 				}
