@@ -19,7 +19,7 @@ import com.dam.stock.task.Client;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
-public class AlphaVantageClient extends Client {
+public class AlphaVantageClient extends ExternalAPIClient {
 	@Autowired
 	Configuration configuration;
 
@@ -78,6 +78,13 @@ public class AlphaVantageClient extends Client {
 		String apiKey = "&apikey=" + configuration.getStockServiceKey();
 
 		return query + function + symbol + outputsize + apiKey;
+	}
+
+	@Override
+	long waitTimeForNextRequest() {
+		// The free Version of AlphaVantage allows max. 5 requests per minute and 500 requests per day.
+		// To avoid getting a non-data response, the waitTime is 15 seconds.
+		return 15000L;
 	}
 
 }

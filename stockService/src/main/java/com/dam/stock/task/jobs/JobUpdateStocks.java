@@ -77,6 +77,16 @@ public class JobUpdateStocks extends Job {
 					}
 				}
 			}
+			
+			if (it.hasNext()) {
+				// make a rest to avoid 
+				try {
+					System.out.println("Sleep for some seconds...");
+					Thread.sleep(alphaVantageProvider.waitTimeForNextRequest());
+				} catch (InterruptedException e) {
+				}
+			}
+			System.out.println("Woke up...");
 
 		}
 	}
