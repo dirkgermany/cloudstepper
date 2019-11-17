@@ -81,10 +81,11 @@ public class AlphaVantageClient extends ExternalAPIClient {
 	}
 
 	@Override
-	long waitTimeForNextRequest() {
-		// The free Version of AlphaVantage allows max. 5 requests per minute and 500 requests per day.
-		// To avoid getting a non-data response, the waitTime is 15 seconds.
-		return 15000L;
+	public void waitTimeForNextRequest() {
+		try {
+			Thread.sleep(15000);
+		} catch (InterruptedException e) {
+		}
 	}
 
 }
