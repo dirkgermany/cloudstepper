@@ -48,30 +48,19 @@ public class JobUpdateStocks extends Job {
 		while (it.hasNext()) {
 			AssetClass asset = it.next();
 			if (null != asset.getSymbol()) {
-
 				// last date for asset
 				// process only if for this asset there are no actual informations in database
 				StockHistory lastEntryForAssetInDB = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
-				
-				if (null != lastEntryForAssetInDB) {
-					System.out.println ("Asset Symbol: " + asset.getSymbol() + "; Last Symbol: " + lastEntryForAssetInDB.getSymbol() + "; LastDate: " + lastEntryForAssetInDB.getHistoryDate());
-				}
-
 				if (null == lastEntryForAssetInDB || (null != lastEntryForAssetInDB
 						&& LocalDate.now().isAfter(lastEntryForAssetInDB.getHistoryDate()))) {
-					
-					System.out.println("... Step 1");
-					
+										
 					Iterator<StockHistory> itStockHistory = alphaVantageProvider
 							.getStockData(asset.getSymbol(), asset.getWkn()).iterator();
 
 					while (itStockHistory.hasNext()) {
-						System.out.println(".... Step 2");
-
 						StockHistory entry = itStockHistory.next();
 						if (null == lastEntryForAssetInDB
 								|| (entry.getHistoryDate().isAfter(lastEntryForAssetInDB.getHistoryDate()))) {
-							System.out.println("..... Step 3");
 							stockHistoryStore.storeStockHistory(entry);
 						}
 					}
@@ -81,13 +70,10 @@ public class JobUpdateStocks extends Job {
 			if (it.hasNext()) {
 				// make a rest to avoid 
 				try {
-					System.out.println("Sleep for some seconds...");
 					Thread.sleep(alphaVantageProvider.waitTimeForNextRequest());
 				} catch (InterruptedException e) {
 				}
 			}
-			System.out.println("Woke up...");
-
 		}
 	}
 
