@@ -55,7 +55,7 @@ public class JobUpdateStocks extends Job {
 				StockHistory lastEntryForAssetInDB = stockHistoryStore.findLastEntryForAsset(asset.getSymbol());
 				if (alphaVantageProvider.isLastEntryUpToDate(lastEntryForAssetInDB)) {
 					System.out.println("Entry in DB is up to date - nothing to do");
-					return;
+					continue;
 				}
 
 				Iterator<StockHistory> itStockHistory = alphaVantageProvider
