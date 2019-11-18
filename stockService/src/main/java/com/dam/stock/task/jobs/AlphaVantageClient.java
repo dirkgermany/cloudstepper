@@ -81,7 +81,7 @@ public class AlphaVantageClient extends ExternalAPIClient {
 	}
 
 	@Override
-	public void waitTimeForNextRequest() {
+	protected void waitTimeForNextRequest() {
 		try {
 			Thread.sleep(15000);
 		} catch (InterruptedException e) {
