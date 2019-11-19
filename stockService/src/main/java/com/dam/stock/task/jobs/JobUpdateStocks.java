@@ -61,9 +61,13 @@ public class JobUpdateStocks extends Job {
 				Iterator<StockHistory> itStockHistory = alphaVantageProvider
 						.getStockData(asset.getSymbol(), asset.getWkn()).iterator();
 
-				System.out.println("Letzter Eintrag veraltet: " + lastEntryForAssetInDB == null ? "kein Eintrag in DB"
-						: lastEntryForAssetInDB.getHistoryDate());
-
+				if (null == lastEntryForAssetInDB) {
+					System.out.println("Kein Eintrag in DB");
+				}
+				else {
+					System.out.println("Letzter Eintrag veraltet: " + lastEntryForAssetInDB.getHistoryDate());
+				}
+				
 				while (itStockHistory.hasNext()) {
 					StockHistory entry = itStockHistory.next();
 					if (alphaVantageProvider.isProviderDataNewest(entry, lastEntryForAssetInDB)) {

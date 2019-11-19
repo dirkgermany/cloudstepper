@@ -2,6 +2,7 @@ package com.dam.depot.store;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,12 @@ public class DepotStore {
 
 	public DepotPerformanceResponse getDepotPerformanceSafe(Map<String, String> params, String tokenId)
 			throws DamServiceException {
+
+		Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, String> entry = it.next();
+			System.out.println("MAP Key: " + entry.getKey() + "; MAP Entry: " + entry.getValue());
+		}
 		
 		PermissionCheck.checkRequestedParams(params.get("requestorUserId"), params.get("rights"));
 		Long requestorUserId = extractLong(params.get("requestorUserId"));
