@@ -15,7 +15,6 @@ public class PerformanceCalculator {
 		int depotIndex = 0;
 		Float accountAmount = 0F;
 		List<DepotPerformanceDetail> dailyDetails = new ArrayList<>();
-//		Float fakePerformancePercent = 0F; // no data for weekend
 		Float investAtAll = 0F;
 		
 		// VALUES FROM PORTFOLIO
@@ -30,7 +29,8 @@ public class PerformanceCalculator {
 			// Free day, no change
 			if (null != dailyStockDetails.get(calculationDate)) {
 				dailyDetail.setPerformancePercent(dailyStockDetails.get(calculationDate).getPerformancePercent());
-//				fakePerformancePercent = dailyStockDetails.get(calculationDate).getPerformancePercent();
+				dailyDetail.setOpenRate(dailyStockDetails.get(calculationDate).getOpen());
+				dailyDetail.setCloseRate(dailyStockDetails.get(calculationDate).getClose());
 			} else {
 				dailyDetail.setMarketOpen(false);
 				dailyDetail.setPerformancePercent(0F);

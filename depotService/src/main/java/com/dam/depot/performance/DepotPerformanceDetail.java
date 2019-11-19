@@ -9,7 +9,8 @@ public class DepotPerformanceDetail {
 	private Float invest;
 	private Float investAtAll;
 	private Float amountAtBegin;
-//	private Float amountAtEnd;
+	private Float openRate;
+	private Float closeRate;
 	private Float performancePercent;
 	private Boolean marketOpen = true;
 
@@ -89,6 +90,22 @@ public class DepotPerformanceDetail {
 
 	public void setInvestAtAll(Float investAtAll) {
 		this.investAtAll = investAtAll;
+	}
+
+	public Float getOpenRate() {
+		return openRate;
+	}
+
+	public void setOpenRate(Float openRate) {
+		this.openRate = openRate;
+	}
+
+	public Float getCloseRate() {
+		return closeRate;
+	}
+
+	public void setCloseRate(Float closeRate) {
+		this.closeRate = closeRate;
 	}
 
 }
