@@ -62,6 +62,7 @@ public class PortfolioPerformanceCalculator {
 		// Assets
 		Iterator<Map.Entry<AssetClass, List<StockHistory>>> assetStockIterator = assetStockHistory.entrySet()
 				.iterator();
+		
 		while (assetStockIterator.hasNext()) {
 			Map.Entry<AssetClass, List<StockHistory>> entry = assetStockIterator.next();
 			AssetClass assetClass = entry.getKey();
@@ -175,7 +176,7 @@ public class PortfolioPerformanceCalculator {
 			assetValues.setWeighting(assetPerformance.getWeighting());
 		}
 		if (portfolioPerformance.getEndDate().isEqual(assetPerformance.getEndDate())) {
-			Float assetWeightedValueClose = calculateWeightedValueOfAsset(assetPerformance.getOpen(), assetPerformance.getWeighting(), lookupForAssetPercentage(assetPerformance, portfolioPerformance));
+			Float assetWeightedValueClose = calculateWeightedValueOfAsset(assetPerformance.getClose(), assetPerformance.getWeighting(), lookupForAssetPercentage(assetPerformance, portfolioPerformance));
 			portfolioPerformance.addToClose(assetPerformance.getClose());
 
 			ClassTypeValues values = portfolioPerformance.getClassTypeValuesMap()
@@ -241,15 +242,16 @@ public class PortfolioPerformanceCalculator {
 		Month month = stockHistory.getHistoryDate().getMonth();
 		int year = stockHistory.getHistoryDate().getYear();
 		
+		// percentage of asset TYPE within portfolio
 		Float percentage = lookupForAssetPercentage(assetPerformance, portfolioPerformance);
 
 		StockQuotationDetail assetPerformanceDetail = new StockQuotationDetail();
 		assetPerformanceDetail.setStockHistoryId(stockHistory.getStockHistoryId());
 		assetPerformanceDetail.setStartDate(stockHistory.getHistoryDate());
-		assetPerformanceDetail.setOpen(stockHistory.getOpen());
-		assetPerformanceDetail.setOpenWeighted(calculateWeightedValueOfAsset(stockHistory.getOpen(), assetPerformance.getWeighting(), percentage));
 		assetPerformanceDetail.setEndDate(stockHistory.getHistoryDate());
+		assetPerformanceDetail.setOpen(stockHistory.getOpen());
 		assetPerformanceDetail.setClose(stockHistory.getClose());
+		assetPerformanceDetail.setOpenWeighted(calculateWeightedValueOfAsset(stockHistory.getOpen(), assetPerformance.getWeighting(), percentage));
 		assetPerformanceDetail.setCloseWeighted(calculateWeightedValueOfAsset(stockHistory.getClose(), assetPerformance.getWeighting(), percentage));
 		assetPerformanceDetail.setDayOfWeek(dayOfWeek);
 		assetPerformanceDetail.setMonthOfYear(month);

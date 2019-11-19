@@ -60,12 +60,6 @@ public class DepotStore {
 
 	public DepotPerformanceResponse getDepotPerformanceSafe(Map<String, String> params, String tokenId)
 			throws DamServiceException {
-
-		Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, String> entry = it.next();
-			System.out.println("MAP Key: " + entry.getKey() + "; MAP Entry: " + entry.getValue());
-		}
 		
 		PermissionCheck.checkRequestedParams(params.get("requestorUserId"), params.get("rights"));
 		Long requestorUserId = extractLong(params.get("requestorUserId"));
