@@ -95,7 +95,7 @@ public class AccountStatusStore {
 
 			return response;
 		}
-		return null;
+		throw new DamServiceException(400L, "No Data found", "No data for user or perhaps the combination of user, requesting user (tokenId) and requested data delivers an empty result");
 	}
 
 	public AccountStatus getAccountStatusByUserId(Long userId) {
