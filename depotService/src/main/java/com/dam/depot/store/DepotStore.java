@@ -74,7 +74,7 @@ public class DepotStore {
 		Long userId = extractLong(params.get("userId"));
 		
 		// Check if the permissions is set
-		PermissionCheck.isReadPermissionSet(requestorUserId, null, params.get("rights"));		
+		PermissionCheck.isReadPermissionSet(requestorUserId, userId, params.get("rights"));		
 
 		// List of depotTransactions of user and portfolio
 		// Ordered by action_date (date when investor did something with his depot)
