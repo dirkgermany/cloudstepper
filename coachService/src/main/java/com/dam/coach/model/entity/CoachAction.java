@@ -50,7 +50,12 @@ public class CoachAction {
 
 	private void splitOptions() {
 		optionList = new ArrayList<>();
-		if (null != options) {
+		if (null != options && !"".equals(options)) {
+			options = options.trim();
+			// remove leading comma
+			if (options.startsWith(",")) {
+				options = options.substring(1);
+			}
 			if (options.contains(",")) {
 				String option[] = options.split(",");
 				Iterator<String> it = Arrays.asList(option).iterator();
@@ -122,19 +127,17 @@ public class CoachAction {
 	}
 
 	public List<String> getOptionList() {
-		String dummyOptions = this.options;
 
 		if (null != optionList && !optionList.isEmpty()) {
 			Iterator<String> it = optionList.iterator();
 			while (it.hasNext()) {
 				String itOption = it.next();
-				if (null == dummyOptions) {
-					dummyOptions = itOption;
-				} else if (!dummyOptions.contains(itOption)) {
-					dummyOptions += "," + itOption;
+				if (null == this.options || "".equals(this.options)) {
+					this.options = itOption;
+				} else if (!this.options.contains(itOption)) {
+					this.options += "," + itOption;
 				}
 			}
-			this.options = dummyOptions;
 		} else {
 			splitOptions();
 		}
