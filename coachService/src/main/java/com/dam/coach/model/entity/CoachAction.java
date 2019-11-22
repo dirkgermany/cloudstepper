@@ -126,7 +126,6 @@ public class CoachAction {
 	public List<String> getOptionList() {
 		String dummyOptions = null != this.options ? this.options : "";
 		
-		
 		if (null != optionList && !optionList.isEmpty()) {
 			Iterator<String> it = optionList.iterator();
 			while (it.hasNext()) {
