@@ -122,13 +122,15 @@ public class CoachAction {
 	}
 
 	public List<String> getOptionList() {
-		String dummyOptions = null != this.options ? this.options : "";
+		String dummyOptions = this.options;
 
 		if (null != optionList && !optionList.isEmpty()) {
 			Iterator<String> it = optionList.iterator();
 			while (it.hasNext()) {
 				String itOption = it.next();
-				if (!dummyOptions.contains(itOption)) {
+				if (null == dummyOptions) {
+					dummyOptions = itOption;
+				} else if (!dummyOptions.contains(itOption)) {
 					dummyOptions += "," + itOption;
 				}
 			}
@@ -140,7 +142,17 @@ public class CoachAction {
 	}
 
 	public void setOptionList(List<String> optionList) {
+		if (null != optionList && !optionList.isEmpty()) {
+			Iterator<String> it = optionList.iterator();
+			while (it.hasNext()) {
+				String itOption = it.next();
+				if (null == this.options) {
+					this.options = itOption;
+				} else {
+					this.options += "," + itOption;
+				}
+			}
+		}
 		this.optionList = optionList;
 	}
-
 }
