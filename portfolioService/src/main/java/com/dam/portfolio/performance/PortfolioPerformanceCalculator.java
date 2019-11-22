@@ -181,18 +181,18 @@ public class PortfolioPerformanceCalculator {
 			Float assetWeightedValueClose = calculateWeightedValueOfAsset(assetPerformance.getClose(), assetPerformance.getWeighting(), lookupForAssetPercentage(assetPerformance, portfolioPerformance));
 			portfolioPerformance.addToClose(assetPerformance.getClose());
 
-			ClassTypeValues values = portfolioPerformance.getClassTypeValuesMap()
+			ClassTypeValues classTypeValues = portfolioPerformance.getClassTypeValuesMap()
 					.get(assetPerformance.getAssetClassType());
-			if (null == values) {
-				values = new ClassTypeValues();
-				portfolioPerformance.getClassTypeValuesMap().put(assetPerformance.getAssetClassType(), values);
+			if (null == classTypeValues) {
+				classTypeValues = new ClassTypeValues();
+				portfolioPerformance.getClassTypeValuesMap().put(assetPerformance.getAssetClassType(), classTypeValues);
 			}
-			values.addToClose(assetPerformance.getClose());
-			values.addToCloseWeighted(assetWeightedValueClose);
-			AssetClassValues assetValues = values.getAssetClassValues().get(assetPerformance.getSymbol());
+			classTypeValues.addToClose(assetPerformance.getClose());
+			classTypeValues.addToCloseWeighted(assetWeightedValueClose);
+			AssetClassValues assetValues = classTypeValues.getAssetClassValues().get(assetPerformance.getSymbol());
 			if (null == assetValues) {
 				assetValues = new AssetClassValues();
-				values.getAssetClassValues().put(assetPerformance.getSymbol(), assetValues);
+				classTypeValues.getAssetClassValues().put(assetPerformance.getSymbol(), assetValues);
 			}
 			assetValues.setClose(assetPerformance.getClose());
 			assetValues.setCloseWeighted(assetWeightedValueClose);

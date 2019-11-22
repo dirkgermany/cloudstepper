@@ -123,10 +123,13 @@ public class CoachAction {
 		this.text = text;
 	}
 
-	@Transient
 	public List<String> getOptionList() {
 		splitOptions();
 		return optionList;
+	}
+	
+	public void setOptionList (List<String> optionList) {
+		this.optionList = optionList;
 	}
 
 }
