@@ -133,7 +133,7 @@ public class PortfolioPerformanceCalculator {
 			break;
 
 		case GOLD:
-			percentage = portfolioPerformance.getLoanPct();
+			percentage = portfolioPerformance.getGoldPct();
 			break;
 
 		default:
@@ -158,17 +158,19 @@ public class PortfolioPerformanceCalculator {
 			Float assetWeightedValueOpen = calculateWeightedValueOfAsset(assetPerformance.getOpen(),assetPerformance.getWeighting(), lookupForAssetPercentage(assetPerformance, portfolioPerformance));
 			portfolioPerformance.addToOpen(assetPerformance.getOpen());
 
-			ClassTypeValues values = portfolioPerformance.getClassTypeValuesMap().get(assetPerformance.getAssetClassType());
-			if (null == values) {
-				values = new ClassTypeValues();
-				portfolioPerformance.getClassTypeValuesMap().put(assetPerformance.getAssetClassType(), values);
+			// group by class types
+			// add values per class type
+			ClassTypeValues classTypeValues = portfolioPerformance.getClassTypeValuesMap().get(assetPerformance.getAssetClassType());
+			if (null == classTypeValues) {
+				classTypeValues = new ClassTypeValues();
+				portfolioPerformance.getClassTypeValuesMap().put(assetPerformance.getAssetClassType(), classTypeValues);
 			}
-			values.addToOpen(assetPerformance.getOpen());
-			values.addToOpenWeighted(assetWeightedValueOpen);
-			AssetClassValues assetValues = values.getAssetClassValues().get(assetPerformance.getSymbol());
+			classTypeValues.addToOpen(assetPerformance.getOpen());
+			classTypeValues.addToOpenWeighted(assetWeightedValueOpen);
+			AssetClassValues assetValues = classTypeValues.getAssetClassValues().get(assetPerformance.getSymbol());
 			if (null == assetValues) {
 				assetValues = new AssetClassValues();
-				values.getAssetClassValues().put(assetPerformance.getSymbol(), assetValues);
+				classTypeValues.getAssetClassValues().put(assetPerformance.getSymbol(), assetValues);
 			}
 			assetValues.setOpen(assetPerformance.getOpen());
 			assetValues.setOpenWeighted(assetWeightedValueOpen);
