@@ -157,6 +157,7 @@ public class PortfolioPerformanceCalculator {
 		if (portfolioPerformance.getStartDate().isEqual(assetPerformance.getStartDate())) {			
 			Float assetWeightedValueOpen = calculateWeightedValueOfAsset(assetPerformance.getOpen(),assetPerformance.getWeighting(), lookupForAssetPercentage(assetPerformance, portfolioPerformance));
 			portfolioPerformance.addToOpen(assetPerformance.getOpen());
+			portfolioPerformance.addToOpenWeighted(assetWeightedValueOpen);
 
 			// group by class types
 			// add values per class type
@@ -180,6 +181,7 @@ public class PortfolioPerformanceCalculator {
 		if (portfolioPerformance.getEndDate().isEqual(assetPerformance.getEndDate())) {
 			Float assetWeightedValueClose = calculateWeightedValueOfAsset(assetPerformance.getClose(), assetPerformance.getWeighting(), lookupForAssetPercentage(assetPerformance, portfolioPerformance));
 			portfolioPerformance.addToClose(assetPerformance.getClose());
+			portfolioPerformance.addToCloseWeighted(assetWeightedValueClose);
 
 			ClassTypeValues classTypeValues = portfolioPerformance.getClassTypeValuesMap()
 					.get(assetPerformance.getAssetClassType());

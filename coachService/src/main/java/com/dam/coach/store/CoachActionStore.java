@@ -171,6 +171,8 @@ public class CoachActionStore {
 	private CoachAction updateCoachAction(CoachAction coachActionForUpdate, CoachAction coachActionContainer)
 			throws DamServiceException {
 
+		List<String> options = coachActionContainer.getOptionList();
+		
 		if (null != coachActionForUpdate && null != coachActionContainer) {
 			coachActionForUpdate.updateEntity(coachActionContainer);
 			try {

@@ -18,37 +18,36 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.stereotype.Component;
 
-
 @Entity
 @Component
-@Table(name = "CoachAction", uniqueConstraints= {@UniqueConstraint(columnNames = {"actionId"})},
-		indexes = {@Index(name = "idx_coachaction_reference", columnList = "actionReference")})
+@Table(name = "CoachAction", uniqueConstraints = { @UniqueConstraint(columnNames = { "actionId" }) }, indexes = {
+		@Index(name = "idx_coachaction_reference", columnList = "actionReference") })
 
-public class CoachAction {	
+public class CoachAction {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long actionId;
-	
+
 	@Column(nullable = false)
 	private String actionReference;
-	
+
 	@Column(nullable = true)
 	private String btnText;
-	
+
 	@Column(nullable = true)
 	@Lob
 	private String message;
-	
+
 	@Column(nullable = true)
 	private String options;
-	
+
 	@Column(nullable = true)
 	@Lob
 	private String text;
-	
+
 	@Transient
 	private List<String> optionList;
-	
+
 	private void splitOptions() {
 		optionList = new ArrayList<>();
 		if (null != options) {
@@ -58,13 +57,12 @@ public class CoachAction {
 				while (it.hasNext()) {
 					optionList.add(it.next().trim());
 				}
-			}
-			else {
+			} else {
 				optionList.add(options);
 			}
 		}
 	}
-	
+
 	public CoachAction updateEntity(CoachAction container) {
 		this.setActionReference(container.getActionReference());
 		this.setBtnText(container.getBtnText());
@@ -125,22 +123,23 @@ public class CoachAction {
 
 	public List<String> getOptionList() {
 		String dummyOptions = null != this.options ? this.options : "";
-		
+
 		if (null != optionList && !optionList.isEmpty()) {
 			Iterator<String> it = optionList.iterator();
 			while (it.hasNext()) {
 				String itOption = it.next();
-				if (! dummyOptions.contains(itOption)) {
-					dummyOptions+= "," + itOption;
+				if (!dummyOptions.contains(itOption)) {
+					dummyOptions += "," + itOption;
 				}
 			}
-			
+			this.options = dummyOptions;
+		} else {
 			splitOptions();
 		}
 		return optionList;
 	}
-	
-	public void setOptionList (List<String> optionList) {
+
+	public void setOptionList(List<String> optionList) {
 		this.optionList = optionList;
 	}
 
