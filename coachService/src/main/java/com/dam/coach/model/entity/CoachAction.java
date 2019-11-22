@@ -18,6 +18,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Component
 @Table(name = "CoachAction", uniqueConstraints = { @UniqueConstraint(columnNames = { "actionId" }) }, indexes = {
@@ -39,6 +41,7 @@ public class CoachAction {
 	private String message;
 
 	@Column(nullable = true)
+	@JsonIgnore
 	private String options;
 
 	@Column(nullable = true)
