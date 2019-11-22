@@ -173,19 +173,6 @@ public class CoachActionStore {
 
 		if (null != coachActionForUpdate && null != coachActionContainer) {
 			coachActionForUpdate.updateEntity(coachActionContainer);
-			
-			// if option list was sent by array
-			String options = coachActionForUpdate.getOptions();
-			if (null != coachActionForUpdate.getOptionList() && !coachActionForUpdate.getOptions().isEmpty() ) {
-				Iterator<String> it = coachActionForUpdate.getOptionList().iterator();
-				while (it.hasNext()) {
-					String option = it.next();
-					if (!options.contains(option)) {
-						options+= "," + option;
-					}
-				}
-			}
-			coachActionForUpdate.setOptions(options);
 			try {
 				return coachActionModel.save(coachActionForUpdate);
 			} catch (Exception e) {

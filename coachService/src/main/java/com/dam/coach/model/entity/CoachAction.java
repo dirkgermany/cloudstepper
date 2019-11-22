@@ -124,7 +124,20 @@ public class CoachAction {
 	}
 
 	public List<String> getOptionList() {
-		splitOptions();
+		String dummyOptions = null != this.options ? this.options : "";
+		
+		
+		if (null != optionList && !optionList.isEmpty()) {
+			Iterator<String> it = optionList.iterator();
+			while (it.hasNext()) {
+				String itOption = it.next();
+				if (! dummyOptions.contains(itOption)) {
+					dummyOptions+= "," + itOption;
+				}
+			}
+			
+			splitOptions();
+		}
 		return optionList;
 	}
 	
