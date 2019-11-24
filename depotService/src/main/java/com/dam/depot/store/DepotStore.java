@@ -1,5 +1,6 @@
 package com.dam.depot.store;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Iterator;
@@ -60,37 +61,61 @@ public class DepotStore {
 
 	public DepotPerformanceResponse getDepotPerformanceSafe(Map<String, String> params, String tokenId)
 			throws DamServiceException {
-		
+
 		PermissionCheck.checkRequestedParams(params.get("requestorUserId"), params.get("rights"));
 		Long requestorUserId = extractLong(params.get("requestorUserId"));
 
 		Long portfolioId = extractLong(params.get("portfolioId"));
 		Long userId = extractLong(params.get("userId"));
-		
+
 		// Check if the permissions is set
-		PermissionCheck.isReadPermissionSet(requestorUserId, userId, params.get("rights"));		
+		PermissionCheck.isReadPermissionSet(requestorUserId, userId, params.get("rights"));
 
 		// List of depotTransactions of user and portfolio
 		// Ordered by action_date (date when investor did something with his depot)
-		List<DepotTransaction> depotTransactionList = depotTransactionStore.getDepotTransactionListByUserPortfolio(userId, portfolioId);
+		List<DepotTransaction> depotTransactionList = depotTransactionStore
+				.getDepotTransactionListByUserPortfolio(userId, portfolioId);
 		if (null == depotTransactionList || depotTransactionList.isEmpty()) {
 			return null;
 		}
 
-		LocalDateTime startDate = depotTransactionList.get(0).getActionDate();
-		LocalDateTime endDate = LocalDateTime.now().minusDays(1);
-		PortfolioPerformance portfolioPerformance = client.readPortfolioPerformance(userId, portfolioId, startDate.toLocalDate(), endDate.toLocalDate(), tokenId);
+		LocalDate startDate = depotTransactionList.get(0).getActionDate().toLocalDate();
+		if (startDate.isAfter(LocalDateTime.now().minusDays(1).toLocalDate())) {
+			throw new DamServiceException(404L, "Invalid start date",
+					"The first day of invest was today but must be before today or earlier");
+		}
+
+		LocalDate endDate = LocalDateTime.now().minusDays(1).toLocalDate();
+		PortfolioPerformance portfolioPerformance = client.readPortfolioPerformance(userId, portfolioId, startDate,
+				endDate, tokenId);
 		Map<LocalDate, StockQuotationDetail> dailyStockDetails = portfolioPerformance.getDailyDetails();
+
+		List<DepotPerformanceDetail> depotPerformanceDetails = new PerformanceCalculator().calculateDepotPerformance(startDate, endDate, depotTransactionList, dailyStockDetails);
 		
-		List<DepotPerformanceDetail> depotPerformanceDetails = new PerformanceCalculator().calculateDepotPerformance(startDate.toLocalDate(), endDate.toLocalDate(), depotTransactionList, dailyStockDetails);
-		return new DepotPerformanceResponse(200L, "OK", "Depot entries found", depotPerformanceDetails);
+		Float amountAtFirstDay = 0F;
+		Float amountAtLastDay = 0F;
+		Float periodPerformancePercentage = 0F;
+		Float periodPerformanceValue = 0F;
+		String periodPerformancePercentageAsString = "0.00%";
+		if (null != depotPerformanceDetails && !depotPerformanceDetails.isEmpty()) {
+			amountAtFirstDay = depotPerformanceDetails.get(0).getInvest();
+			amountAtLastDay = depotPerformanceDetails.get(depotPerformanceDetails.size() - 1).getAmountAtEnd();
+			periodPerformancePercentage = (amountAtLastDay / amountAtFirstDay - 1) / 100;
+			periodPerformanceValue = amountAtLastDay - amountAtFirstDay;
+			
+			DecimalFormat formatter = new DecimalFormat("#,##0.00'%'");
+			formatter.setMultiplier(1);
+			periodPerformancePercentageAsString = formatter.format(periodPerformancePercentage);
+		}
+		return new DepotPerformanceResponse(200L, "OK", "Depot entries found", periodPerformancePercentage, periodPerformancePercentageAsString, periodPerformanceValue, depotPerformanceDetails);
 	}
-	
+
 	private Long extractLong(String longString) throws DamServiceException {
 		try {
-		return Long.valueOf(longString);
+			return Long.valueOf(longString);
 		} catch (Exception e) {
-			throw new DamServiceException(404L, "Extraction Long from String failed", "Parameter is required but null or does not represent a Long value");
+			throw new DamServiceException(404L, "Extraction Long from String failed",
+					"Parameter is required but null or does not represent a Long value");
 		}
 	}
 }

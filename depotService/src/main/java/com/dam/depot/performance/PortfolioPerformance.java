@@ -1,10 +1,9 @@
 package com.dam.depot.performance;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.persistence.Column;
-import javax.validation.constraints.Max;
+import org.apache.commons.math3.util.Precision;
 
 import com.dam.depot.types.AssetClassType;
 
@@ -17,10 +16,13 @@ public class PortfolioPerformance extends Performance {
 	private Float loanPct;
 	private Float etfPct;
 
-	@Column(nullable=false)
-	@Max(100)
+//	@Column(nullable=false)
+//	@Max(100)
 	private Float sharePct;
 	
+	private Float openWeighted;
+	private Float closeWeighted;
+
 	
 	private Map<AssetClassType, ClassTypeValues> ClassTypeValuesMap = new HashMap<>();
 	
@@ -73,5 +75,46 @@ public class PortfolioPerformance extends Performance {
 	public void setSharePct(Float sharePct) {
 		this.sharePct = sharePct;
 	}
+	public Float getOpenWeighted() {
+		return openWeighted;
+	}
+	public void setOpenWeighted(Float openWeighted) {
+		this.openWeighted = openWeighted;
+	}
+	public Float getCloseWeighted() {
+		return closeWeighted;
+	}
+	public void setCloseWeighted(Float closeWeighted) {
+		this.closeWeighted = closeWeighted;
+	}
 
+	public void addToOpenWeighted(Float value) {
+		if (null == this.openWeighted) {
+			this.openWeighted = 0F;
+		}
+		this.openWeighted += value;
+	}
+
+	public void addToCloseWeighted(Float value) {
+		if (null == this.closeWeighted) {
+			this.closeWeighted = 0F;
+		}
+		this.closeWeighted += value;
+	}
+
+	public Float getPerformancePercent() {
+		if (null == this.openWeighted || null == this.closeWeighted) {
+			return 0F;
+		}
+		
+		float calculated = ((this.closeWeighted/this.openWeighted - 1) * 100);
+		return Precision.round(calculated, 6);
+	}
+	
+	public String getPerformanceAsString() {
+		DecimalFormat formatter = new DecimalFormat("#,##0.00'%'");
+		formatter.setMultiplier(1);
+
+		return formatter.format(getPerformancePercent());
+	}
 }

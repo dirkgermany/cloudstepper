@@ -3,10 +3,6 @@ package com.dam.portfolio.performance;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.persistence.Column;
-import javax.validation.constraints.Max;
-
 import org.apache.commons.math3.util.Precision;
 
 import com.dam.portfolio.types.AssetClassType;
