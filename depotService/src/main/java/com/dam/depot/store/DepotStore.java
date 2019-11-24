@@ -100,7 +100,7 @@ public class DepotStore {
 		if (null != depotPerformanceDetails && !depotPerformanceDetails.isEmpty()) {
 			amountAtFirstDay = depotPerformanceDetails.get(0).getInvest();
 			amountAtLastDay = depotPerformanceDetails.get(depotPerformanceDetails.size() - 1).getAmountAtEnd();
-			periodPerformancePercentage = (amountAtLastDay / amountAtFirstDay - 1) / 100;
+			periodPerformancePercentage = (amountAtLastDay / amountAtFirstDay - 1) * 100;
 			periodPerformanceValue = amountAtLastDay - amountAtFirstDay;
 			
 			DecimalFormat formatter = new DecimalFormat("#,##0.00'%'");
