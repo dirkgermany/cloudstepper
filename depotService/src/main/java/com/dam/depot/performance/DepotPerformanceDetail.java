@@ -8,10 +8,11 @@ public class DepotPerformanceDetail {
 	private LocalDate endDate;
 	private Float invest;
 	private Float investAtAll;
-	private Float amountAtBegin;
 	private Float openRate;
 	private Float closeRate;
 	private Float performancePercent;
+	private Float performanceAtAll;
+
 	private Boolean marketOpen = true;
 
 	public void addToInvest(Float value) {
@@ -21,18 +22,10 @@ public class DepotPerformanceDetail {
 		invest += value;
 	}
 
-	public Float getAmountAtBegin() {
-		return amountAtBegin;
-	}
-
-	public void setAmountAtBegin(Float open) {
-		this.amountAtBegin = open;
-	}
-
-	public void setPerformanceAsString(String performanceAsString) {
-		// nothing to do
-	}
-	
+//	public void setPerformanceAsString(String performanceAsString) {
+//		// nothing to do
+//	}
+//	
 	public String getPerformanceAsString() {
 		DecimalFormat formatter = new DecimalFormat("#,##0.00'%'");
 		formatter.setMultiplier(1);
@@ -64,8 +57,17 @@ public class DepotPerformanceDetail {
 		this.performancePercent = performancePercent;
 	}
 	
+	public void addPerformanceAtAll(Float value) {
+		if (null == performanceAtAll) {
+			performanceAtAll = value;
+		}
+		else {
+			performanceAtAll+= value;
+		}
+	}
+	
 	public Float getAmountAtEnd() {
-		return (getAmountAtBegin() + getInvest()) * (1+(getPerformancePercent()/100));
+		return getInvestAtAll() * (1+(getPerformancePercent()/100));
 	}
 
 	public Float getInvest() {
@@ -85,7 +87,7 @@ public class DepotPerformanceDetail {
 	}
 
 	public Float getInvestAtAll() {
-		return investAtAll;
+		return investAtAll == null ? 0F : investAtAll ;
 	}
 
 	public void setInvestAtAll(Float investAtAll) {
@@ -108,4 +110,7 @@ public class DepotPerformanceDetail {
 		this.closeRate = closeRate;
 	}
 
+	public Float getPerformanceAtAll() {
+		return getAmountAtEnd() - getInvestAtAll();
+	}
 }

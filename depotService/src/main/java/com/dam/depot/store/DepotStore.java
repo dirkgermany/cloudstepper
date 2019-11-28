@@ -92,20 +92,14 @@ public class DepotStore {
 
 		List<DepotPerformanceDetail> depotPerformanceDetails = new PerformanceCalculator().calculateDepotPerformance(startDate, endDate, depotTransactionList, dailyStockDetails);
 		
-		Float amountAtFirstDay = 0F;
-		Float amountAtLastDay = 0F;
 		Float periodPerformancePercentage = 0F;
 		Float periodPerformanceValue = 0F;
 		String periodPerformancePercentageAsString = "0.00%";
 		if (null != depotPerformanceDetails && !depotPerformanceDetails.isEmpty()) {
-			amountAtFirstDay = depotPerformanceDetails.get(0).getInvest();
-			amountAtLastDay = depotPerformanceDetails.get(depotPerformanceDetails.size() - 1).getAmountAtEnd();
-			periodPerformancePercentage = (amountAtLastDay / amountAtFirstDay - 1) * 100;
-			periodPerformanceValue = amountAtLastDay - amountAtFirstDay;
-			
-			DecimalFormat formatter = new DecimalFormat("#,##0.00'%'");
-			formatter.setMultiplier(1);
-			periodPerformancePercentageAsString = formatter.format(periodPerformancePercentage);
+			DepotPerformanceDetail lastDetail = depotPerformanceDetails.get(depotPerformanceDetails.size() - 1);
+			periodPerformancePercentage = lastDetail.getPerformancePercent();
+			periodPerformancePercentageAsString = lastDetail.getPerformanceAsString();
+			periodPerformanceValue = lastDetail.getAmountAtEnd() - lastDetail.getInvest();
 		}
 		return new DepotPerformanceResponse(200L, "OK", "Depot entries found", periodPerformancePercentage, periodPerformancePercentageAsString, periodPerformanceValue, depotPerformanceDetails);
 	}

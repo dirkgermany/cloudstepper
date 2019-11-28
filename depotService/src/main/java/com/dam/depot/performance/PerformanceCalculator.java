@@ -13,10 +13,12 @@ public class PerformanceCalculator {
 			List<DepotTransaction> depotTransactionList, Map<LocalDate, StockQuotationDetail> dailyStockDetails) {
 		LocalDate calculationDate = startDate;
 		int depotIndex = 0;
-		Float accountAmount = 0F;
+//		Float accountAmount = 0F;
 		List<DepotPerformanceDetail> dailyDetails = new ArrayList<>();
+		Float invest = 0F;
 		Float investAtAll = 0F;
-		
+		Float performanceDayBefore = 0F;
+
 		// VALUES FROM PORTFOLIO
 		// day by day
 		// from first invest date until today
@@ -24,8 +26,8 @@ public class PerformanceCalculator {
 			DepotPerformanceDetail dailyDetail = new DepotPerformanceDetail();
 			dailyDetail.setStartDate(calculationDate);
 			dailyDetail.setEndDate(calculationDate);
-			dailyDetail.setAmountAtBegin(accountAmount);
-			
+//			dailyDetail.setAmountAtBegin(accountAmount);
+
 			// Free day, no change
 			if (null != dailyStockDetails.get(calculationDate)) {
 				dailyDetail.setPerformancePercent(dailyStockDetails.get(calculationDate).getPerformancePercent());
@@ -33,7 +35,7 @@ public class PerformanceCalculator {
 				dailyDetail.setCloseRate(dailyStockDetails.get(calculationDate).getClose());
 			} else {
 				dailyDetail.setMarketOpen(false);
-				dailyDetail.setPerformancePercent(0F);
+				dailyDetail.setPerformancePercent(performanceDayBefore);
 			}
 
 			// also valid for the first time because the first entry of depotTransactions
@@ -42,14 +44,29 @@ public class PerformanceCalculator {
 			if (depotIndex < depotTransactionList.size()) {
 				if (depotTransactionList.get(depotIndex).getActionDate().toLocalDate().isEqual(calculationDate)) {
 					// consider payment
-					dailyDetail.addToInvest(depotTransactionList.get(depotIndex).getAmount());
+					Float returnOfInvest;
+					// first data
+					if (calculationDate.isEqual(startDate)) {
+						returnOfInvest = 0F;
+					} else {
+						// in the morning use the performance of the day before for calculation
+						returnOfInvest = investAtAll * (1 + (performanceDayBefore / 100));
+					}
+
+					// in the evening
+//					dailyDetail.setInvest(depotTransactionList.get(depotIndex).getAmount());
+					investAtAll = depotTransactionList.get(depotIndex).getAmount() + returnOfInvest;
+					invest+=depotTransactionList.get(depotIndex).getAmount();
 					depotIndex++;
 				}
 			}
-			investAtAll += dailyDetail.getInvest();
-			accountAmount = dailyDetail.getAmountAtEnd();
+			
+			if (null != dailyStockDetails.get(calculationDate)) {
+				performanceDayBefore = dailyStockDetails.get(calculationDate).getPerformancePercent();
+			}
+			
+			dailyDetail.setInvest(invest);
 			dailyDetail.setInvestAtAll(investAtAll);
-
 			dailyDetails.add(dailyDetail);
 			calculationDate = calculationDate.plusDays(1);
 		}
