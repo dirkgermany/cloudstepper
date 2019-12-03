@@ -1,8 +1,12 @@
 package com.dam.depot.store;
 
 import java.text.DecimalFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.TemporalUnit;
+import java.time.temporal.WeekFields;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +88,48 @@ public class DepotStore {
 		LocalDate startDate = extractDate(params.get("startDate"));
 		LocalDate endDate = extractDate(params.get("endDate"));
 
+		String period = params.get("period");
+		if (null != period) {
+			LocalDate today = LocalDate.now();
+			period = period.trim().toUpperCase();
+			switch (period) {
+			case "LAST_YEAR":
+				today = today.minusYears(1);
+				startDate = today.withDayOfYear(1);
+				endDate = today.withDayOfYear(today.lengthOfYear());
+				break;
+			case "LAST_MONTH":
+				today = today.minusMonths(1);
+				startDate = today.withDayOfMonth(1);
+				endDate = today.withDayOfMonth(today.lengthOfMonth());
+				break;
+			case "LAST_WEEK":
+				today = today.minusWeeks(1);
+				startDate = today.with(DayOfWeek.MONDAY);
+				endDate = today.with(DayOfWeek.FRIDAY);
+				break;
+			case "THIS_YEAR":
+				startDate = today.withDayOfYear(1);
+				endDate = LocalDate.now().minusDays(1);
+				break;
+			case "THIS_MONTH":
+				startDate = today.withDayOfMonth(1);
+				endDate = LocalDate.now().minusDays(1);
+				break;
+			case "THIS_WEEK":
+				startDate = today.with(DayOfWeek.MONDAY);
+				endDate = LocalDate.now().minusDays(1);
+				break;
+
+			default:
+				break;
+			}
+			
+			if (endDate.isBefore(startDate)) {
+				endDate = startDate;
+			}
+		}
+
 		if (null == startDate) {
 			startDate = depotTransactionList.get(0).getActionDate().toLocalDate();
 		}
@@ -96,11 +142,18 @@ public class DepotStore {
 		if (null == endDate) {
 			endDate = LocalDateTime.now().minusDays(1).toLocalDate();
 		}
-		
+
 		if (endDate.isBefore(startDate)) {
-			throw new DamServiceException(404L, "Invalid end date", "The last day of request must be equal or after start day");
+			throw new DamServiceException(404L, "Invalid end date",
+					"The last day of request must be equal or after start day");
 		}
-		
+
+		// last but not least
+		// ensure that start date is not before the first invest of user
+		if (startDate.isBefore(depotTransactionList.get(0).getActionDate().toLocalDate())) {
+			startDate = depotTransactionList.get(0).getActionDate().toLocalDate();
+		}
+
 		PortfolioPerformance portfolioPerformance = client.readPortfolioPerformance(userId, portfolioId, startDate,
 				endDate, tokenId);
 		Map<LocalDate, StockQuotationDetail> dailyStockDetails = portfolioPerformance.getDailyDetails();
@@ -120,12 +173,11 @@ public class DepotStore {
 		return new DepotPerformanceResponse(200L, "OK", "Depot entries found", periodPerformancePercentage,
 				periodPerformancePercentageAsString, periodPerformanceValue, depotPerformanceDetails);
 	}
-	
+
 	private LocalDate extractDate(String dateString) throws DamServiceException {
 		try {
 			return LocalDate.parse(dateString);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
