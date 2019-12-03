@@ -20,11 +20,11 @@ public class StockQuotationDetail {
 	private Float close;
 	private Float openWeighted;
 	private Float closeWeighted;
-	private Float performanceTotal;
-	private Float performancePercentage;
-	private Float percentage;
-	private Float performance;
-	private Float performanceValue;
+//	private Float performanceTotal;
+//	private Float performancePercentage;
+//	private Float percentage;
+//	private Float performance;
+//	private Float performanceValue;
 
 	private Long stockHistoryId;
 
@@ -152,43 +152,43 @@ public class StockQuotationDetail {
 		this.closeWeighted = closeWeighted;
 	}
 
-	public Float getPerformanceTotal() {
-		return performanceTotal;
-	}
-
-	public void setPerformanceTotal(Float performanceTotal) {
-		this.performanceTotal = performanceTotal;
-	}
-
-	public Float getPerformancePercentage() {
-		return performancePercentage;
-	}
-
-	public void setPerformancePercentage(Float performancePercentage) {
-		this.performancePercentage = performancePercentage;
-	}
-
-	public Float getPercentage() {
-		return percentage;
-	}
-
-	public void setPercentage(Float percentage) {
-		this.percentage = percentage;
-	}
-
-	public Float getPerformance() {
-		return performance;
-	}
-
-	public void setPerformance(Float performance) {
-		this.performance = performance;
-	}
-
-	public Float getPerformanceValue() {
-		return performanceValue;
-	}
-
-	public void setPerformanceValue(Float performanceValue) {
-		this.performanceValue = performanceValue;
-	}
+//	public Float getPerformanceTotal() {
+//		return performanceTotal;
+//	}
+//
+//	public void setPerformanceTotal(Float performanceTotal) {
+//		this.performanceTotal = performanceTotal;
+//	}
+//
+//	public Float getPerformancePercentage() {
+//		return performancePercentage;
+//	}
+//
+//	public void setPerformancePercentage(Float performancePercentage) {
+//		this.performancePercentage = performancePercentage;
+//	}
+//
+//	public Float getPercentage() {
+//		return percentage;
+//	}
+//
+//	public void setPercentage(Float percentage) {
+//		this.percentage = percentage;
+//	}
+//
+//	public Float getPerformance() {
+//		return performance;
+//	}
+//
+//	public void setPerformance(Float performance) {
+//		this.performance = performance;
+//	}
+//
+//	public Float getPerformanceValue() {
+//		return performanceValue;
+//	}
+//
+//	public void setPerformanceValue(Float performanceValue) {
+//		this.performanceValue = performanceValue;
+//	}
 }

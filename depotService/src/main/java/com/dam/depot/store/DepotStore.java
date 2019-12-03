@@ -125,9 +125,6 @@ public class DepotStore {
 				break;
 			}
 			
-			if (endDate.isBefore(startDate)) {
-				endDate = startDate;
-			}
 		}
 
 		if (null == startDate) {
@@ -143,15 +140,19 @@ public class DepotStore {
 			endDate = LocalDateTime.now().minusDays(1).toLocalDate();
 		}
 
-		if (endDate.isBefore(startDate)) {
-			throw new DamServiceException(404L, "Invalid end date",
-					"The last day of request must be equal or after start day");
-		}
+//		if (endDate.isBefore(startDate)) {
+//			throw new DamServiceException(404L, "Invalid end date",
+//					"The last day of request must be equal or after start day");
+//		}
 
 		// last but not least
 		// ensure that start date is not before the first invest of user
 		if (startDate.isBefore(depotTransactionList.get(0).getActionDate().toLocalDate())) {
 			startDate = depotTransactionList.get(0).getActionDate().toLocalDate();
+		}
+
+		if (endDate.isBefore(startDate)) {
+			endDate = startDate;
 		}
 
 		PortfolioPerformance portfolioPerformance = client.readPortfolioPerformance(userId, portfolioId, startDate,

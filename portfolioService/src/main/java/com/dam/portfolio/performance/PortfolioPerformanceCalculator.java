@@ -163,50 +163,50 @@ public class PortfolioPerformanceCalculator {
 		}
 
 		if (portfolioPerformance.getStartDate().isEqual(assetPerformance.getStartDate())) {			
-			Float assetWeightedValueOpen = calculateWeightedValueOfAsset(assetPerformance.getOpen(),assetPerformance.getWeighting(), lookupForAssetClassPercentage(assetPerformance, portfolioPerformance));
+//			Float assetWeightedValueOpen = calculateWeightedValueOfAsset(assetPerformance.getOpen(),assetPerformance.getWeighting(), lookupForAssetClassPercentage(assetPerformance, portfolioPerformance));
 			portfolioPerformance.addToOpen(assetPerformance.getOpen());
-			portfolioPerformance.addToOpenWeighted(assetWeightedValueOpen);
+			portfolioPerformance.addToOpenWeighted(assetPerformance.getDailyDetails().get(portfolioPerformance.getStartDate()).getOpenWeighted());
 
 			// group by class types
 			// add values per class type
-			ClassTypeValues classTypeValues = portfolioPerformance.getClassTypeValuesMap().get(assetPerformance.getAssetClassType());
-			if (null == classTypeValues) {
-				classTypeValues = new ClassTypeValues();
-				portfolioPerformance.getClassTypeValuesMap().put(assetPerformance.getAssetClassType(), classTypeValues);
-			}
-			classTypeValues.addToOpen(assetPerformance.getOpen());
-			classTypeValues.addToOpenWeighted(assetWeightedValueOpen);
-			AssetClassValues assetValues = classTypeValues.getAssetClassValues().get(assetPerformance.getSymbol());
-			if (null == assetValues) {
-				assetValues = new AssetClassValues();
-				classTypeValues.getAssetClassValues().put(assetPerformance.getSymbol(), assetValues);
-			}
-			assetValues.setOpen(assetPerformance.getOpen());
-			assetValues.setOpenWeighted(assetWeightedValueOpen);
-			assetValues.setWeighting(assetPerformance.getWeighting());
+//			ClassTypeValues classTypeValues = portfolioPerformance.getClassTypeValuesMap().get(assetPerformance.getAssetClassType());
+//			if (null == classTypeValues) {
+//				classTypeValues = new ClassTypeValues();
+//				portfolioPerformance.getClassTypeValuesMap().put(assetPerformance.getAssetClassType(), classTypeValues);
+//			}
+//			classTypeValues.addToOpen(assetPerformance.getOpen());
+//			classTypeValues.addToOpenWeighted(assetWeightedValueOpen);
+//			AssetClassValues assetValues = classTypeValues.getAssetClassValues().get(assetPerformance.getSymbol());
+//			if (null == assetValues) {
+//				assetValues = new AssetClassValues();
+//				classTypeValues.getAssetClassValues().put(assetPerformance.getSymbol(), assetValues);
+//			}
+//			assetValues.setOpen(assetPerformance.getOpen());
+//			assetValues.setOpenWeighted(assetWeightedValueOpen);
+//			assetValues.setWeighting(assetPerformance.getWeighting());
 		}
 		
 		if (portfolioPerformance.getEndDate().isEqual(assetPerformance.getEndDate())) {
-			Float assetWeightedValueClose = calculateWeightedValueOfAsset(assetPerformance.getClose(), assetPerformance.getWeighting(), lookupForAssetClassPercentage(assetPerformance, portfolioPerformance));
+//			Float assetWeightedValueClose = calculateWeightedValueOfAsset(assetPerformance.getClose(), assetPerformance.getWeighting(), lookupForAssetClassPercentage(assetPerformance, portfolioPerformance));
 			portfolioPerformance.addToClose(assetPerformance.getClose());
-			portfolioPerformance.addToCloseWeighted(assetWeightedValueClose);
+			portfolioPerformance.addToCloseWeighted(assetPerformance.getDailyDetails().get(portfolioPerformance.getEndDate()).getCloseWeighted());
 
-			ClassTypeValues classTypeValues = portfolioPerformance.getClassTypeValuesMap()
-					.get(assetPerformance.getAssetClassType());
-			if (null == classTypeValues) {
-				classTypeValues = new ClassTypeValues();
-				portfolioPerformance.getClassTypeValuesMap().put(assetPerformance.getAssetClassType(), classTypeValues);
-			}
-			classTypeValues.addToClose(assetPerformance.getClose());
-			classTypeValues.addToCloseWeighted(assetWeightedValueClose);
-			AssetClassValues assetValues = classTypeValues.getAssetClassValues().get(assetPerformance.getSymbol());
-			if (null == assetValues) {
-				assetValues = new AssetClassValues();
-				classTypeValues.getAssetClassValues().put(assetPerformance.getSymbol(), assetValues);
-			}
-			assetValues.setClose(assetPerformance.getClose());
-			assetValues.setCloseWeighted(assetWeightedValueClose);
-			assetValues.setWeighting(assetPerformance.getWeighting());
+//			ClassTypeValues classTypeValues = portfolioPerformance.getClassTypeValuesMap()
+//					.get(assetPerformance.getAssetClassType());
+//			if (null == classTypeValues) {
+//				classTypeValues = new ClassTypeValues();
+//				portfolioPerformance.getClassTypeValuesMap().put(assetPerformance.getAssetClassType(), classTypeValues);
+//			}
+//			classTypeValues.addToClose(assetPerformance.getClose());
+//			classTypeValues.addToCloseWeighted(assetWeightedValueClose);
+//			AssetClassValues assetValues = classTypeValues.getAssetClassValues().get(assetPerformance.getSymbol());
+//			if (null == assetValues) {
+//				assetValues = new AssetClassValues();
+//				classTypeValues.getAssetClassValues().put(assetPerformance.getSymbol(), assetValues);
+//			}
+//			assetValues.setClose(assetPerformance.getClose());
+//			assetValues.setCloseWeighted(assetWeightedValueClose);
+//			assetValues.setWeighting(assetPerformance.getWeighting());
 		}
 
 		Iterator<StockQuotationDetail> it = assetPerformance.getDailyDetails().values().iterator();
@@ -223,14 +223,14 @@ public class PortfolioPerformanceCalculator {
 				portfolioPerformance.getDailyDetails().put(portfolioDetail.getStartDate(), portfolioDetail);
 			}
 			
-			Float percentage = lookupForAssetClassPercentage(assetPerformance, portfolioPerformance);
-			Float openWeighted = calculateWeightedValueOfAsset(assetDetail.getOpen(), assetPerformance.getWeighting(), percentage);
-			Float closeWeighted = calculateWeightedValueOfAsset(assetDetail.getClose(), assetPerformance.getWeighting(), percentage);
+//			Float percentage = lookupForAssetClassPercentage(assetPerformance, portfolioPerformance);
+//			Float openWeighted = calculateWeightedValueOfAsset(assetDetail.getOpen(), assetPerformance.getWeighting(), percentage);
+//			Float closeWeighted = calculateWeightedValueOfAsset(assetDetail.getClose(), assetPerformance.getWeighting(), percentage);
 
 			portfolioDetail.addToOpen(assetDetail.getOpen());
 			portfolioDetail.addToClose(assetDetail.getClose());
-			portfolioDetail.addToOpenWeighted(openWeighted);
-			portfolioDetail.addToCloseWeighted(closeWeighted);
+			portfolioDetail.addToOpenWeighted(assetDetail.getOpenWeighted());
+			portfolioDetail.addToCloseWeighted(assetDetail.getCloseWeighted());
 		}
 		return portfolioPerformance;
 	}
@@ -257,6 +257,7 @@ public class PortfolioPerformanceCalculator {
 		int year = stockHistory.getHistoryDate().getYear();
 		
 		// StockQuotationDetail holds stock informations PLUS portfolio weighted informations for one asset for one day
+		Float assetPercentage = lookupForAssetPercentage(assetPerformance, portfolioPerformance);
 		StockQuotationDetail assetPerformanceDetail = new StockQuotationDetail();
 		assetPerformanceDetail.setStockHistoryId(stockHistory.getStockHistoryId());
 		assetPerformanceDetail.setStartDate(stockHistory.getHistoryDate());
@@ -264,15 +265,14 @@ public class PortfolioPerformanceCalculator {
 		assetPerformanceDetail.setOpen(stockHistory.getOpen());
 		assetPerformanceDetail.setClose(stockHistory.getClose());
 		
-		Float assetPercentage = lookupForAssetPercentage(assetPerformance, portfolioPerformance);
-		Float dailyPerformanceTotal = (stockHistory.getClose() / stockHistory.getOpen() -1) * 100;
-		Float dailyPerformancePercentage = dailyPerformanceTotal * assetPercentage;
-		Float performance = dailyPerformancePercentage / 100;
-		Float performanceValue = assetPercentage + performance;
-		assetPerformanceDetail.setPerformancePercentage(dailyPerformancePercentage);
-		assetPerformanceDetail.setPerformanceTotal(dailyPerformanceTotal); 
-		assetPerformanceDetail.setPerformance(performance);
-		assetPerformanceDetail.setPerformanceValue(performanceValue);
+//		Float dailyPerformanceTotal = (stockHistory.getClose() / stockHistory.getOpen() -1) * 100;
+//		Float dailyPerformancePercentage = dailyPerformanceTotal * assetPercentage;
+//		Float performance = dailyPerformancePercentage / 100;
+//		Float performanceValue = assetPercentage + performance;
+//		assetPerformanceDetail.setPerformancePercentage(dailyPerformancePercentage);
+//		assetPerformanceDetail.setPerformanceTotal(dailyPerformanceTotal); 
+//		assetPerformanceDetail.setPerformance(performance);
+//		assetPerformanceDetail.setPerformanceValue(performanceValue);
 		
 		
 		Float assetWeightedOpen = assetPerformanceDetail.getOpen() * assetPercentage;
