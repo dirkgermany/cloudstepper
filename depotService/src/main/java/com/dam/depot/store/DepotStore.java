@@ -79,19 +79,35 @@ public class DepotStore {
 			return null;
 		}
 
-		LocalDate startDate = depotTransactionList.get(0).getActionDate().toLocalDate();
+		// if start date not given by GET param use first entry of depot investments
+		// the same with end date - if not part of the request use yesterday
+		LocalDate startDate = extractDate(params.get("startDate"));
+		LocalDate endDate = extractDate(params.get("endDate"));
+
+		if (null == startDate) {
+			startDate = depotTransactionList.get(0).getActionDate().toLocalDate();
+		}
+
 		if (startDate.isAfter(LocalDateTime.now().minusDays(1).toLocalDate())) {
 			throw new DamServiceException(404L, "Invalid start date",
 					"The first day of invest was today but must be before today or earlier");
 		}
 
-		LocalDate endDate = LocalDateTime.now().minusDays(1).toLocalDate();
+		if (null == endDate) {
+			endDate = LocalDateTime.now().minusDays(1).toLocalDate();
+		}
+		
+		if (endDate.isBefore(startDate)) {
+			throw new DamServiceException(404L, "Invalid end date", "The last day of request must be equal or after start day");
+		}
+		
 		PortfolioPerformance portfolioPerformance = client.readPortfolioPerformance(userId, portfolioId, startDate,
 				endDate, tokenId);
 		Map<LocalDate, StockQuotationDetail> dailyStockDetails = portfolioPerformance.getDailyDetails();
 
-		List<DepotPerformanceDetail> depotPerformanceDetails = new PerformanceCalculator().calculateDepotPerformance(startDate, endDate, depotTransactionList, dailyStockDetails);
-		
+		List<DepotPerformanceDetail> depotPerformanceDetails = new PerformanceCalculator()
+				.calculateDepotPerformance(startDate, endDate, depotTransactionList, dailyStockDetails);
+
 		Float periodPerformancePercentage = 0F;
 		Float periodPerformanceValue = 0F;
 		String periodPerformancePercentageAsString = "0.00%";
@@ -101,7 +117,17 @@ public class DepotStore {
 			periodPerformancePercentageAsString = lastDetail.getPerformanceAsString();
 			periodPerformanceValue = lastDetail.getAmountAtEnd() - lastDetail.getInvest();
 		}
-		return new DepotPerformanceResponse(200L, "OK", "Depot entries found", periodPerformancePercentage, periodPerformancePercentageAsString, periodPerformanceValue, depotPerformanceDetails);
+		return new DepotPerformanceResponse(200L, "OK", "Depot entries found", periodPerformancePercentage,
+				periodPerformancePercentageAsString, periodPerformanceValue, depotPerformanceDetails);
+	}
+	
+	private LocalDate extractDate(String dateString) throws DamServiceException {
+		try {
+			return LocalDate.parse(dateString);
+		}
+		catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Long extractLong(String longString) throws DamServiceException {

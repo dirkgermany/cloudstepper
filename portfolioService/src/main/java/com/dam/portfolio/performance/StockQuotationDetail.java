@@ -7,6 +7,8 @@ import java.time.Month;
 
 import org.apache.commons.math3.util.Precision;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class StockQuotationDetail {
 	private LocalDate startDate;
 	private LocalDate endDate;
@@ -18,6 +20,11 @@ public class StockQuotationDetail {
 	private Float close;
 	private Float openWeighted;
 	private Float closeWeighted;
+	private Float performanceTotal;
+	private Float performancePercentage;
+	private Float percentage;
+	private Float performance;
+	private Float performanceValue;
 
 	private Long stockHistoryId;
 
@@ -143,5 +150,45 @@ public class StockQuotationDetail {
 
 	public void setCloseWeighted(Float closeWeighted) {
 		this.closeWeighted = closeWeighted;
+	}
+
+	public Float getPerformanceTotal() {
+		return performanceTotal;
+	}
+
+	public void setPerformanceTotal(Float performanceTotal) {
+		this.performanceTotal = performanceTotal;
+	}
+
+	public Float getPerformancePercentage() {
+		return performancePercentage;
+	}
+
+	public void setPerformancePercentage(Float performancePercentage) {
+		this.performancePercentage = performancePercentage;
+	}
+
+	public Float getPercentage() {
+		return percentage;
+	}
+
+	public void setPercentage(Float percentage) {
+		this.percentage = percentage;
+	}
+
+	public Float getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(Float performance) {
+		this.performance = performance;
+	}
+
+	public Float getPerformanceValue() {
+		return performanceValue;
+	}
+
+	public void setPerformanceValue(Float performanceValue) {
+		this.performanceValue = performanceValue;
 	}
 }
