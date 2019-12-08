@@ -18,6 +18,8 @@ public class PerformanceCalculator {
 		Float invest = 0F;
 		Float investAtAll = 0F;
 		Float performanceDayBefore = 0F;
+//		Float openRateDayBefore = 0F;
+		Float closeRateDayBefore = 0F;
 
 		// VALUES FROM PORTFOLIO
 		// day by day
@@ -28,14 +30,18 @@ public class PerformanceCalculator {
 			dailyDetail.setEndDate(calculationDate);
 //			dailyDetail.setAmountAtBegin(accountAmount);
 
-			// Free day, no change
 			if (null != dailyStockDetails.get(calculationDate)) {
+				// available data for this day
 				dailyDetail.setPerformancePercent(dailyStockDetails.get(calculationDate).getPerformancePercent());
-				dailyDetail.setOpenRate(dailyStockDetails.get(calculationDate).getOpen());
-				dailyDetail.setCloseRate(dailyStockDetails.get(calculationDate).getClose());
+				dailyDetail.setOpenRate(dailyStockDetails.get(calculationDate).getOpenWeighted());
+				dailyDetail.setCloseRate(dailyStockDetails.get(calculationDate).getCloseWeighted());
+				closeRateDayBefore = dailyStockDetails.get(calculationDate).getCloseWeighted();
 			} else {
+				// Free day, no change
 				dailyDetail.setMarketOpen(false);
 				dailyDetail.setPerformancePercent(performanceDayBefore);
+				dailyDetail.setOpenRate(closeRateDayBefore);
+				dailyDetail.setCloseRate(closeRateDayBefore);
 			}
 
 			// also valid for the first time because the first entry of depotTransactions

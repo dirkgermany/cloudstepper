@@ -111,6 +111,6 @@ public class DepotPerformanceDetail {
 	}
 
 	public Float getPerformanceAtAll() {
-		return getAmountAtEnd() - getInvestAtAll();
+		return getAmountAtEnd() - getInvest();
 	}
 }

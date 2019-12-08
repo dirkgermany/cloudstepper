@@ -78,6 +78,10 @@ public class Client {
 		}
 
 	}
+	
+	public User readUser(Long userId) throws DamServiceException {
+		UserRequest userRequest = new UserRequest(userId);
+	}
 
 //	public List<StockHistory> readAssetStockHistory(StockHistory stockHistory, LocalDate startDate, LocalDate endDate)
 //			throws DamServiceException {

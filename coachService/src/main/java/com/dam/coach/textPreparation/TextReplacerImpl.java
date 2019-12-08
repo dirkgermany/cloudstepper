@@ -1,18 +1,10 @@
 package com.dam.coach.textPreparation;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.dam.coach.model.entity.CoachAction;
 import com.dam.coach.rest.consumer.Client;
 import com.dam.coach.rest.message.RestRequest;
-import com.dam.coach.rest.message.coachAction.CoachActionRequest;
 import com.dam.coach.types.Category;
 import com.dam.exception.DamServiceException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class TextReplacerImpl extends Client implements TextReplacer {

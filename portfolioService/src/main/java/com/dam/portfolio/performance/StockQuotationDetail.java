@@ -97,11 +97,11 @@ public class StockQuotationDetail {
 	}
 
 	public Float getPerformancePercent() {
-		if (null == this.open || null == this.close) {
+		if (null == this.openWeighted || null == this.closeWeighted) {
 			return 0F;
 		}
 		
-		float calculated = ((this.close/this.open - 1) * 100);
+		float calculated = ((this.closeWeighted/this.openWeighted - 1) * 100);
 		return Precision.round(calculated, 6);
 	}
 	
