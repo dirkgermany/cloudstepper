@@ -100,7 +100,7 @@ public class DepotStore {
 		Float invest = response.getDepotPerformanceDetails().get(response.getDepotPerformanceDetails().size()-1).getInvest();
 		LocalDate firstInvestDate = response.getDepotPerformanceDetails().get(0).getStartDate();
 		LocalDate lastInvestDate = response.getDepotPerformanceDetails().get(response.getDepotPerformanceDetails().size()-1).getStartDate();
-		long daysOfPeriod = Period.between(firstInvestDate, lastInvestDate).getDays();
+		Integer daysOfPeriod = Period.between(firstInvestDate, lastInvestDate).getDays();
 		
 
 		Float depotValue = response.getPeriodAmountAtEnd();
@@ -110,7 +110,7 @@ public class DepotStore {
 		Integer daysToGoal = daysToGoalFloat.intValue();
 		
 		if (daysToGoal < 0) {
-			throw new DamServiceException(410L, "Calculation not possible", "firstInvestDate: " + firstInvestDate + " lastInvestDate: " + lastInvestDate + "goalAmount: " + goalAmount + "  depotValue: " + depotValue + " ROI: " + ROI + " daysOfPeriod: "+ daysOfPeriod + " savingFactor: " + savingFactor + "  The saving rate cannot countervail the negative portfolio performance");
+			throw new DamServiceException(410L, "Calculation not possible", "firstInvestDate: " + firstInvestDate + " lastInvestDate: " + lastInvestDate + "goalAmount: " + goalAmount + "  depotValue: " + depotValue + " ROI: " + ROI + " daysOfPeriod: "+ daysOfPeriod.toString() + " savingFactor: " + savingFactor + "  The saving rate cannot countervail the negative portfolio performance");
 		}
 		
 		LocalDate dateOfGoal =  LocalDate.now().plusDays(daysToGoal);
