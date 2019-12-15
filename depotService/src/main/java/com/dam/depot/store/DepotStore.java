@@ -109,6 +109,10 @@ public class DepotStore {
 		Float daysToGoalFloat = (goalAmount - depotValue) / (ROI / daysOfPeriod + savingFactor);
 		Integer daysToGoal = daysToGoalFloat.intValue();
 		
+		if (daysToGoal < 0) {
+			throw new DamServiceException(410L, "Calculation not possible", "The saving rate cannot countervail the negative portfolio performance");
+		}
+		
 		LocalDate dateOfGoal =  LocalDate.now().plusDays(daysToGoal);
 
 		return new DaysToGoalResponse(200L, "OK", "Days until reaching goal calculated", daysToGoal, dateOfGoal, invest, ROI, depotValue);
