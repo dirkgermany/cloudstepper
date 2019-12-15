@@ -26,4 +26,14 @@ public class DepotController extends MasterController {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}
 	}
+	
+	@GetMapping("/calcDaysToGoal")
+	public RestResponse calcDaysToGoal(@RequestParam Map<String, String> params, @RequestHeader(name = "tokenId", required = false) String tokenId) throws DamServiceException {
+		Map<String, String> decodedMap = decodeUrlMap(params);
+		try {
+			return depotStore.calcDaysToGoalSafe(decodedMap, tokenId);
+		} catch (DamServiceException e) {
+			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
+		}
+	}
 }

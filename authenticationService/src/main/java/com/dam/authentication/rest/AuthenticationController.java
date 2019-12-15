@@ -53,6 +53,7 @@ public class AuthenticationController extends MasterController{
 		userName = decode(userName);
 		password = decode(password);
 		LoginRequest loginRequest = new LoginRequest(userName, password, null);
+	//	return login(loginRequest);
 		return ((TokenValidationResponse)login(loginRequest)).getTokenId().toString();
 	}
 

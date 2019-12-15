@@ -11,13 +11,15 @@ public class DepotPerformanceResponse extends RestResponse{
 	private Float periodPerformancePercentage;
 	private Float periodPerformanceValue;
 	private String periodPerformancePercentageAsString;
+	private Float periodAmountAtEnd;
 	
-	public DepotPerformanceResponse(Long result, String shortStatus, String longStatus, Float periodPerformancePercentage, String periodPerformancePercentageAsString, Float periodPerformanceValue, List<DepotPerformanceDetail> depotPerformanceDetails) {
+	public DepotPerformanceResponse(Long result, String shortStatus, String longStatus, Float periodPerformancePercentage, String periodPerformancePercentageAsString, Float periodPerformanceValue, Float periodAmountAtEnd, List<DepotPerformanceDetail> depotPerformanceDetails) {
 		super(result, shortStatus, longStatus);
 		setDepotPerformanceDetails(depotPerformanceDetails);
 		setPeriodPerformanceValue(periodPerformanceValue);
 		setPeriodPerformancePercentage(periodPerformancePercentage);
 		setPeriodPerformancePercentageAsString(periodPerformancePercentageAsString);
+		setPeriodAmountAtEnd(periodAmountAtEnd);
 	}
 
 	public List<DepotPerformanceDetail> getDepotPerformanceDetails() {
@@ -50,6 +52,14 @@ public class DepotPerformanceResponse extends RestResponse{
 
 	public void setPeriodPerformancePercentageAsString(String periodPerformancePercentageAsString) {
 		this.periodPerformancePercentageAsString = periodPerformancePercentageAsString;
+	}
+
+	public Float getPeriodAmountAtEnd() {
+		return periodAmountAtEnd;
+	}
+
+	public void setPeriodAmountAtEnd(Float periodAmountAtEnd) {
+		this.periodAmountAtEnd = periodAmountAtEnd;
 	}
 
 }

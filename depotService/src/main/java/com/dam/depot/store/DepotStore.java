@@ -5,6 +5,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.Period;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.WeekFields;
 import java.util.Iterator;
@@ -25,6 +26,7 @@ import com.dam.depot.performance.PerformanceCalculator;
 import com.dam.depot.performance.PortfolioPerformance;
 import com.dam.depot.performance.StockQuotationDetail;
 import com.dam.depot.rest.consumer.Client;
+import com.dam.depot.rest.message.performance.DaysToGoalResponse;
 import com.dam.depot.rest.message.performance.DepotPerformanceResponse;
 import com.dam.depot.types.ActionType;
 import com.dam.exception.DamServiceException;
@@ -43,6 +45,9 @@ public class DepotStore {
 
 	@Autowired
 	private DepotTransactionStore depotTransactionStore;
+	
+	@Autowired
+	private AccountStatusStore accountStatusStore;
 
 	@Autowired
 	private Client client;
@@ -62,6 +67,54 @@ public class DepotStore {
 	public Depot getDepotByUserPortfolio(Long userId, Long portfolioId) {
 		return depotModel.findByUserPortfolio(userId, portfolioId);
 	}
+	
+	/**
+	 * Summarizes all investments and calculates the days until the goal is reached.
+	 * Formula: (goalValue - depotValue) / (ROI / daysOfPeriod + savingFactor) 
+	 * @param params
+	 * @param tokenId
+	 * @return
+	 * @throws DamServiceException
+	 */
+	public DaysToGoalResponse calcDaysToGoalSafe(Map<String, String> params, String tokenId) throws DamServiceException {
+		PermissionCheck.checkRequestedParams(params.get("requestorUserId"), params.get("rights"));
+		Long requestorUserId = extractLong(params.get("requestorUserId"));
+		
+		Float savingFactor = extractFloat(params.get("savingFactor"));
+		if (null == savingFactor) {
+			throw new DamServiceException(404L, "Missing parameter savingFactor", "Factor of saving must be part of the request");
+		}
+
+		Long userId = extractLong(params.get("userId"));
+
+		// Check if the permissions is set
+		PermissionCheck.isReadPermissionSet(requestorUserId, userId, params.get("rights"));
+		
+		Float goalAmount = extractFloat(params.get("goalAmount"));
+		
+		DepotPerformanceResponse response = getDepotPerformance(params, tokenId);
+		if (null == response || null == response.getDepotPerformanceDetails() || response.getDepotPerformanceDetails().size() == 0)  {
+			throw new DamServiceException(410L, "Calculation not possible", "Not enough values, perhaps period too short");
+		}
+		
+		Float invest = response.getDepotPerformanceDetails().get(response.getDepotPerformanceDetails().size()-1).getInvest();
+		LocalDate firstInvestDate = response.getDepotPerformanceDetails().get(0).getStartDate();
+		LocalDate lastInvestDate = response.getDepotPerformanceDetails().get(response.getDepotPerformanceDetails().size()-1).getStartDate();
+		long daysOfPeriod = Period.between(firstInvestDate, lastInvestDate).getDays();
+		
+
+		Float depotValue = response.getPeriodAmountAtEnd();
+		Float ROI = response.getPeriodPerformanceValue();
+		
+		Float daysToGoalFloat = (goalAmount - depotValue) / (ROI / daysOfPeriod + savingFactor);
+		Integer daysToGoal = daysToGoalFloat.intValue();
+		
+		LocalDate dateOfGoal =  LocalDate.now().plusDays(daysToGoal);
+
+		return new DaysToGoalResponse(200L, "OK", "Days until reaching goal calculated", daysToGoal, dateOfGoal, invest, ROI, depotValue);
+
+	}
+	
 
 	public DepotPerformanceResponse getDepotPerformanceSafe(Map<String, String> params, String tokenId)
 			throws DamServiceException {
@@ -74,6 +127,15 @@ public class DepotStore {
 
 		// Check if the permissions is set
 		PermissionCheck.isReadPermissionSet(requestorUserId, userId, params.get("rights"));
+		
+		return getDepotPerformance(params, tokenId);
+
+	}
+
+	private DepotPerformanceResponse getDepotPerformance (Map<String, String> params, String tokenId)
+			throws DamServiceException {
+		Long portfolioId = extractLong(params.get("portfolioId"));
+		Long userId = extractLong(params.get("userId"));
 
 		// List of depotTransactions of user and portfolio
 		// Ordered by action_date (date when investor did something with his depot)
@@ -140,11 +202,6 @@ public class DepotStore {
 			endDate = LocalDateTime.now().minusDays(1).toLocalDate();
 		}
 
-//		if (endDate.isBefore(startDate)) {
-//			throw new DamServiceException(404L, "Invalid end date",
-//					"The last day of request must be equal or after start day");
-//		}
-
 		// last but not least
 		// ensure that start date is not before the first invest of user
 		if (startDate.isBefore(depotTransactionList.get(0).getActionDate().toLocalDate())) {
@@ -164,15 +221,17 @@ public class DepotStore {
 
 		Float periodPerformancePercentage = 0F;
 		Float periodPerformanceValue = 0F;
+		Float periodAmountAtEnd = 0F;
 		String periodPerformancePercentageAsString = "0.00%";
 		if (null != depotPerformanceDetails && !depotPerformanceDetails.isEmpty()) {
 			DepotPerformanceDetail lastDetail = depotPerformanceDetails.get(depotPerformanceDetails.size() - 1);
 			periodPerformancePercentage = lastDetail.getPerformancePercent();
 			periodPerformancePercentageAsString = lastDetail.getPerformanceAsString();
 			periodPerformanceValue = lastDetail.getAmountAtEnd() - lastDetail.getInvest();
+			periodAmountAtEnd = lastDetail.getAmountAtEnd();
 		}
 		return new DepotPerformanceResponse(200L, "OK", "Depot entries found", periodPerformancePercentage,
-				periodPerformancePercentageAsString, periodPerformanceValue, depotPerformanceDetails);
+				periodPerformancePercentageAsString, periodPerformanceValue, periodAmountAtEnd, depotPerformanceDetails);
 	}
 
 	private LocalDate extractDate(String dateString) throws DamServiceException {
@@ -181,6 +240,15 @@ public class DepotStore {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	private Float extractFloat (String floatString) throws DamServiceException {
+		try {
+			return Float.valueOf(floatString);
+		} catch (Exception e) {
+			throw new DamServiceException(404L, "Extraction Float from String failed",
+					"Parameter is required but null or does not represent a Long value");
+		}		
 	}
 
 	private Long extractLong(String longString) throws DamServiceException {
