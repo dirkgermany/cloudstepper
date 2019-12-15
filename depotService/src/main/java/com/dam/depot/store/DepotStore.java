@@ -81,10 +81,6 @@ public class DepotStore {
 		PermissionCheck.checkRequestedParams(params.get("requestorUserId"), params.get("rights"));
 		Long requestorUserId = extractLong(params.get("requestorUserId"));
 		
-		Float savingFactor = extractFloat(params.get("savingFactor"));
-		if (null == savingFactor) {
-			throw new DamServiceException(404L, "Missing parameter savingFactor", "Factor of saving must be part of the request");
-		}
 
 		Long userId = extractLong(params.get("userId"));
 
@@ -92,6 +88,15 @@ public class DepotStore {
 		PermissionCheck.isReadPermissionSet(requestorUserId, userId, params.get("rights"));
 		
 		Float goalAmount = extractFloat(params.get("goalAmount"));
+		if (null == goalAmount) {
+			throw new DamServiceException(404L, "Missing parameter goalAmount", "goalAmount must be part of the request");
+		}
+		
+		String sF = params.get("savingFactor");
+		if (null == sF) {
+			sF = "0";
+		}
+		Float savingFactor = extractFloat(sF);
 		
 		DepotPerformanceResponse response = getDepotPerformance(params, tokenId);
 		if (null == response || null == response.getDepotPerformanceDetails() || response.getDepotPerformanceDetails().size() == 0)  {
@@ -113,7 +118,7 @@ public class DepotStore {
 		Integer daysToGoal = daysToGoalFloat.intValue();
 		
 		if (daysToGoal < 0) {
-			throw new DamServiceException(410L, "Calculation not possible", "firstInvestDate: " + firstInvestDate + " lastInvestDate: " + lastInvestDate + "goalAmount: " + goalAmount + "  depotValue: " + depotValue + " ROI: " + ROI + " daysOfPeriod: "+ daysOfPeriod + " savingFactor: " + savingFactor + "  The saving rate cannot countervail the negative portfolio performance");
+			throw new DamServiceException(410L, "Calculation not possible", "The saving rate cannot countervail the negative portfolio performance");
 		}
 		
 		LocalDate dateOfGoal =  LocalDate.now().plusDays(daysToGoal);
