@@ -110,7 +110,7 @@ public class DepotStore {
 		Integer daysToGoal = daysToGoalFloat.intValue();
 		
 		if (daysToGoal < 0) {
-			throw new DamServiceException(410L, "Calculation not possible", "The saving rate cannot countervail the negative portfolio performance");
+			throw new DamServiceException(410L, "Calculation not possible", "goalAmount: " + goalAmount + "  depotValue: " + depotValue + " ROI: " + ROI + " daysOfPeriod: "+ daysOfPeriod + " savingFactor: " + savingFactor + "  The saving rate cannot countervail the negative portfolio performance");
 		}
 		
 		LocalDate dateOfGoal =  LocalDate.now().plusDays(daysToGoal);
