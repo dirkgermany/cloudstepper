@@ -4,12 +4,14 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.dam.authentication.ConfigProperties;
 import com.dam.authentication.JsonHelper;
@@ -31,7 +33,7 @@ import com.dam.exception.DamServiceException;
 @CrossOrigin
 @RestController
 @ComponentScan
-public class AuthenticationController extends MasterController{
+public class AuthenticationController extends MasterController {
 
 	@Autowired
 	TokenStore tokenStore;
@@ -47,19 +49,28 @@ public class AuthenticationController extends MasterController{
 
 	@Autowired
 	ConfigProperties config;
-	
-	@GetMapping("/login")
-	public String loginGet(@RequestParam String userName, @RequestParam String password) throws DamServiceException {
-		userName = decode(userName);
-		password = decode(password);
-		LoginRequest loginRequest = new LoginRequest(userName, password, null);
-	//	return login(loginRequest);
-		return ((TokenValidationResponse)login(loginRequest)).getTokenId().toString();
-	}
 
-	@PostMapping("/login")
-	public RestResponse loginResponse(@RequestBody LoginRequest loginRequest) throws DamServiceException {
-		return login(loginRequest);
+	@GetMapping("/login")
+	public TokenValidationResponse loginGet(@RequestParam String userName, @RequestParam String password) {
+
+		try {
+			userName = decode(userName);
+			password = decode(password);
+		} catch (DamServiceException dse) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
+							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+		}
+
+		try {
+			LoginRequest loginRequest = new LoginRequest(userName, password, null);
+			return login(loginRequest);
+		} catch (DamServiceException dse) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
+							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+		}
+
 	}
 
 	@PostMapping("/logout")
@@ -110,19 +121,19 @@ public class AuthenticationController extends MasterController{
 
 		return new PermissionResponse(userId, permission);
 	}
-	
-	private RestResponse login (LoginRequest loginRequest) throws DamServiceException {
+
+	private TokenValidationResponse login(LoginRequest loginRequest) throws DamServiceException {
 		// Erst mit dem ersten Login werden die Rollen und Rechte aus der DB geholt
 		try {
 			User user = userServiceConsumer.readUser(loginRequest);
 			Token token = createToken(user);
-			if (null == token) {
-				return new RestResponse(new Long(400), "Request Invalid", "Missing values or format error");
-			}
-			return new TokenValidationResponse(token.getUser().getUserId(), token.getTokenId());
-
-		} catch (DamServiceException e) {
-			return new RestResponse(new Long(420), e.getShortMsg(), e.getMessage());
+			TokenValidationResponse response = new TokenValidationResponse(token.getUser().getUserId(), token.getTokenId());
+			
+			return response;
+		} catch (DamServiceException dse) {
+			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
+							+ dse.getMessage() + "; Service:" + dse.getServiceName());
 		}
 	}
 

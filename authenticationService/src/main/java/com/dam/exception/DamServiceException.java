@@ -31,7 +31,7 @@ public class DamServiceException extends Exception{
 		return description;
 	}
 
-	public static String getServiceName() {
+	public String getServiceName() {
 		return SERVICE_NAME;
 	}
 }

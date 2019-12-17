@@ -75,17 +75,11 @@ public class Consumer {
 	 */
 	public JsonNode retrievePostResponse(String request, String url, String action, String tokenId)
 			throws DamServiceException {
-//		JsonHelper jsonHelper = new JsonHelper();
 
 		action = action.replace("/", "");
 		String URI = url + "/" + action;
-//		String tokenId = null;
-//
-//		if (null != request && !request.isEmpty()) {
-//			tokenId = jsonHelper.extractStringFromRequest(request, "tokenId");
-//		}
-
 		String serviceResponse = null;
+
 		try {
 			serviceResponse = sendPostMessage(URI, request, tokenId);
 		} catch (Exception e) {
@@ -141,7 +135,6 @@ public class Consumer {
 			// token could not be validated
 			throw new DamServiceException(440L, "Invalid Token", "Token invalid, user not logged in");
 		}
-//		String validatedToken= jsonHelper.extractStringFromJsonNode(validatedTokenNode, "tokenId");
 		requestParams.put("tokenId", tokenId);
 
 		// calls AuthenticationService again
@@ -243,7 +236,6 @@ public class Consumer {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("tokenId", tokenId);
 		RestTemplate restTemplate = new RestTemplate();
-//		String response = restTemplate.getForObject(extendedUri, String.class);
 
 		HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
 
@@ -251,12 +243,6 @@ public class Consumer {
 				params);
 		return response.getBody();
 	}
-
-//	private String getMessage(String URI) {
-//		RestTemplate restTemplate = new RestTemplate();
-//		String response = restTemplate.getForObject(URI, String.class);
-//		return response;
-//	}
 
 	private String getMessage(String URI, String action, Map<String, String> requestParams, String tokenId)
 			throws DamServiceException {
@@ -285,8 +271,6 @@ public class Consumer {
 				requestParams);
 
 		return response.getBody();
-
-//		return restTemplate.getForObject(url, String.class);
 	}
 
 	private String encodeValue(String value) throws DamServiceException {

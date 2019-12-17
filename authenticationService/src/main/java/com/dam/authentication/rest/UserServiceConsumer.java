@@ -36,10 +36,10 @@ public class UserServiceConsumer {
 
 			Long returnCode = new JsonHelper().extractLongFromRequest(response, "returnCode");
 
-			if (null == returnCode || 0 != returnCode.longValue()) {
+			if (null == returnCode || 200 != returnCode.longValue()) {
 				// token could not be validated
-				throw new DamServiceException(new Long(416), "Invalid Returncode received",
-						"User Service sent empty returnCode or 0 as value");
+				throw new DamServiceException(returnCode, "User not validated",
+						"User Service answered with empty returnCode or code unequal to 200 (OK)");
 			}
 
 			GetUserResponse userResponse = null;

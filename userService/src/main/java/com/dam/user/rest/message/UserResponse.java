@@ -6,7 +6,7 @@ public class UserResponse extends RestResponse{
     private User user;
     	
 	public UserResponse (User user) {
-		super(new Long(0), "OK", "User exists");
+		super(200L, "OK", "User exists");
 		
 		setUser(user);
 	}  
