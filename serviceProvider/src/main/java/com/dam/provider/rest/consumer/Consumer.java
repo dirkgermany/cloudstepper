@@ -140,6 +140,7 @@ public class Consumer {
 		// calls AuthenticationService again
 		Long loggedInUserId = new JsonHelper().extractLongFromNode(validatedTokenNode, "userId");
 		String rights = requestPermission(loggedInUserId, serviceDomain.toString(), tokenId);
+		
 		requestParams.put("requestorUserId", loggedInUserId.toString());
 		requestParams.put("rights", rights);
 

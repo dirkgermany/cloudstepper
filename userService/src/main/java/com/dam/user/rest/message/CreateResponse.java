@@ -6,7 +6,7 @@ public class CreateResponse extends RestResponse{
     private User user;
     	
 	public CreateResponse (User user) {
-		super(new Long(0), "OK", "User created");
+		super(new Long(200), "OK", "User created");
 		
 		setUser(user);
 	}  

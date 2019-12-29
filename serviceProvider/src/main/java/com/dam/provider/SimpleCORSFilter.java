@@ -30,7 +30,7 @@ public class SimpleCORSFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) res;
 		
 		if (null == request.getHeader("Origin") || request.getHeader("Origin").isEmpty()) {
-			response.setHeader("Access-Control-Allow-Origin", "https://investmal.de");
+			response.setHeader("Access-Control-Allow-Origin", "https://cloudstepper.de");
 		} else {
 			response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 		}
