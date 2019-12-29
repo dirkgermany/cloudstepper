@@ -1,11 +1,16 @@
 package com.dam.user.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.dam.exception.DamServiceException;
 import com.dam.user.UserStore;
 import com.dam.user.model.entity.User;
 import com.dam.user.model.entity.UserMessageContainer;
@@ -21,7 +26,7 @@ import com.dam.user.rest.message.UserResponse;
 
 @CrossOrigin
 @RestController
-public class UserRepoController {
+public class UserRepoController extends MasterController {
 	@Autowired
 	private UserStore userStore;
 
@@ -61,7 +66,7 @@ public class UserRepoController {
 	 * @return
 	 */
 	@PostMapping("/getUser")
-	public RestResponse getUserResponse(@RequestBody UserRequest userRequest) {
+	public RestResponse getUserByPost(@RequestBody UserRequest userRequest) {
 		if (null == userRequest.getUser()) {
 			return null;
 		}
@@ -78,6 +83,36 @@ public class UserRepoController {
 
 		return new RestResponse(new Long(500), "User Unknown", "User not found or invalid request");
 	}
+	
+	/**
+	 * Retrieves a user by userName and userId Calling user must be logged in
+	 * 
+	 * @param userRequest
+	 * @return
+	 */
+	@GetMapping("/getUser")
+	public RestResponse getUserByGet(@RequestParam String userName, @RequestParam Long userId) {
+		try {
+			userName = decode(userName);
+			userId = decode(userId);
+		} catch (DamServiceException dse) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
+							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+		}
+
+		// User must be owner of data
+		if (null != userId) {
+			User user = userStore.getUser(userId, userName);
+
+			if (null != user ) {
+				return new UserResponse(user);
+			}
+		}
+
+		return new RestResponse(new Long(500), "User Unknown", "User not found or invalid request");
+	}
+
 
 	@PostMapping("/createUser")
 	public RestResponse createUser(@RequestBody CreateRequest createRequest) {
