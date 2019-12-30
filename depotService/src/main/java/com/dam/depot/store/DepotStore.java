@@ -133,8 +133,7 @@ public class DepotStore {
 
 		PermissionCheck.checkRequestedParams(params.get("requestorUserId"), params.get("rights"));
 		Long requestorUserId = extractLong(params.get("requestorUserId"));
-
-		Long portfolioId = extractLong(params.get("portfolioId"));
+//		Long portfolioId = extractLong(params.get("portfolioId"));
 		Long userId = extractLong(params.get("userId"));
 
 		// Check if the permissions is set

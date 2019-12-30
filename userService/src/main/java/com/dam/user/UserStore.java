@@ -58,8 +58,7 @@ public class UserStore {
 		return null;
 	}
 
-	/* Only for internal usage! Nothing is checked */
-	private User getUser(String userName) {
+	public User getUser(String userName) {
 		return userModel.findByUserName(userName);
 	}
 

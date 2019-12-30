@@ -1,5 +1,7 @@
 package com.dam.user.rest;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dam.exception.DamServiceException;
+import com.dam.user.PermissionCheck;
 import com.dam.user.UserStore;
 import com.dam.user.model.entity.User;
 import com.dam.user.model.entity.UserMessageContainer;
@@ -76,14 +79,14 @@ public class UserRepoController extends MasterController {
 		if (null != userId) {
 			User user = userStore.getUser(userId, userRequest.getUser().getUserName());
 
-			if (null != user ) {
+			if (null != user) {
 				return new UserResponse(user);
 			}
 		}
 
 		return new RestResponse(new Long(500), "User Unknown", "User not found or invalid request");
 	}
-	
+
 	/**
 	 * Retrieves a user by userName and userId Calling user must be logged in
 	 * 
@@ -91,28 +94,30 @@ public class UserRepoController extends MasterController {
 	 * @return
 	 */
 	@GetMapping("/getUser")
-	public RestResponse getUserByGet(@RequestParam String userName, @RequestParam Long userId) {
-		try {
-			userName = decode(userName);
-			userId = decode(userId);
-		} catch (DamServiceException dse) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
-							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+	public RestResponse getUserByGet(@RequestParam Map<String, String> params) throws DamServiceException {
+		Map<String, String> decodedMap = decodeUrlMap(params);
+
+		PermissionCheck.checkRequestedParams(decodedMap.get("requestorUserId"), decodedMap.get("rights"));
+		Long requestorUserId = extractLong(decodedMap.get("requestorUserId"));
+		
+		String userIdAsString = decodedMap.get("userId");
+		String userName = decodedMap.get("userName");
+
+		User user = null;
+		if (null != userIdAsString) {
+			Long userId = extractLong(userIdAsString);
+			user = userStore.getUser(userId);
+		} else if (null != userName) {
+			user = userStore.getUser(userName);
 		}
 
-		// User must be owner of data
-		if (null != userId) {
-			User user = userStore.getUser(userId, userName);
-
-			if (null != user ) {
-				return new UserResponse(user);
-			}
+		if (null != user) {
+			PermissionCheck.isReadPermissionSet(requestorUserId, user.getUserId(), decodedMap.get("rights"));
+			return new UserResponse(user);
 		}
 
 		return new RestResponse(new Long(500), "User Unknown", "User not found or invalid request");
 	}
-
 
 	@PostMapping("/createUser")
 	public RestResponse createUser(@RequestBody CreateRequest createRequest) {
@@ -147,13 +152,23 @@ public class UserRepoController extends MasterController {
 		Long userId = new Long(updateRequest.getRequestorUserId());
 		User user = userStore.updateUser(userId, updateRequest.getUserStored(), updateRequest.getUserUpdate());
 		if (null != user) {
-			UserMessageContainer userMessageContainer = new UserMessageContainer(user.getUserName(), user.getGivenName(), user.getLastName());
+			UserMessageContainer userMessageContainer = new UserMessageContainer(user.getUserName(),
+					user.getGivenName(), user.getLastName());
 			return new UpdateResponse(userMessageContainer);
 		}
 
 		return new RestResponse(new Long(500), "User NOT updated",
 				"User not found, no valid data or entity not ready for update");
 
+	}
+
+	private Long extractLong(String longString) throws DamServiceException {
+		try {
+			return Long.valueOf(longString);
+		} catch (Exception e) {
+			throw new DamServiceException(404L, "Extraction Long from String failed",
+					"Parameter is required but null or does not represent a Long value");
+		}
 	}
 
 }
