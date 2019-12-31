@@ -93,8 +93,13 @@ public class AuthenticationController extends MasterController {
 		try {
 			Token validatedToken = validateAndRefresh(tokenRequest);
 			if (null != validatedToken) {
+				
+				String domainName = new JsonHelper().extractStringFromRequest(tokenRequest, "serviceDomain");
+				ServiceDomain serviceDomain = ServiceDomain.valueOf(domainName);
+				Permission permission = permissionManager.getRolePermission(validatedToken.getUser().getRole(), serviceDomain);
+				
 				TokenAndPermissionsResponse response = new TokenAndPermissionsResponse(
-						validatedToken.getUser().getUserId(), validatedToken.getTokenId(), validatedToken.getRights());
+						validatedToken.getUser().getUserId(), validatedToken.getTokenId(), validatedToken.getRights(), permission);
 				return response;
 			}
 		} catch (Exception e) {

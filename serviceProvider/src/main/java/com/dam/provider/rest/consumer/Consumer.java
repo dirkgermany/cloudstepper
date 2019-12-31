@@ -128,7 +128,7 @@ public class Consumer {
 		JsonHelper jsonHelper = new JsonHelper();
 
 		JsonNode node = jsonHelper.createNodeFromMap(requestParams);
-		JsonNode validatedTokenNode = validateToken(node.toString(), tokenId);
+		JsonNode validatedTokenNode = validateToken(node.toString(), tokenId, serviceDomain.toString());
 		Long returnCode = jsonHelper.extractLongFromNode(validatedTokenNode, "returnCode");
 
 		if (null == returnCode || 200 != returnCode.longValue()) {
@@ -137,10 +137,12 @@ public class Consumer {
 		}
 		requestParams.put("tokenId", tokenId);
 
+		JsonNode permission = jsonHelper.extractNodeFromNode(validatedTokenNode, "permission");
+		String rights = jsonHelper.extractStringFromJsonNode(permission, "rights");
+
 		// calls AuthenticationService again
-		Long loggedInUserId = new JsonHelper().extractLongFromNode(validatedTokenNode, "userId");
-		String rights = requestPermission(loggedInUserId, serviceDomain.toString(), tokenId);
-		
+		Long loggedInUserId = jsonHelper.extractLongFromNode(validatedTokenNode, "userId");
+
 		requestParams.put("requestorUserId", loggedInUserId.toString());
 		requestParams.put("rights", rights);
 
@@ -151,22 +153,26 @@ public class Consumer {
 			throws DamServiceException {
 		// calls AuthenticationService
 		// and validates token
-		JsonNode validatedToken = validateToken(request, tokenId);
-		Long returnCode = new JsonHelper().extractLongFromNode(validatedToken, "returnCode");
+		JsonHelper jsonHelper = new JsonHelper();
+		JsonNode validatedTokenNode = validateToken(request, tokenId, serviceDomain.toString());
+		Long returnCode = jsonHelper.extractLongFromNode(validatedTokenNode, "returnCode");
 
 		if (null == returnCode || 200 != returnCode.longValue()) {
 			// token could not be validated
 			throw new DamServiceException(440L, "Invalid Token", "Token invalid, user not logged in");
 		}
+		
+		JsonNode permission = jsonHelper.extractNodeFromNode(validatedTokenNode, "permission");
+		String rights = jsonHelper.extractStringFromJsonNode(permission, "rights");
+
 
 		// calls AuthenticationService again
 		// to get the rights (RWD-RWD) dependent to the user role
-		Long loggedInUserId = new JsonHelper().extractLongFromNode(validatedToken, "userId");
-		String rights = requestPermission(loggedInUserId, serviceDomain.toString(), tokenId);
+		Long loggedInUserId = new JsonHelper().extractLongFromNode(validatedTokenNode, "userId");
 
 		// Lookup for logged in user id and
 		// enrich the request with the user id and rights
-		return enrichRequest(request, validatedToken, rights);
+		return enrichRequest(request, validatedTokenNode, rights);
 	}
 
 	private String requestPermission(Long userId, String serviceDomain, String tokenId) throws DamServiceException {
@@ -196,10 +202,13 @@ public class Consumer {
 	 * @ToDo Later this should throw an exception to ensure that no caller can
 	 * ignore invalid Tokens
 	 */
-	private JsonNode validateToken(String request, String tokenId) throws DamServiceException {
-		// as long as Authentication Server doesn't works with GET the tokenId must be part of the request
-		request = new JsonHelper().putToJsonNode(request, "tokenId", tokenId);
-		
+	private JsonNode validateToken(String request, String tokenId, String domainName) throws DamServiceException {
+		// as long as Authentication Server doesn't works with GET the tokenId must be
+		// part of the request
+		JsonHelper jsonHelper = new JsonHelper();
+		request = jsonHelper.putToJsonNode(request, "tokenId", tokenId);
+		request = jsonHelper.putToJsonNode(request, "serviceDomain", domainName);
+
 		Integer index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
 		JsonNode response = retrievePostResponse(request, config.getServiceUrl(index), "validateToken", tokenId);
 		return response;

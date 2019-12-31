@@ -6,7 +6,7 @@ public class PermissionResponse extends RestResponse{
     private Permission permission;
     	
 	public PermissionResponse (Long userId, Permission permission) {
-		super(new Long(0), "OK", "User authenticated.");
+		super(new Long(200), "OK", "User authenticated.");
 		
 		setPermission(permission);
 	}  
