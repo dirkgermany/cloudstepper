@@ -130,7 +130,6 @@ public class TokenStore {
 	 * @param storedToken
 	 * @return
 	 */
-//	private synchronized Boolean tokenValidate(Token validationToken, Token storedToken) {
 	private Boolean tokenValidate(Token validationToken, Token storedToken) {
 
 		if (null == validationToken || null == storedToken) {

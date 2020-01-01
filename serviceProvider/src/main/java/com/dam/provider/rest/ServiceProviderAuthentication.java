@@ -6,12 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.dam.exception.AuthorizationServiceException;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
@@ -33,8 +30,7 @@ public class ServiceProviderAuthentication {
 	public ResponseEntity<String> loginGet(@RequestParam Map<String, String> requestParams) {
 		try {
 			int index = config.getIndexPerDomain(serviceDomain.name());
-			
-			ResponseEntity<String> bla = consumer.retrieveWrappedGetResponse(requestParams, config.getServiceUrl(index), "login", null);
+			ResponseEntity<String> bla = consumer.retrieveWrappedGetResponse(requestParams,  null, config.getServiceUrl(index), "login", null);
 			
 			return bla;
 		} catch (AuthorizationServiceException ase) {
@@ -49,9 +45,9 @@ public class ServiceProviderAuthentication {
 	}
 
 	@GetMapping("/logout")
-	public ResponseEntity<JsonNode> logout(@RequestBody String request) throws DamServiceException {
+	public ResponseEntity<String> logout(Map<String, String> requestParams) throws DamServiceException {
 		int index = config.getIndexPerDomain(serviceDomain.name());
-		return consumer.retrieveWrappedResponse(request, config.getServiceUrl(index), "logout", null);
+		return consumer.retrieveWrappedGetResponse(requestParams, null, config.getServiceUrl(index), "logout", null);
 
 	}
 

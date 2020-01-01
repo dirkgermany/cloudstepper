@@ -35,10 +35,10 @@ public class MasterController {
 		}
 	}
 
-	protected Map<String, String> decodeUrlMap(Map<String, String> urlParams) throws DamServiceException{
+	protected Map<String, String> decodeHttpMap(Map<String, String> params) throws DamServiceException{
 		Map<String, String> decodedMap = new HashMap<>();
-		if (null != urlParams && !urlParams.isEmpty()) {
-			Iterator<Map.Entry<String, String>> it = urlParams.entrySet().iterator();
+		if (null != params && !params.isEmpty()) {
+			Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry<String, String> entry = it.next();
 				decodedMap.put(decode(entry.getKey()), decode(entry.getValue()));

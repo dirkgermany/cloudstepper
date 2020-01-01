@@ -3,14 +3,13 @@ package com.dam.user.rest;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.dam.exception.DamServiceException;
 import com.dam.user.PermissionCheck;
@@ -46,11 +45,6 @@ public class UserRepoController extends MasterController {
 		}
 		User user = userStore.getUser(userRequest.getUser());
 
-		// Security
-		// @ToDo
-		// In first version the requestorUserId can be null because the
-		// authenticationService uses the getUser Interface for checking the user.
-		// Later the authenticationService has to get an own 'internal' method
 		if (null != user && null == userRequest.getRequestorUserId()) {
 			return new UserResponse(user);
 		}
@@ -68,37 +62,21 @@ public class UserRepoController extends MasterController {
 	 * @param userRequest
 	 * @return
 	 */
-	@PostMapping("/getUser")
-	public RestResponse getUserByPost(@RequestBody UserRequest userRequest) {
-		if (null == userRequest.getUser()) {
-			return null;
-		}
-		Long userId = new Long(userRequest.getRequestorUserId());
-
-		// User must be owner of data
-		if (null != userId) {
-			User user = userStore.getUser(userId, userRequest.getUser().getUserName());
-
-			if (null != user) {
-				return new UserResponse(user);
-			}
-		}
-
-		return new RestResponse(new Long(500), "User Unknown", "User not found or invalid request");
-	}
-
-	/**
-	 * Retrieves a user by userName and userId Calling user must be logged in
-	 * 
-	 * @param userRequest
-	 * @return
-	 */
 	@GetMapping("/getUser")
-	public RestResponse getUserByGet(@RequestParam Map<String, String> params) throws DamServiceException {
-		Map<String, String> decodedMap = decodeUrlMap(params);
+	public RestResponse getUserByGet(@RequestParam Map<String, String> params, @RequestHeader Map<String, String> headers) throws DamServiceException {
+		Map<String, String> decodedMap = decodeHttpMap(params);
+		
+		String requestorUserIdAsString = decodedMap.get("requestorUserId");
+		if (null == requestorUserIdAsString) {
+			requestorUserIdAsString = headers.get("requestoruserid");
+		}	
+		String rights = decodedMap.get("rights");
+		if (null == rights) {
+			rights = headers.get("rights");
+		}
 
-		PermissionCheck.checkRequestedParams(decodedMap.get("requestorUserId"), decodedMap.get("rights"));
-		Long requestorUserId = extractLong(decodedMap.get("requestorUserId"));
+		PermissionCheck.checkRequestedParams(requestorUserIdAsString, rights);
+		Long requestorUserId = extractLong(requestorUserIdAsString);
 		
 		String userIdAsString = decodedMap.get("userId");
 		String userName = decodedMap.get("userName");
@@ -112,7 +90,7 @@ public class UserRepoController extends MasterController {
 		}
 
 		if (null != user) {
-			PermissionCheck.isReadPermissionSet(requestorUserId, user.getUserId(), decodedMap.get("rights"));
+			PermissionCheck.isReadPermissionSet(requestorUserId, user.getUserId(), rights);
 			return new UserResponse(user);
 		}
 

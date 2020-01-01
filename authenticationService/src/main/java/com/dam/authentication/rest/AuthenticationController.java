@@ -1,5 +1,6 @@
 package com.dam.authentication.rest;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -89,12 +91,26 @@ public class AuthenticationController extends MasterController {
 	 * @return
 	 */
 	@PostMapping("/validateToken")
-	public RestResponse validateTokenResponse(@RequestBody String tokenRequest) throws DamServiceException {
+	public RestResponse validateTokenResponse(@RequestBody String tokenRequest, @RequestHeader Map<String, String> headers) throws DamServiceException {
+		if (null == headers || headers.size() == 0) {
+			return new RestResponse(new Long(420), "Token not validated",
+					"No token received with request");
+		}	
+		
+		String tokenString = headers.get("tokenid");
+		if (null == tokenString) {
+			throw new DamServiceException(new Long(500), "Token not validated", "Token missed in request");
+		}
+		
+		String domainName = headers.get("servicedomain");
+		if (null == domainName) {
+			throw new DamServiceException(new Long(500), "Token not validated", "domain name missed in request");
+		}
+
+		
 		try {
-			Token validatedToken = validateAndRefresh(tokenRequest);
+			Token validatedToken = validateAndRefresh(tokenString);
 			if (null != validatedToken) {
-				
-				String domainName = new JsonHelper().extractStringFromRequest(tokenRequest, "serviceDomain");
 				ServiceDomain serviceDomain = ServiceDomain.valueOf(domainName);
 				Permission permission = permissionManager.getRolePermission(validatedToken.getUser().getRole(), serviceDomain);
 				
@@ -142,10 +158,9 @@ public class AuthenticationController extends MasterController {
 		}
 	}
 
-	private Token validateAndRefresh(String tokenRequest) throws DamServiceException {
-		JsonHelper jsonHelper = new JsonHelper();
-
-		UUID tokenId = jsonHelper.extractUuidFromRequest(tokenRequest, "tokenId");
+	private Token validateAndRefresh(String tokenString) throws DamServiceException {
+		
+		UUID tokenId = UUID.fromString(tokenString);
 		User user = null;
 		Token token = tokenStore.getToken(tokenId);
 		if (null == token) {
