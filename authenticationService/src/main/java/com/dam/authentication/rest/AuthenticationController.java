@@ -31,7 +31,6 @@ import com.dam.authentication.rest.message.TokenAndPermissionsResponse;
 import com.dam.authentication.rest.message.TokenValidationResponse;
 import com.dam.authentication.types.ServiceDomain;
 import com.dam.exception.DamServiceException;
-import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin
 @RestController
@@ -74,10 +73,10 @@ public class AuthenticationController extends MasterController {
 	}
 	
 	@PostMapping("/login")
-	public RestResponse loginPost(@RequestBody JsonNode permissionRequest) throws DamServiceException {
+	public RestResponse loginPost(@RequestBody String permissionRequest) throws DamServiceException {
 		JsonHelper jsonHelper = new JsonHelper();
-		String userName = jsonHelper.extractStringFromJsonNode(permissionRequest, "userName");
-		String password = jsonHelper.extractStringFromJsonNode(permissionRequest, "password");
+		String userName = jsonHelper.extractStringFromRequest(permissionRequest, "userName");
+		String password = jsonHelper.extractStringFromRequest(permissionRequest, "password");
 		
 		try {
 			LoginRequest loginRequest = new LoginRequest(userName, password, null);

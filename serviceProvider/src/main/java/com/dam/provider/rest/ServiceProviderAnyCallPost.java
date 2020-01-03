@@ -23,6 +23,7 @@ import com.dam.exception.AuthorizationServiceException;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.rest.consumer.Consumer;
+import com.dam.provider.types.RequestType;
 import com.dam.provider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -89,8 +90,8 @@ public class ServiceProviderAnyCallPost extends MasterController {
 		}
 
 		try {
-			return consumer.retrieveWrappedAuthorizedPostResponse(requestBody, decodedParams, headers, getServiceUrl(serviceDomain),
-					subPath + apiMethod, serviceDomain);
+			return consumer.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers, getServiceUrl(serviceDomain),
+					subPath + apiMethod, serviceDomain, RequestType.POST);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
 					"User not logged in, invalid token or not enough rights for action.");

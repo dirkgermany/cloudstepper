@@ -19,8 +19,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.dam.exception.AuthorizationServiceException;
 import com.dam.exception.DamServiceException;
+import com.dam.provider.JsonHelper;
 import com.dam.provider.rest.consumer.Consumer;
+import com.dam.provider.types.RequestType;
 import com.dam.provider.types.ServiceDomain;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -34,26 +37,26 @@ public class ServiceProviderAnyCallGet extends MasterController {
 	ServiceProviderPing serviceProviderPing;
 
 	@GetMapping("/*/*")
-	public ResponseEntity<String> doubleSlashGet(@RequestParam Map<String, String> params,
+	public ResponseEntity<JsonNode> doubleSlashGet(@RequestParam Map<String, String> params,
 			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody String requestBody) {
 
 		return anyGet(params, servletRequest, headers, requestBody);
 	}
 
 	@GetMapping("/*/*/*")
-	public ResponseEntity<String> tripleSlashGet(@RequestParam Map<String, String> params,
+	public ResponseEntity<JsonNode> tripleSlashGet(@RequestParam Map<String, String> params,
 			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody String requestBody) {
 
 		return anyGet(params, servletRequest, headers, requestBody);
 	}
 
 	@GetMapping("*")
-	public ResponseEntity<String> singleSlashGet(@RequestParam Map<String, String> params,
+	public ResponseEntity<JsonNode> singleSlashGet(@RequestParam Map<String, String> params,
 			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody String requestBody) {
 		return anyGet(params, servletRequest, headers, requestBody);
 	}
 
-	private ResponseEntity<String> anyGet(@RequestParam Map<String, String> params, HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, String requestBody) {
+	private ResponseEntity<JsonNode> anyGet(@RequestParam Map<String, String> params, HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, String requestBody) {
 
 		String requestUri;
 		String[] pathParts;
@@ -77,8 +80,9 @@ public class ServiceProviderAnyCallGet extends MasterController {
 		}
 
 		try {
-			return consumer.retrieveWrappedAuthorizedGetResponse(decodedParams, headers, getServiceUrl(serviceDomain),
-					subPath + apiMethod, serviceDomain);
+			JsonNode node = new JsonHelper().createNodeFromMap(decodedParams);
+			return consumer.retrieveWrappedAuthorizedResponse(node, decodedParams, headers,  getServiceUrl(serviceDomain), subPath + apiMethod,
+					 serviceDomain, RequestType.GET);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
 					"User not logged in, invalid token or not enough rights for action.");
