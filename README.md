@@ -29,6 +29,7 @@ This three services must run on the server:
 - userService (maintains the registered users)
 - authenticationService (maintains permissions, roles and tokens)
 
+Prerequisites:
 - Install and start mysql or mariadb and create user with database
 - Ensure that Java 1.8+ is available
 - Configure
