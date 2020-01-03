@@ -42,8 +42,16 @@ public class Consumer {
 				HttpStatus.OK);
 	}
 
+	public ResponseEntity<String> retrieveWrappedPostResponse(JsonNode requestBody, Map<String, String> requestParams,
+			@RequestHeader Map<String, String> headers, String url, String action, String tokenId)
+			throws DamServiceException {
+		return new ResponseEntity<>(retrievePostResponse(requestBody, requestParams, headers, url, action),
+				new HttpHeaders(), HttpStatus.OK);
+	}
+
 	public ResponseEntity<String> retrieveWrappedAuthorizedGetResponse(Map<String, String> requestParams,
-			@RequestHeader Map<String, String> headers, String serviceUrl, String action, ServiceDomain serviceDomain) throws DamServiceException {
+			@RequestHeader Map<String, String> headers, String serviceUrl, String action, ServiceDomain serviceDomain)
+			throws DamServiceException {
 		return new ResponseEntity<>(
 				retrieveAuthorizedGetResponse(requestParams, headers, serviceUrl, action, serviceDomain),
 				new HttpHeaders(), HttpStatus.OK);
@@ -55,6 +63,11 @@ public class Consumer {
 		return new ResponseEntity<JsonNode>(
 				retrieveAuthorizedPostResponse(request, params, headers, serviceUrl, action, serviceDomain),
 				new HttpHeaders(), HttpStatus.OK);
+	}
+
+	public String retrievePostResponse(JsonNode request, Map<String, String> params,
+			@RequestHeader Map<String, String> headers, String url, String action) throws DamServiceException {
+		return postMessage(url, action, request.toString(), params, headers);
 	}
 
 	/**
@@ -95,7 +108,7 @@ public class Consumer {
 		String requestBody = request.toString();
 
 		try {
-			serviceResponse = sendPostMessage(URI, requestBody, params, headers);
+			serviceResponse = postMessage(url, action, requestBody, params, headers);
 		} catch (Exception e) {
 			logger.error("Service Provider :: Consumer {}: Message could not be send. URI {} - Request: {}",
 					dateTimeFormatter.format(LocalDateTime.now()), URI, request);
@@ -135,7 +148,8 @@ public class Consumer {
 	}
 
 	public String retrieveAuthorizedGetResponse(Map<String, String> requestParams,
-			@RequestHeader Map<String, String> headers, String serviceUrl, String action, ServiceDomain serviceDomain) throws DamServiceException {
+			@RequestHeader Map<String, String> headers, String serviceUrl, String action, ServiceDomain serviceDomain)
+			throws DamServiceException {
 		String tokenId = headers.get("tokenid");
 		JsonHelper jsonHelper = new JsonHelper();
 
@@ -180,7 +194,7 @@ public class Consumer {
 		String requestBody = request.toString();
 
 		try {
-			serviceResponse = sendPostMessage(URI, requestBody, null, headers);
+			serviceResponse = postMessage(url, "validateToken", requestBody, null, headers);
 		} catch (Exception e) {
 			logger.error("Service Provider :: Consumer {}: Message could not be send. URI {} - Request: {}",
 					dateTimeFormatter.format(LocalDateTime.now()), URI, request);
@@ -198,24 +212,30 @@ public class Consumer {
 		return new JsonHelper().convertStringToNode(serviceResponse);
 	}
 
-	private String postMessage(String URI, String request, Map<String, String> params,
+	private String postMessage(String url, String action, String request, Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {
+		
+		
+		HttpEntity<String> requestBody = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
+		RestTemplate restTemplate = new RestTemplate();
+		
 		if (null != headers) {
 			headers.forEach((key, value) -> {
 				httpHeaders.add(key, value);
 			});
+			requestBody = new HttpEntity<>(request, httpHeaders);
+		} else {
+			requestBody = new HttpEntity<>(request);
 		}
 
-		HttpEntity<String> requestBody = new HttpEntity<String>(request, httpHeaders);
-		RestTemplate restTemplate = new RestTemplate();
-
+		action = action.replace("/", "");
+		String URI = url + "/" + action;
 		if (null == params) {
 			return restTemplate.postForObject(URI, requestBody, String.class);
 		} else {
 			return restTemplate.postForObject(URI, requestBody, String.class, params);
 		}
-
 	}
 
 	public String getMessage(String URI, String params, String tokenId) {
@@ -270,8 +290,4 @@ public class Consumer {
 		}
 	}
 
-	private String sendPostMessage(String URI, String request, Map<String, String> params,
-			@RequestHeader Map<String, String> headers) {
-		return postMessage(URI, request, params, headers);
-	}
 }

@@ -31,6 +31,7 @@ import com.dam.authentication.rest.message.TokenAndPermissionsResponse;
 import com.dam.authentication.rest.message.TokenValidationResponse;
 import com.dam.authentication.types.ServiceDomain;
 import com.dam.exception.DamServiceException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin
 @RestController
@@ -53,27 +54,41 @@ public class AuthenticationController extends MasterController {
 	ConfigProperties config;
 
 	@GetMapping("/login")
-	public TokenValidationResponse loginGet(@RequestParam String userName, @RequestParam String password) {
-
+	public RestResponse loginGet(@RequestParam String userName, @RequestParam String password) {
 		try {
 			userName = decode(userName);
 			password = decode(password);
 		} catch (DamServiceException dse) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getShortMsg() + "; "
 							+ dse.getMessage() + "; Service:" + dse.getServiceName());
 		}
 
 		try {
 			LoginRequest loginRequest = new LoginRequest(userName, password, null);
 			return login(loginRequest);
-		} catch (DamServiceException dse) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
-							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+		} catch (Exception e) {
+			return new RestResponse(new Long(420), "Token not validated", e.getMessage());
 		}
 
 	}
+	
+	@PostMapping("/login")
+	public RestResponse loginPost(@RequestBody JsonNode permissionRequest) throws DamServiceException {
+		JsonHelper jsonHelper = new JsonHelper();
+		String userName = jsonHelper.extractStringFromJsonNode(permissionRequest, "userName");
+		String password = jsonHelper.extractStringFromJsonNode(permissionRequest, "password");
+		
+		try {
+			LoginRequest loginRequest = new LoginRequest(userName, password, null);
+			return login(loginRequest);
+		} catch (Exception e) {
+			return new RestResponse(new Long(420), "Token not validated", e.getMessage());
+
+		}
+	}
+
+
 
 	@PostMapping("/logout")
 	public RestResponse logoutResponse(@RequestBody LogoutRequest logoutRequest) throws DamServiceException {
@@ -153,7 +168,7 @@ public class AuthenticationController extends MasterController {
 			return response;
 		} catch (DamServiceException dse) {
 			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getShortMsg() + "; "
 							+ dse.getMessage() + "; Service:" + dse.getServiceName());
 		}
 	}

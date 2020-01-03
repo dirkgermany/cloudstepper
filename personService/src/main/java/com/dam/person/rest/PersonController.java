@@ -1,8 +1,11 @@
 package com.dam.person.rest;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.exception.DamServiceException;
@@ -29,9 +32,9 @@ public class PersonController {
 	 * @return
 	 */
 	@PostMapping("/getPerson")
-	public RestResponse getPersonResponse(@RequestBody PersonRequest personRequest) throws DamServiceException {
+	public RestResponse getPersonResponse(@RequestBody PersonRequest personRequest, @RequestHeader Map<String, String> headers) throws DamServiceException {
 		try {
-			return new PersonResponse(personStore.getPersonSafe(personRequest));
+			return new PersonResponse(personStore.getPersonSafe(personRequest, headers));
 		} catch (DamServiceException e) {
 			return new RestResponse(e.getErrorId(), e.getShortMsg(), e.getDescription());
 		}

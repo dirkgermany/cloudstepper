@@ -2,6 +2,7 @@ package com.dam.person;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +43,22 @@ public class PersonStore {
 	 * @param person
 	 * @return
 	 */
-	public Person getPersonSafe(PersonRequest personRequest) throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(personRequest, personRequest.getRequestorUserId(),
-				personRequest.getRights());
+	public Person getPersonSafe(PersonRequest personRequest, Map<String, String> headers) throws DamServiceException {
+		Long requestorUserId = null; 
+		String rights = null;
+		if (null != headers && headers.get("requestoruserid") != null ) {
+			requestorUserId= Long.valueOf(headers.get("requestoruserid"));
+			rights = headers.get("rights");
+		}
+		checkRequestedParamsRequest_Id_Rights(personRequest, requestorUserId, rights);
 	
 		if (null == personRequest.getUserId() || null == personRequest.getPersonId()) {
 			throw new DamServiceException(new Long(400), "Invalid Request", "userId or personId is not set.");
 		}
 
 		// Check if the permissions is set
-		PermissionCheck.isReadPermissionSet(personRequest.getRequestorUserId(), personRequest.getUserId(),
-				personRequest.getRights());
+		PermissionCheck.isReadPermissionSet(requestorUserId, personRequest.getUserId(),
+				rights);
 
 		Person person = getPersonById(personRequest.getPersonId());
 
