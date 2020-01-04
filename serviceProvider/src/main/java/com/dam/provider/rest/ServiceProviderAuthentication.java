@@ -39,29 +39,4 @@ public class ServiceProviderAuthentication {
 		}
 
 	}
-
-//	@GetMapping("/login")
-//	public ResponseEntity<String> loginGet(@RequestParam Map<String, String> requestParams,
-//			@RequestHeader Map<String, String> headers) {
-//		try {
-//			int index = config.getIndexPerDomain(serviceDomain.name());
-//			return consumer.retrieveWrappedGetResponse(requestParams, headers, config.getServiceUrl(index), "login",
-//					null);
-//		} catch (AuthorizationServiceException ase) {
-//			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User or Password not valid.");
-//		} catch (DamServiceException dse) {
-//			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-//					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
-//							+ dse.getMessage() + "; Service:" + dse.getServiceName());
-//		}
-//
-//	}
-//
-//	@GetMapping("/logout")
-//	public ResponseEntity<String> logout(Map<String, String> requestParams) throws DamServiceException {
-//		int index = config.getIndexPerDomain(serviceDomain.name());
-//		return consumer.retrieveWrappedGetResponse(requestParams, null, config.getServiceUrl(index), "logout", null);
-//
-//	}
-
 }

@@ -42,7 +42,7 @@ public class ServiceProviderAnyCallPost extends MasterController {
 	ServiceProviderPing serviceProviderPing;
 
 	@PostMapping("/*/*")
-	public ResponseEntity<JsonNode> doubleSlashPost(@RequestBody JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
+	public ResponseEntity<JsonNode> doubleSlashPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {
 
 		return anyPost(requestBody, servletRequest, params, headers);
@@ -50,7 +50,7 @@ public class ServiceProviderAnyCallPost extends MasterController {
 	}
 
 	@PostMapping("/*/*/*")
-	public ResponseEntity<JsonNode> tripleSlashPost(@RequestBody JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
+	public ResponseEntity<JsonNode> tripleSlashPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {
 
 		return anyPost(requestBody, servletRequest, params, headers);
@@ -58,14 +58,14 @@ public class ServiceProviderAnyCallPost extends MasterController {
 	}
 
 	@PostMapping("*")
-	public ResponseEntity<JsonNode> singleSlashPost(@RequestBody JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
+	public ResponseEntity<JsonNode> singleSlashPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {
 
 		return anyPost(requestBody, servletRequest, params, headers);
 
 	}
 
-	public ResponseEntity<JsonNode> anyPost(@RequestBody JsonNode requestBody, HttpServletRequest servletRequest,
+	public ResponseEntity<JsonNode> anyPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest,
 			Map<String, String> params, @RequestHeader Map<String, String> headers) {
 
 		String requestUri;

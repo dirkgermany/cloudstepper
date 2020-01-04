@@ -38,26 +38,31 @@ public class ServiceProviderAnyCallGet extends MasterController {
 
 	@GetMapping("/*/*")
 	public ResponseEntity<JsonNode> doubleSlashGet(@RequestParam Map<String, String> params,
-			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody String requestBody) {
+			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody (required = false) JsonNode requestBody) {
 
 		return anyGet(params, servletRequest, headers, requestBody);
 	}
 
 	@GetMapping("/*/*/*")
 	public ResponseEntity<JsonNode> tripleSlashGet(@RequestParam Map<String, String> params,
-			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody String requestBody) {
+			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody (required = false) JsonNode requestBody) {
 
 		return anyGet(params, servletRequest, headers, requestBody);
 	}
 
 	@GetMapping("*")
 	public ResponseEntity<JsonNode> singleSlashGet(@RequestParam Map<String, String> params,
-			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody String requestBody) {
+			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody (required = false) JsonNode requestBody) {
 		return anyGet(params, servletRequest, headers, requestBody);
 	}
 
-	private ResponseEntity<JsonNode> anyGet(@RequestParam Map<String, String> params, HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, String requestBody) {
+	private ResponseEntity<JsonNode> anyGet(@RequestParam Map<String, String> params, HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, JsonNode requestBody) {
 
+		if (null != requestBody) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"ErrorId: " + 400L + "; " + "Request not accepted. In this Version the ServiceProvider doesn't accept RequestBodies for GET-Methods.");
+		}
+		
 		String requestUri;
 		String[] pathParts;
 		ServiceDomain serviceDomain;
@@ -81,7 +86,7 @@ public class ServiceProviderAnyCallGet extends MasterController {
 
 		try {
 			JsonNode node = new JsonHelper().createNodeFromMap(decodedParams);
-			return consumer.retrieveWrappedAuthorizedResponse(node, decodedParams, headers,  getServiceUrl(serviceDomain), subPath + apiMethod,
+			return consumer.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers,  getServiceUrl(serviceDomain), subPath + apiMethod,
 					 serviceDomain, RequestType.GET);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,

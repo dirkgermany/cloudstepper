@@ -40,7 +40,7 @@ public class Consumer {
 		ServiceDomain serviceDomain = ServiceDomain.AUTHENTICATION;
 		int index = config.getIndexPerDomain(serviceDomain.name());
 		String URI = config.getServiceUrl(index) + "/login";
-		return new ResponseEntity<>(retrievePostResponse(requestBody, URI), new HttpHeaders(), HttpStatus.OK);
+		return new ResponseEntity<>(postMessage(URI, requestBody, null, null), new HttpHeaders(), HttpStatus.OK);
 	}
 
 	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedResponse(JsonNode request,
@@ -51,18 +51,6 @@ public class Consumer {
 				new HttpHeaders(), HttpStatus.OK);
 	}
 
-	public JsonNode retrievePostResponse(JsonNode request, String URI) throws DamServiceException {
-		return postMessage(URI, request, null, null);
-	}
-
-	/**
-	 * Send Request to any service
-	 * 
-	 * @param request
-	 * @param url
-	 * @param action
-	 * @return
-	 */
 	public JsonNode retrieveResponse(JsonNode request, Map<String, String> requestParams,
 			@RequestHeader Map<String, String> headers, String url, String action, ServiceDomain serviceDomain,
 			RequestType requestType) throws DamServiceException {
@@ -95,7 +83,7 @@ public class Consumer {
 			case POST:
 				return postMessage(URI, request, requestParams, headers);
 			case GET:
-				return getMessage(URI, action, requestParams, headers);
+				return getMessage(URI, request, requestParams, headers);
 			default:
 				throw new DamServiceException(new Long(500), "Message could not be send.", "Invalid or missing RequestType (POST/GET/DELETE)");
 			}
@@ -107,18 +95,6 @@ public class Consumer {
 		}
 	}
 
-	public JsonNode retrieveGetResponse(String url, String action, Map<String, String> requestParams,
-			@RequestHeader Map<String, String> headers) throws DamServiceException {
-		return getMessage(url, action, requestParams, headers);
-	}
-
-	public JsonNode retrieveAuthorizedResponse(JsonNode request, Map<String, String> params,
-			@RequestHeader Map<String, String> headers, String serviceUrl, String action, ServiceDomain serviceDomain,
-			RequestType requestType) throws DamServiceException {
-
-		JsonNode response = retrieveResponse(request, params, headers, serviceUrl, action, serviceDomain, requestType);
-		return response;
-	}
 
 	/*
 	 * Validates if the userName with the tokenId is logged in. This check is done
@@ -166,7 +142,7 @@ public class Consumer {
 		}
 	}
 
-	private JsonNode getMessage(String URI, String BLA, Map<String, String> requestParams,
+	private JsonNode getMessage(String URI, JsonNode requestBody, Map<String, String> requestParams,
 			@RequestHeader Map<String, String> headers) throws DamServiceException {
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -203,5 +179,19 @@ public class Consumer {
 			throw new DamServiceException(404L, "Value could not be encoded for URL", e.getMessage());
 		}
 	}
+
+//	public JsonNode retrieveGetResponse(String url, String action, Map<String, String> requestParams,
+//	@RequestHeader Map<String, String> headers) throws DamServiceException {
+//return getMessage(url, action, requestParams, headers);
+//}
+//
+
+//public JsonNode retrieveAuthorizedResponse(JsonNode request, Map<String, String> params,
+//	@RequestHeader Map<String, String> headers, String serviceUrl, String action, ServiceDomain serviceDomain,
+//	RequestType requestType) throws DamServiceException {
+//
+//JsonNode response = retrieveResponse(request, params, headers, serviceUrl, action, serviceDomain, requestType);
+//return response;
+//}
 
 }

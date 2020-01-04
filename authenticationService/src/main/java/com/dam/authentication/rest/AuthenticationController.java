@@ -52,25 +52,25 @@ public class AuthenticationController extends MasterController {
 	@Autowired
 	ConfigProperties config;
 
-	@GetMapping("/login")
-	public RestResponse loginGet(@RequestParam String userName, @RequestParam String password) {
-		try {
-			userName = decode(userName);
-			password = decode(password);
-		} catch (DamServiceException dse) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getShortMsg() + "; "
-							+ dse.getMessage() + "; Service:" + dse.getServiceName());
-		}
-
-		try {
-			LoginRequest loginRequest = new LoginRequest(userName, password, null);
-			return login(loginRequest);
-		} catch (Exception e) {
-			return new RestResponse(new Long(420), "Token not validated", e.getMessage());
-		}
-
-	}
+//	@GetMapping("/login")
+//	public RestResponse loginGet(@RequestParam String userName, @RequestParam String password) {
+//		try {
+//			userName = decode(userName);
+//			password = decode(password);
+//		} catch (DamServiceException dse) {
+//			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+//					"ErrorId: " + dse.getErrorId() + "; " + dse.getShortMsg() + "; "
+//							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+//		}
+//
+//		try {
+//			LoginRequest loginRequest = new LoginRequest(userName, password, null);
+//			return login(loginRequest);
+//		} catch (Exception e) {
+//			return new RestResponse(new Long(420), "Token not validated", e.getMessage());
+//		}
+//
+//	}
 	
 	@PostMapping("/login")
 	public RestResponse loginPost(@RequestBody String permissionRequest) throws DamServiceException {
@@ -105,7 +105,7 @@ public class AuthenticationController extends MasterController {
 	 * @return
 	 */
 	@PostMapping("/validateToken")
-	public RestResponse validateTokenResponse(@RequestBody String tokenRequest, @RequestHeader Map<String, String> headers) throws DamServiceException {
+	public RestResponse validateToken(@RequestBody (required = false) String tokenRequest, @RequestHeader Map<String, String> headers) throws DamServiceException {
 		if (null == headers || headers.size() == 0) {
 			return new RestResponse(new Long(420), "Token not validated",
 					"No token received with request");
