@@ -1,12 +1,14 @@
 package com.dam.user.rest.message;
 
+import org.springframework.http.HttpStatus;
+
 import com.dam.user.model.entity.User;
 
 public class CreateResponse extends RestResponse{
     private User user;
     	
 	public CreateResponse (User user) {
-		super(new Long(200), "OK", "User created");
+		super(HttpStatus.CREATED, "OK", "User created");
 		
 		setUser(user);
 	}  

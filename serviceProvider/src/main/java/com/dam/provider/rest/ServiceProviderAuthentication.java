@@ -29,7 +29,10 @@ public class ServiceProviderAuthentication {
 	public ResponseEntity<JsonNode> loginPost(@RequestBody JsonNode loginBody,
 			@RequestHeader Map<String, String> headers) {
 		try {
-			return consumer.postLogin(loginBody);
+			ResponseEntity<JsonNode> x = consumer.postLogin(loginBody);
+			return x;
+
+//			return consumer.postLogin(loginBody);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User or Password not valid.");
 		} catch (DamServiceException dse) {

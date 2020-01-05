@@ -3,6 +3,8 @@ package com.dam.provider;
 import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -99,6 +101,14 @@ public class JsonHelper {
 		}
 
 		return longValue;
+	}
+
+	public HttpStatus extractHttpStatusFromRequest(JsonNode jsonContent, String key) {
+		String httpStatusAsString = extractStringFromJsonNode(jsonContent, key);
+		if (null != httpStatusAsString) {
+			return HttpStatus.valueOf(httpStatusAsString);
+		}
+		return null;
 	}
 
 	public String extractStringFromRequest(String jsonContent, String key) {

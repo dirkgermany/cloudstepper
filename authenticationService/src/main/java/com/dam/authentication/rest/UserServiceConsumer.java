@@ -1,9 +1,14 @@
 package com.dam.authentication.rest;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,7 +17,9 @@ import com.dam.authentication.JsonHelper;
 import com.dam.authentication.model.User;
 import com.dam.authentication.rest.message.GetUserResponse;
 import com.dam.authentication.rest.message.LoginRequest;
+import com.dam.authentication.rest.message.RestResponse;
 import com.dam.exception.DamServiceException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
@@ -20,44 +27,24 @@ public class UserServiceConsumer {
 	@Autowired
 	ConfigProperties config;
 
-	public User readUser(LoginRequest loginRequest) throws DamServiceException {
+	public GetUserResponse readUser(LoginRequest loginRequest) throws DamServiceException {
 		RestTemplate restTemplate = new RestTemplate();
 
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
-			String jsonUser = null;
-			jsonUser = new ObjectMapper().writeValueAsString(loginRequest);
+			String jsonLoginRequest = null;
+			JsonHelper helper = new JsonHelper();
+			jsonLoginRequest = helper.getObjectMapper().writeValueAsString(loginRequest);
 
-			HttpEntity<String> requestBody = new HttpEntity<String>(jsonUser, headers);
-			String uri = config.getUserService().getServiceUrl() + "/checkUser";
-			String response = restTemplate.postForObject(uri, requestBody, String.class);
-
-			Long returnCode = new JsonHelper().extractLongFromRequest(response, "returnCode");
-
-			if (null == returnCode || 200 != returnCode.longValue()) {
-				// token could not be validated
-				throw new DamServiceException(returnCode, "User not validated",
-						"User Service answered with empty returnCode or code unequal to 200 (OK)");
-			}
-
-			GetUserResponse userResponse = null;
-			User user = null;
-
-			userResponse = new ObjectMapper().readValue(response, GetUserResponse.class);
-			user = userResponse.getUser();
-
-			if (null == user) {
-				throw new DamServiceException(new Long(500), "User could not be evaluated", "User is null");
-			}
-
-			return user;
-
+			HttpEntity<String> requestBody = new HttpEntity<String>(jsonLoginRequest, headers);
+			URI uri = new URI(config.getUserService().getServiceUrl() + "/checkUser");
+			ResponseEntity<GetUserResponse> response = restTemplate.exchange(uri, HttpMethod.POST, requestBody, GetUserResponse.class);
+			return response.getBody();
 		} catch (Exception e) {
 			throw new DamServiceException(new Long(500), "User could not be evaluated", e.getMessage());
 		}
-
 	}
 
 }

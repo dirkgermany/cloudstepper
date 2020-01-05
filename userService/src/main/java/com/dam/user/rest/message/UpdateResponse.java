@@ -1,12 +1,14 @@
 package com.dam.user.rest.message;
 
+import org.springframework.http.HttpStatus;
+
 import com.dam.user.model.entity.UserMessageContainer;
 
 public class UpdateResponse extends RestResponse{
     private UserMessageContainer user;
     	
 	public UpdateResponse (UserMessageContainer user) {
-		super(new Long(0), "OK", "User updated");
+		super(HttpStatus.OK, "OK", "User updated");
 		
 		setUser(user);
 	}  

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 
 import com.dam.user.model.UserModel;
@@ -22,7 +23,7 @@ public class UserStore {
 
 	@Autowired
 	private UserModel userModel;
-	
+
 	public long count() {
 		return userModel.count();
 	}
@@ -63,7 +64,8 @@ public class UserStore {
 	}
 
 	public User createUser(User user) {
-		return createUser(user.getUserName(), user.getPassword(), user.getGivenName(), user.getLastName(), user.getRole());
+		return createUser(user.getUserName(), user.getPassword(), user.getGivenName(), user.getLastName(),
+				user.getRole());
 	}
 
 	/**
@@ -121,14 +123,9 @@ public class UserStore {
 		return null;
 	}
 
-	private Long dropUser(String userName, String password) {
-		User user = getUser(userName, password);
-		return dropUser(user);
-	}
-
-	public Long dropUser(Long requestorUserId, User userToDrop) {
+	public HttpStatus dropUser(Long requestorUserId, User userToDrop) {
 		if (null == requestorUserId || null == userToDrop) {
-			return new Long(500);
+			return HttpStatus.BAD_REQUEST;
 		}
 
 		User user = null;
@@ -138,28 +135,24 @@ public class UserStore {
 			user = getUser(userToDrop.getUserName());
 		}
 
-		if (null != user && user.getUserId().longValue() == requestorUserId.longValue()) {
-			return dropUser(user);
+		if (null == user) {
+			return HttpStatus.NOT_FOUND;
+		}
+		if (user.getUserId().longValue() != requestorUserId.longValue()) {
+			return HttpStatus.METHOD_NOT_ALLOWED;
 		}
 
-		return new Long(500);
-	}
-
-	private Long dropUser(Long userId) {
-		User user = getUser(userId);
 		return dropUser(user);
 	}
 
-	private Long dropUser(User user) {
-		if (null != user) {
-			userModel.deleteById(user.getUserId());
-			User deletedUser = getUser(user.getUserId());
-			if (null == deletedUser) {
-				return new Long(200);
-			}
+	private HttpStatus dropUser(User user) {
+		userModel.deleteById(user.getUserId());
+		User deletedUser = getUser(user.getUserId());
+		if (null == deletedUser) {
+			return HttpStatus.NO_CONTENT;
 		}
 
-		return new Long(10);
+		return HttpStatus.INTERNAL_SERVER_ERROR;
 	}
 
 	public static Long userIdToLong(String formattedUserId) {

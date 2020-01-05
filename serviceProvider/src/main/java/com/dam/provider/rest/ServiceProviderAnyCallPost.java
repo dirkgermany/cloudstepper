@@ -84,9 +84,8 @@ public class ServiceProviderAnyCallPost extends MasterController {
 			apiMethod = getApiMethod(pathParts, requestUri);
 
 		} catch (DamServiceException dse) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
-							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; Service:" + dse.getServiceName());
 		}
 
 		try {
@@ -96,9 +95,8 @@ public class ServiceProviderAnyCallPost extends MasterController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
 					"User not logged in, invalid token or not enough rights for action.");
 		} catch (DamServiceException dse) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
-							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; Service:" + dse.getServiceName());
 		}
 	}
 }

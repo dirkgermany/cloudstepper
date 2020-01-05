@@ -1,5 +1,7 @@
 package com.dam.authentication.rest.message;
 
+import org.springframework.http.HttpStatus;
+
 import com.dam.authentication.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -8,18 +10,18 @@ public class GetUserResponse extends RestResponse{
     private User user = new User();
     
     public GetUserResponse () {
-		super(new Long(200), "OK", "User validated");
+		super(HttpStatus.OK, "OK", "User validated");
     }
     	
 	public GetUserResponse (User user) {
-		super(new Long(200), "OK", "User validated");
+		super(HttpStatus.OK, "OK", "User validated");
 		
 		this.user = user;
 	}  
 	
 	public GetUserResponse(Long userId, String userName, String password, String givenName, String lastName) {
-		super(userId, "OK", "User validated");
-		user = new User(userName, password, givenName, lastName);
+		super(HttpStatus.OK, "OK", "User validated");
+		user = new User(userId, userName, password, givenName, lastName);
 		
 	}
 	

@@ -1,15 +1,17 @@
 package com.dam.provider.rest.service.message;
 
+import org.springframework.http.HttpStatus;
+
 public class RestResponse {
 
 	private final String SERVICE_NAME = "ServiceProvider";
 
 	private String message;
 	private String description;
-	private Long returnCode;
+	private HttpStatus httpStatus;
 	
-	public RestResponse (Long returnCode, String message, String description) {
-		setReturnCode(returnCode);
+	public RestResponse (HttpStatus httpStatus, String message, String description) {
+		setReturnCode(httpStatus);
 		setMessage(message);
 		setDescription(description);
 	}
@@ -34,12 +36,12 @@ public class RestResponse {
 		this.description = description;
 	}
 
-	public Long getReturnCode() {
-		return returnCode;
+	public HttpStatus getReturnCode() {
+		return httpStatus;
 	}
 
-	public void setReturnCode(Long returnCode) {
-		this.returnCode = returnCode;
+	public void setReturnCode(HttpStatus httpStatus) {
+		this.httpStatus = httpStatus;
 	}
 
 }

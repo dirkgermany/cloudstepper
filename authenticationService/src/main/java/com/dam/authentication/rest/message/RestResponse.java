@@ -1,15 +1,17 @@
 package com.dam.authentication.rest.message;
 
+import org.springframework.http.HttpStatus;
+
 public class RestResponse {
 
 	private final String SERVICE_NAME = "AuthenticationService";
 
-	private Long returnCode;
+	private HttpStatus httpStatus;
 	private String description;
 	private String result;
 
-	public RestResponse(Long returnCode, String result, String description) {
-		setReturnCode(returnCode);
+	public RestResponse(HttpStatus httpStatus, String result, String description) {
+		setHttpStatus(httpStatus);
 		setDescription(description);
 		setResult(result);
 	}
@@ -18,12 +20,12 @@ public class RestResponse {
 		return SERVICE_NAME;
 	}
 
-	private void setReturnCode(Long returnCode) {
-		this.returnCode = returnCode;
+	private void setHttpStatus(HttpStatus returnCode) {
+		this.httpStatus = returnCode;
 	}
 
-	public Long getReturnCode() {
-		return returnCode;
+	public HttpStatus getHttpStatus() {
+		return httpStatus;
 	}
 
 	public String getDescription() {

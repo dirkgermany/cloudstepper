@@ -1,12 +1,14 @@
 package com.dam.authentication.rest.message;
 
+import org.springframework.http.HttpStatus;
+
 import com.dam.authentication.model.entity.Permission;
 
 public class PermissionResponse extends RestResponse{
     private Permission permission;
     	
 	public PermissionResponse (Long userId, Permission permission) {
-		super(new Long(200), "OK", "User authenticated.");
+		super(HttpStatus.OK, "OK", "User authenticated.");
 		
 		setPermission(permission);
 	}  

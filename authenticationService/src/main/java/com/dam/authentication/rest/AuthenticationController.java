@@ -23,6 +23,7 @@ import com.dam.authentication.TokenStore;
 import com.dam.authentication.model.PermissionStore;
 import com.dam.authentication.model.User;
 import com.dam.authentication.model.entity.Permission;
+import com.dam.authentication.rest.message.GetUserResponse;
 import com.dam.authentication.rest.message.LoginRequest;
 import com.dam.authentication.rest.message.LogoutRequest;
 import com.dam.authentication.rest.message.PermissionResponse;
@@ -71,30 +72,27 @@ public class AuthenticationController extends MasterController {
 //		}
 //
 //	}
-	
+
 	@PostMapping("/login")
 	public RestResponse loginPost(@RequestBody String permissionRequest) throws DamServiceException {
 		JsonHelper jsonHelper = new JsonHelper();
 		String userName = jsonHelper.extractStringFromRequest(permissionRequest, "userName");
 		String password = jsonHelper.extractStringFromRequest(permissionRequest, "password");
-		
+
 		try {
 			LoginRequest loginRequest = new LoginRequest(userName, password, null);
 			return login(loginRequest);
-		} catch (Exception e) {
-			return new RestResponse(new Long(420), "Token not validated", e.getMessage());
-
+		} catch (ResponseStatusException e) {
+			return new RestResponse(e.getStatus(), "Token not validated", e.getMessage());
 		}
 	}
-
-
 
 	@PostMapping("/logout")
 	public RestResponse logoutResponse(@RequestBody LogoutRequest logoutRequest) throws DamServiceException {
 		if (new Long(0).longValue() == tokenStore.logout(logoutRequest)) {
-			return new RestResponse(new Long(200), "Logout successfull", logoutRequest.getUserName());
+			return new RestResponse(HttpStatus.OK, "Logout successfull", logoutRequest.getUserName());
 		}
-		return new RestResponse(new Long(420), "Logout Failed", "User Unknown or not logged in");
+		return new RestResponse(HttpStatus.UNAUTHORIZED, "Logout Failed", "User Unknown or not logged in");
 	}
 
 	/**
@@ -105,38 +103,39 @@ public class AuthenticationController extends MasterController {
 	 * @return
 	 */
 	@PostMapping("/validateToken")
-	public RestResponse validateToken(@RequestBody (required = false) String tokenRequest, @RequestHeader Map<String, String> headers) throws DamServiceException {
+	public RestResponse validateToken(@RequestBody(required = false) String tokenRequest,
+			@RequestHeader Map<String, String> headers) throws DamServiceException {
 		if (null == headers || headers.size() == 0) {
-			return new RestResponse(new Long(420), "Token not validated",
-					"No token received with request");
-		}	
-		
-		String tokenString = headers.get("tokenid");
-		if (null == tokenString) {
-			throw new DamServiceException(new Long(500), "Token not validated", "Token missed in request");
-		}
-		
-		String domainName = headers.get("servicedomain");
-		if (null == domainName) {
-			throw new DamServiceException(new Long(500), "Token not validated", "domain name missed in request");
+			return new RestResponse(HttpStatus.BAD_REQUEST, "Token not validated", "No token received with request");
 		}
 
-		
+		String tokenString = headers.get("tokenid");
+		if (null == tokenString) {
+			throw new DamServiceException(400L, "Token not validated", "Token missed in request");
+		}
+
+		String domainName = headers.get("servicedomain");
+		if (null == domainName) {
+			throw new DamServiceException(400L, "Token not validated", "domain name missed in request");
+		}
+
 		try {
 			Token validatedToken = validateAndRefresh(tokenString);
 			if (null != validatedToken) {
 				ServiceDomain serviceDomain = ServiceDomain.valueOf(domainName);
-				Permission permission = permissionManager.getRolePermission(validatedToken.getUser().getRole(), serviceDomain);
-				
+				Permission permission = permissionManager.getRolePermission(validatedToken.getUser().getRole(),
+						serviceDomain);
+
 				TokenAndPermissionsResponse response = new TokenAndPermissionsResponse(
-						validatedToken.getUser().getUserId(), validatedToken.getTokenId(), validatedToken.getRights(), permission);
+						validatedToken.getUser().getUserId(), validatedToken.getTokenId(), validatedToken.getRights(),
+						permission);
 				return response;
 			}
 		} catch (Exception e) {
-			return new RestResponse(new Long(420), "Token not validated", e.getMessage());
+			return new RestResponse(HttpStatus.UNAUTHORIZED, "Token not validated", e.getMessage());
 		}
 
-		return new RestResponse(new Long(420), "Token not validated",
+		return new RestResponse(HttpStatus.UNAUTHORIZED, "Token not validated",
 				"Requested Token could not be matched with a valid active Token");
 	}
 
@@ -157,23 +156,29 @@ public class AuthenticationController extends MasterController {
 		return new PermissionResponse(userId, permission);
 	}
 
-	private TokenValidationResponse login(LoginRequest loginRequest) throws DamServiceException {
+	private RestResponse login(LoginRequest loginRequest) throws DamServiceException {
 		// Erst mit dem ersten Login werden die Rollen und Rechte aus der DB geholt
 		try {
-			User user = userServiceConsumer.readUser(loginRequest);
-			Token token = createToken(user);
-			TokenValidationResponse response = new TokenValidationResponse(token.getUser().getUserId(), token.getTokenId());
-			
-			return response;
+			GetUserResponse userResponse = userServiceConsumer.readUser(loginRequest);
+			HttpStatus httpStatus = userResponse.getHttpStatus();
+			if (httpStatus.is2xxSuccessful()) {
+				User user = userResponse.getUser();
+				Token token = createToken(user);
+				TokenValidationResponse response = new TokenValidationResponse(token.getUser().getUserId(),
+						token.getTokenId());
+				return response;
+			}
+			else {
+				throw new ResponseStatusException(httpStatus, userResponse.getResult() + "; " + userResponse.getDescription());
+			}
 		} catch (DamServiceException dse) {
-			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getShortMsg() + "; "
-							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "ErrorId: " + dse.getErrorId() + "; "
+					+ dse.getShortMsg() + "; " + dse.getMessage() + "; Service:" + dse.getServiceName());
 		}
 	}
 
 	private Token validateAndRefresh(String tokenString) throws DamServiceException {
-		
+
 		UUID tokenId = UUID.fromString(tokenString);
 		User user = null;
 		Token token = tokenStore.getToken(tokenId);

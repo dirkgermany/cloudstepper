@@ -19,7 +19,6 @@ public class SimpleCORSFilter implements Filter {
 	private final Logger log = LoggerFactory.getLogger(SimpleCORSFilter.class);
 
 	public SimpleCORSFilter() {
-		System.out.println("SimpleCORSFilter init");
 	}
 
 	@Override
@@ -29,11 +28,14 @@ public class SimpleCORSFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 		
-		if (null == request.getHeader("Origin") || request.getHeader("Origin").isEmpty()) {
-			response.setHeader("Access-Control-Allow-Origin", "https://cloudstepper.de");
-		} else {
-			response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-		}
+//		if (null == request.getHeader("Origin") || request.getHeader("Origin").isEmpty()) {
+//			response.setHeader("Access-Control-Allow-Origin", "https://cloudstepper.de");
+//		} else {
+//			response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+//		}
+		
+		response.setHeader("Access-Control-Allow-Origin", "https://cloudstepper.de");
+
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 		response.setHeader("Access-Control-Max-Age", "3600");
