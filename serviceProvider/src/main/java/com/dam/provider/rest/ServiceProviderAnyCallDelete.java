@@ -13,7 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,8 +29,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins = "*")
 @RestController
-public class ServiceProviderAnyCallPost extends MasterController {
-	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCallPost.class);
+public class ServiceProviderAnyCallDelete extends MasterController {
+	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCallDelete.class);
 
 	@Autowired
 	ConfigProperties config;
@@ -38,34 +38,31 @@ public class ServiceProviderAnyCallPost extends MasterController {
 	@Autowired
 	Consumer consumer;
 
-	@Autowired
-	ServiceProviderPing serviceProviderPing;
-
-	@PostMapping("/*/*")
-	public ResponseEntity<JsonNode> doubleSlashPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
+	@DeleteMapping("/*/*")
+	public ResponseEntity<JsonNode> doubleSlashDelete(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {
 
-		return anyPost(requestBody, servletRequest, params, headers);
+		return anyDelete(requestBody, servletRequest, params, headers);
 
 	}
 
-	@PostMapping("/*/*/*")
-	public ResponseEntity<JsonNode> tripleSlashPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
+	@DeleteMapping("/*/*/*")
+	public ResponseEntity<JsonNode> tripleSlashDelete(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {
 
-		return anyPost(requestBody, servletRequest, params, headers);
+		return anyDelete(requestBody, servletRequest, params, headers);
 
 	}
 
-	@PostMapping("*")
-	public ResponseEntity<JsonNode> singleSlashPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
+	@DeleteMapping("*")
+	public ResponseEntity<JsonNode> singleSlashDelete(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {
 
-		return anyPost(requestBody, servletRequest, params, headers);
+		return anyDelete(requestBody, servletRequest, params, headers);
 
 	}
 
-	public ResponseEntity<JsonNode> anyPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest,
+	public ResponseEntity<JsonNode> anyDelete(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest,
 			Map<String, String> params, @RequestHeader Map<String, String> headers) {
 
 		String requestUri;
@@ -90,7 +87,7 @@ public class ServiceProviderAnyCallPost extends MasterController {
 
 		try {
 			return consumer.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers, getServiceUrl(serviceDomain),
-					subPath + apiMethod, serviceDomain, HttpMethod.POST);
+					subPath + apiMethod, serviceDomain, HttpMethod.DELETE);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
 					"User not logged in, invalid token or not enough rights for action.");

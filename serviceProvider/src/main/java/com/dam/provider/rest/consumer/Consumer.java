@@ -24,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.JsonHelper;
-import com.dam.provider.types.RequestType;
 import com.dam.provider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -40,13 +39,15 @@ public class Consumer {
 		ServiceDomain serviceDomain = ServiceDomain.AUTHENTICATION;
 		int index = config.getIndexPerDomain(serviceDomain.name());
 		String URI = config.getServiceUrl(index) + "/login";
-		ResponseEntity<JsonNode> response = postMessage(URI, requestBody, null, null);
+		ResponseEntity<JsonNode> response = sendMessageWithBodyAsOptional(URI, requestBody, null, null,
+				HttpMethod.POST);
 
 		// Check the status of the response body, not of the transport layer
 		HttpStatus httpStatus = HttpStatus.valueOf(response.getBody().get("httpStatus").asText());
 		if (null == httpStatus || !httpStatus.is2xxSuccessful()) {
 			// token could not be validated
-			ResponseEntity<JsonNode> invalidTokenResponse = new ResponseEntity<JsonNode>(response.getBody(), httpStatus);
+			ResponseEntity<JsonNode> invalidTokenResponse = new ResponseEntity<JsonNode>(response.getBody(),
+					httpStatus);
 			return invalidTokenResponse;
 		}
 		return response;
@@ -54,14 +55,14 @@ public class Consumer {
 
 	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedResponse(JsonNode request,
 			Map<String, String> requestParams, @RequestHeader Map<String, String> headers, String serviceUrl,
-			String action, ServiceDomain serviceDomain, RequestType requestType) throws DamServiceException {
-		
-		return retrieveResponse(request, requestParams, headers, serviceUrl, action, serviceDomain, requestType);
+			String action, ServiceDomain serviceDomain, HttpMethod httpMethod) throws DamServiceException {
+
+		return retrieveResponse(request, requestParams, headers, serviceUrl, action, serviceDomain, httpMethod);
 	}
 
 	public ResponseEntity<JsonNode> retrieveResponse(JsonNode request, Map<String, String> requestParams,
 			@RequestHeader Map<String, String> headers, String url, String action, ServiceDomain serviceDomain,
-			RequestType requestType) throws DamServiceException {
+			HttpMethod httpMethod) throws DamServiceException {
 
 		String tokenId = headers.get("tokenid");
 
@@ -69,12 +70,13 @@ public class Consumer {
 		// and validates token
 		JsonHelper jsonHelper = new JsonHelper();
 		ResponseEntity<JsonNode> validatedTokenNode = validateToken(request, tokenId, serviceDomain.toString());
-		
+
 		JsonNode jsonBody = validatedTokenNode.getBody();
 		HttpStatus httpStatus = HttpStatus.valueOf(jsonBody.get("httpStatus").asText());
 		if (null == httpStatus || !httpStatus.is2xxSuccessful()) {
 			// token could not be validated
-			ResponseEntity<JsonNode> invalidTokenResponse = new ResponseEntity<JsonNode>(validatedTokenNode.getBody(), httpStatus);
+			ResponseEntity<JsonNode> invalidTokenResponse = new ResponseEntity<JsonNode>(validatedTokenNode.getBody(),
+					httpStatus);
 			return invalidTokenResponse;
 		}
 
@@ -89,15 +91,7 @@ public class Consumer {
 		String URI = url + "/" + action;
 
 		try {
-			switch (requestType) {
-			case POST:
-				return postMessage(URI, request, requestParams, headers);
-			case GET:
-				return getMessage(URI, request, requestParams, headers);
-			default:
-				throw new DamServiceException(new Long(500), "Message could not be send.", "Invalid or missing RequestType (POST/GET/DELETE)");
-			}
-
+			return sendMessageWithBodyAsOptional(URI, request, requestParams, headers, httpMethod);
 		} catch (Exception e) {
 			logger.error("Service Provider :: Consumer {}: Message could not be send. URI {} - Request: {}",
 					dateTimeFormatter.format(LocalDateTime.now()), URI, request);
@@ -105,12 +99,12 @@ public class Consumer {
 		}
 	}
 
-
 	/*
 	 * Validates if the userName with the tokenId is logged in. This check is done
 	 * by calling the Authentication Service.
 	 */
-	private ResponseEntity<JsonNode> validateToken(JsonNode request, String tokenId, String domainName) throws DamServiceException {
+	private ResponseEntity<JsonNode> validateToken(JsonNode request, String tokenId, String domainName)
+			throws DamServiceException {
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("tokenId", tokenId);
@@ -121,7 +115,7 @@ public class Consumer {
 		String URI = url + "/" + "validateToken";
 
 		try {
-			return postMessage(URI, request, null, headers);
+			return sendMessageWithBodyAsOptional(URI, request, null, headers, HttpMethod.POST);
 		} catch (Exception e) {
 			logger.error("Service Provider :: Consumer {}: Message could not be send. URI {} - Request: {}",
 					dateTimeFormatter.format(LocalDateTime.now()), URI, request);
@@ -129,38 +123,26 @@ public class Consumer {
 		}
 	}
 
-	private ResponseEntity<JsonNode> postMessage(String URI, JsonNode request, Map<String, String> params,
-			@RequestHeader Map<String, String> headers) {
+	private ResponseEntity<JsonNode> sendMessageWithBodyAsOptional(String URI, JsonNode jsonNode,
+			Map<String, String> requestParams, @RequestHeader Map<String, String> headers, HttpMethod httpMethod)
+			throws DamServiceException {
 
 		HttpEntity<JsonNode> requestBody = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		RestTemplate restTemplate = new RestTemplate();
 
-		if (null != headers) {
+		if (null != headers && null != jsonNode) {
 			headers.forEach((key, value) -> {
 				httpHeaders.add(key, value);
 			});
-			requestBody = new HttpEntity<>(request, httpHeaders);
-		} else {
-			requestBody = new HttpEntity<>(request);
-		}
-
-		if (null == params) {
-			return restTemplate.exchange(URI, HttpMethod.POST, requestBody, JsonNode.class);
-		} else {
-			return restTemplate.exchange(URI, HttpMethod.POST, requestBody, JsonNode.class, params);
-		}
-	}
-
-	private ResponseEntity<JsonNode> getMessage(String URI, JsonNode requestBody, Map<String, String> requestParams,
-			@RequestHeader Map<String, String> headers) throws DamServiceException {
-		RestTemplate restTemplate = new RestTemplate();
-
-		HttpHeaders httpHeaders = new HttpHeaders();
-		if (null != headers) {
+			requestBody = new HttpEntity<>(jsonNode, httpHeaders);
+		} else if (null != headers) {
 			headers.forEach((key, value) -> {
 				httpHeaders.add(key, value);
 			});
+			requestBody = new HttpEntity<>(httpHeaders);
+		} else if (null != jsonNode) {
+			requestBody = new HttpEntity<>(jsonNode);
 		}
 
 		if (null != requestParams && !requestParams.isEmpty()) {
@@ -175,11 +157,11 @@ public class Consumer {
 			}
 		}
 
-		HttpEntity<HttpHeaders> entity = new HttpEntity<>(httpHeaders);
-		ResponseEntity<JsonNode> response = restTemplate.exchange(URI, HttpMethod.GET, entity, JsonNode.class,
-				requestParams);
-
-		return response; //.getBody();
+		if (null == requestParams) {
+			return restTemplate.exchange(URI, httpMethod, requestBody, JsonNode.class);
+		} else {
+			return restTemplate.exchange(URI, httpMethod, requestBody, JsonNode.class, requestParams);
+		}
 	}
 
 	private String encodeValue(String value) throws DamServiceException {

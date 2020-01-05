@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,9 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.dam.exception.AuthorizationServiceException;
 import com.dam.exception.DamServiceException;
-import com.dam.provider.JsonHelper;
 import com.dam.provider.rest.consumer.Consumer;
-import com.dam.provider.types.RequestType;
 import com.dam.provider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -85,9 +84,8 @@ public class ServiceProviderAnyCallGet extends MasterController {
 		}
 
 		try {
-			JsonNode node = new JsonHelper().createNodeFromMap(decodedParams);
 			return consumer.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers,  getServiceUrl(serviceDomain), subPath + apiMethod,
-					 serviceDomain, RequestType.GET);
+					 serviceDomain, HttpMethod.GET);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
 					"User not logged in, invalid token or not enough rights for action.");
