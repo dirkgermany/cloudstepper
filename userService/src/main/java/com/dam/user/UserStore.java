@@ -1,5 +1,7 @@
 package com.dam.user;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import com.dam.user.model.UserModel;
 import com.dam.user.model.entity.User;
-import com.dam.user.types.Role;
 
 /**
  * Handles active and non active Tokens
@@ -30,6 +31,12 @@ public class UserStore {
 
 	public User getUser(String userName, String password) {
 		return userModel.getUser(userName, password);
+	}
+	
+	public List<User> getUserList() {
+		List<User> users = new ArrayList<User>();
+		userModel.findAll().forEach((User user) -> users.add(user));
+		return users;
 	}
 
 	/**
@@ -77,7 +84,7 @@ public class UserStore {
 	 * @param lastName
 	 * @return
 	 */
-	public User createUser(String userName, String password, String givenName, String lastName, Role role) {
+	public User createUser(String userName, String password, String givenName, String lastName, String role) {
 
 		if (null == userName || null == password || null == givenName || null == lastName || null == role) {
 			return null;

@@ -10,17 +10,72 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.dam.exception.AuthorizationServiceException;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.JsonHelper;
-import com.dam.provider.types.ServiceDomain;
+import com.dam.provider.rest.consumer.Consumer;
 import com.fasterxml.jackson.databind.JsonNode;
 
+@Component
 public class MasterController {
 	
 	@Autowired
 	ConfigProperties config;
+	
+	@Autowired
+	Consumer consumer;
+
+	
+	protected String requestUri;
+	protected String[] pathParts;
+	protected String serviceDomain;
+	protected String subPath;
+	protected String apiMethod;
+	protected Map<String, String> decodedParams = null;
+
+	protected ResponseEntity<JsonNode> anyHttpRequest(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest,
+			Map<String, String> requestParams, @RequestHeader Map<String, String> headers, HttpMethod httpMethod) {
+
+		prepareHttpMessageParts(requestParams, servletRequest, requestBody);
+		try {
+			return consumer.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers, getServiceUrl(serviceDomain),
+					subPath + apiMethod, serviceDomain, httpMethod);
+		} catch (AuthorizationServiceException ase) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+					"User not logged in, invalid token or not enough rights for action.");
+		} catch (DamServiceException dse) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; Service:" + dse.getServiceName());
+		}
+	}
+
+	
+	protected void prepareHttpMessageParts(@RequestParam Map<String, String> requestParams, HttpServletRequest servletRequest, JsonNode requestBody) throws ResponseStatusException {
+
+		try {
+			decodedParams = decodeHttpMap(requestParams);
+			requestUri = servletRequest.getRequestURI();
+			pathParts = getPathParts(servletRequest);
+			serviceDomain = getServiceDomain(pathParts);
+			subPath = getSubPath(pathParts);
+			apiMethod = getApiMethod(pathParts, requestUri);
+
+		} catch (DamServiceException dse) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
+							+ dse.getMessage() + "; Service:" + dse.getServiceName());
+		}
+	}
 
 	protected String decode(String value) throws DamServiceException {
 		if (null == value)
@@ -56,11 +111,11 @@ public class MasterController {
 		}
 	}
 
-	protected String getServiceUrl(ServiceDomain domain) throws DamServiceException {
+	protected String getServiceUrl(String domain) throws DamServiceException {
 		if (null == domain) {
 			throw new DamServiceException(400L, "Konfigurationsfehler", "domain ist null");
 		}
-		Integer index = config.getIndexPerDomain(domain.name());
+		Integer index = config.getIndexPerDomain(domain);
 		return config.getServiceUrl(index);
 	}
 
@@ -95,11 +150,11 @@ public class MasterController {
 		return subPath;
 	}
 
-	protected ServiceDomain getServiceDomain(String[] pathParts) throws DamServiceException {
+	protected String getServiceDomain(String[] pathParts) throws DamServiceException {
 		String domain = decode(pathParts[1]);
 
 		try {
-			return ServiceDomain.valueOf(domain.toUpperCase());
+			return domain.toUpperCase();
 		} catch (Exception e) {
 			throw new DamServiceException(500L, "Ungültiger Pfad", "Domäne existiert nicht: " + domain.toUpperCase());
 		}

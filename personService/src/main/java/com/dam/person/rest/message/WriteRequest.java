@@ -7,7 +7,7 @@ public abstract class WriteRequest extends RestRequest {
 	private Person person = new Person();	
 
     public WriteRequest(Long requestorUserId, Person person) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
 		setPerson(person);
 		setRequestorUserId(requestorUserId);
     }

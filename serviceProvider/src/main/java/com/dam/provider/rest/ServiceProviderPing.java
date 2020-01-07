@@ -1,8 +1,6 @@
 package com.dam.provider.rest;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
-import com.dam.provider.JsonHelper;
 import com.dam.provider.PingFactory;
 import com.dam.provider.rest.consumer.Consumer;
 import com.dam.provider.rest.service.message.PingResponse;

@@ -17,6 +17,10 @@ public class Configuration {
 	
 	@Value("${server.port}")
 	String serverPort;
+	
+	@Value("${userStore.updateInterval}")
+	Long userStoreUpdateInterval;
+
 
 	public String getServerPort() {
 		return serverPort;
@@ -24,6 +28,14 @@ public class Configuration {
 
 	public void setServerPort(String serverPort) {
 		this.serverPort = serverPort;
+	}
+
+	public Long getUserStoreUpdateInterval() {
+		return userStoreUpdateInterval;
+	}
+
+	public void setUserStoreUpdateInterval(Long userStoreUpdateInterval) {
+		this.userStoreUpdateInterval = userStoreUpdateInterval;
 	}
 
 }

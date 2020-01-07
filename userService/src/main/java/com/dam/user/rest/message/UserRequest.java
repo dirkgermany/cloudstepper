@@ -6,7 +6,7 @@ public class UserRequest extends RestRequest {
     private User user = new User();
 
     public UserRequest(String userName, String password, String requestorUserId) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
 		user.setUserName(userName);
 		user.setPassword(password);
 		setRequestorUserId(requestorUserId);

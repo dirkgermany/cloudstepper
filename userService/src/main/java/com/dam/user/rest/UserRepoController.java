@@ -1,13 +1,8 @@
 package com.dam.user.rest;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,7 +29,6 @@ import com.dam.user.rest.message.UpdateRequest;
 import com.dam.user.rest.message.UpdateResponse;
 import com.dam.user.rest.message.UserRequest;
 import com.dam.user.rest.message.UserResponse;
-import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin
 @RestController
@@ -43,13 +37,13 @@ public class UserRepoController extends MasterController {
 	private UserStore userStore;
 
 	/**
-	 * Retrieves a user by userName and password For internal usage
+	 * Retrieves a user by userName and password for internal usage
 	 * 
 	 * @param userRequest
 	 * @return
 	 */
 	@PostMapping("/checkUser")
-	public ResponseEntity<RestResponse> checkUserResponse(@RequestBody UserRequest userRequest) {
+	public ResponseEntity<RestResponse> checkUser(@RequestBody UserRequest userRequest) {
 		if (null == userRequest.getUser()) {
 			return null;
 		}

@@ -19,7 +19,7 @@ public class WrappedRequest {
 //    private String password;
 
     public WrappedRequest(JsonNode wrappedMsg, String dummy) {
-//		super("DAM 2.0");
+//		super("CS 0.0.1");
  //       this.ipAddress = ipAddress;
     	this.wrappedMsg=wrappedMsg;
  //   	this.password = password;

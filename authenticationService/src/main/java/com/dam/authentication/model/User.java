@@ -1,6 +1,5 @@
 package com.dam.authentication.model;
 
-import com.dam.authentication.types.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -13,7 +12,7 @@ public class User {
 	private String password;
 	
 	//TODO
-	private Role role;
+	private String role;
 	
 	public User () {
 		
@@ -31,7 +30,7 @@ public class User {
 	}
 
 	//TODO
-	public User (Long userId, String userName, String password, String givenName, String lastName, Role role) {
+	public User (Long userId, String userName, String password, String givenName, String lastName, String role) {
 		this(userId, userName, password);
 		setGivenName(givenName);
 		setLastName(lastName);
@@ -96,11 +95,11 @@ public class User {
 	}
 
 	//TODO
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 	

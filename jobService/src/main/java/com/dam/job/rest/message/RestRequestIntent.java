@@ -7,7 +7,7 @@ public class RestRequestIntent extends RestRequest {
 	private Intent intent;
 
 	public RestRequestIntent(Intent intent) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
 		this.setIntent(intent);
 	}
 

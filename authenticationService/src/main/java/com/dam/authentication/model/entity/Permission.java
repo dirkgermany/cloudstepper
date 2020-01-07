@@ -8,11 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import org.springframework.stereotype.Component;
-
-import com.dam.authentication.types.Role;
-import com.dam.authentication.types.ServiceDomain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -22,15 +19,14 @@ public class Permission {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@JsonIgnore
 	private Long _id;
 	
 	@Column(nullable=false)
-	@Enumerated(EnumType.STRING)
-	private ServiceDomain serviceDomain;
+	private String serviceDomain;
 
 	@Column(nullable=false)
-	@Enumerated(EnumType.STRING)
-	private Role role;
+	private String role;
 	
 	@Column(nullable=false)
 	private String rights;
@@ -38,26 +34,26 @@ public class Permission {
 	public Permission () {
 	}
 	
-	public Permission (Role role, ServiceDomain service, String rights) {
+	public Permission (String role, String service, String rights) {
 		setRole(role);
 		setServiceDomain(service);
 		setRights(rights);
 	}
 	
 	
-	public ServiceDomain getServiceDomain() {
+	public String getServiceDomain() {
 		return serviceDomain;
 	}
-	public void setServiceDomain(ServiceDomain serviceDomain) {
+	public void setServiceDomain(String serviceDomain) {
 		this.serviceDomain = serviceDomain;
 	}
 	
 	//TODO zwei Methoden
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
 	
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 	

@@ -7,7 +7,7 @@ public abstract class WriteRequest extends RestRequest {
 	private Address address = new Address();	
 
     public WriteRequest(Long requestorUserId, Address address) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
 		setAddress(address);
 		setRequestorUserId(requestorUserId);
     }

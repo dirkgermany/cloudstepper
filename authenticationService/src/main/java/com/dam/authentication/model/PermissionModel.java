@@ -1,5 +1,6 @@
 package com.dam.authentication.model;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -11,8 +12,6 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import com.dam.authentication.model.entity.Permission;
-import com.dam.authentication.types.Role;
-import com.dam.authentication.types.ServiceDomain;
 
 
 @Transactional
@@ -20,9 +19,13 @@ public interface PermissionModel extends Repository<Permission, Long>, CrudRepos
 
 	Optional<Permission> findBy_id(Long id);
 	
-	Permission findByRole(Role role);
-	Optional<Permission> findByServiceDomain(ServiceDomain domain);
+	Permission findByRole(String role);
+	List<Permission> findByServiceDomain(String domain);
 	
+	@Query("SELECT permission FROM Permission permission where permission.role = :role "
+			+ "AND permission.serviceDomain = :serviceDomain")
+	Permission findByRoleDomain(@Param("role") String role, @Param("serviceDomain") String serviceDomain);
+
 	
 	@Modifying
 	@Transactional

@@ -7,7 +7,7 @@ public class PermissionRequest extends RestRequest {
     private Long personId;
 
     public PermissionRequest( Long requestorUserId, Long personId, Long userId) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
 		setUserId(userId);
 		setPersonId(personId);
 		setRequestorUserId(requestorUserId);

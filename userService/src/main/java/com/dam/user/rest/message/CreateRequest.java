@@ -1,19 +1,19 @@
 package com.dam.user.rest.message;
 
 import com.dam.user.model.entity.User;
-import com.dam.user.types.Role;
+import com.dam.user.types.String;
 
 public class CreateRequest extends RestRequest {
 
 	private User user = new User();	
 
     public CreateRequest(User user) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
 		this.user = user;
     }
     
-    public CreateRequest(String userName, String password, String givenName, String lastName, Role role) {
-		super("DAM 2.0");
+    public CreateRequest(String userName, String password, String givenName, String lastName, String role) {
+		super("CS 0.0.1");
 		user = new User(userName, password, givenName, lastName, role);
     }
     

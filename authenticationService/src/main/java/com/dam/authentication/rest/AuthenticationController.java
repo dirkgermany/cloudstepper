@@ -7,11 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,11 +24,9 @@ import com.dam.authentication.model.entity.Permission;
 import com.dam.authentication.rest.message.GetUserResponse;
 import com.dam.authentication.rest.message.LoginRequest;
 import com.dam.authentication.rest.message.LogoutRequest;
-import com.dam.authentication.rest.message.PermissionResponse;
 import com.dam.authentication.rest.message.RestResponse;
 import com.dam.authentication.rest.message.TokenAndPermissionsResponse;
 import com.dam.authentication.rest.message.TokenValidationResponse;
-import com.dam.authentication.types.ServiceDomain;
 import com.dam.exception.DamServiceException;
 
 @CrossOrigin
@@ -52,26 +48,6 @@ public class AuthenticationController extends MasterController {
 
 	@Autowired
 	ConfigProperties config;
-
-//	@GetMapping("/login")
-//	public RestResponse loginGet(@RequestParam String userName, @RequestParam String password) {
-//		try {
-//			userName = decode(userName);
-//			password = decode(password);
-//		} catch (DamServiceException dse) {
-//			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-//					"ErrorId: " + dse.getErrorId() + "; " + dse.getShortMsg() + "; "
-//							+ dse.getMessage() + "; Service:" + dse.getServiceName());
-//		}
-//
-//		try {
-//			LoginRequest loginRequest = new LoginRequest(userName, password, null);
-//			return login(loginRequest);
-//		} catch (Exception e) {
-//			return new RestResponse(new Long(420), "Token not validated", e.getMessage());
-//		}
-//
-//	}
 
 	@PostMapping("/login")
 	public RestResponse loginPost(@RequestBody String permissionRequest) throws DamServiceException {
@@ -114,15 +90,14 @@ public class AuthenticationController extends MasterController {
 			throw new DamServiceException(400L, "Token not validated", "Token missed in request");
 		}
 
-		String domainName = headers.get("servicedomain");
-		if (null == domainName) {
+		String serviceDomain = headers.get("servicedomain");
+		if (null == serviceDomain) {
 			throw new DamServiceException(400L, "Token not validated", "domain name missed in request");
 		}
 
 		try {
 			Token validatedToken = validateAndRefresh(tokenString);
 			if (null != validatedToken) {
-				ServiceDomain serviceDomain = ServiceDomain.valueOf(domainName);
 				Permission permission = permissionManager.getRolePermission(validatedToken.getUser().getRole(),
 						serviceDomain);
 
@@ -137,23 +112,6 @@ public class AuthenticationController extends MasterController {
 
 		return new RestResponse(HttpStatus.UNAUTHORIZED, "Token not validated",
 				"Requested Token could not be matched with a valid active Token");
-	}
-
-	@PostMapping("/getUserPermission")
-	public RestResponse getUserPermissions(@RequestBody String permissionRequest) throws DamServiceException {
-		Long userId = new JsonHelper().extractLongFromRequest(permissionRequest, "userId");
-		String domainName = new JsonHelper().extractStringFromRequest(permissionRequest, "serviceDomain");
-		ServiceDomain serviceDomain;
-		try {
-			serviceDomain = ServiceDomain.valueOf(domainName);
-		} catch (Exception e) {
-			throw new DamServiceException(new Long(500), "Unknown ServiceDomain", e.getMessage());
-		}
-
-		User user = tokenStore.getUser(userId);
-		Permission permission = permissionManager.getRolePermission(user.getRole(), serviceDomain);
-
-		return new PermissionResponse(userId, permission);
 	}
 
 	private RestResponse login(LoginRequest loginRequest) throws DamServiceException {

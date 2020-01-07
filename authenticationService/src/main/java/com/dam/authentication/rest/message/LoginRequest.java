@@ -20,7 +20,7 @@ public class LoginRequest extends RestRequest {
     private User user = new User();
 
     public LoginRequest(String userName, String password, String ipAddress) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
         this.ipAddress = ipAddress;
         user.setUserName(userName);
         user.setPassword(password);

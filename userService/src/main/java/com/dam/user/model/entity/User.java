@@ -2,17 +2,12 @@ package com.dam.user.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
-
 import org.springframework.stereotype.Component;
-
-import com.dam.user.types.Role;
 
 @Entity
 @Component
@@ -33,14 +28,13 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 	@Column(nullable=false)
-	@Enumerated (EnumType.STRING)
-	private Role role;
+	private String role;
 	
 	public User () {
 		
 	}
 	
-	public User (Long userId, String userName, String password, String givenName, String lastName, Role role) {
+	public User (Long userId, String userName, String password, String givenName, String lastName, String role) {
 		setUserName(userName);
 		setPassword(password);
 		setGivenName(givenName);
@@ -48,7 +42,7 @@ public class User {
 		setRole(role);
 	}
 	
-	public User (String userName, String password, String givenName, String lastName, Role role) {
+	public User (String userName, String password, String givenName, String lastName, String role) {
 		this(null, userName, password, givenName, lastName, role);
 	}
 
@@ -116,11 +110,11 @@ public class User {
 		setRole(updateUser.getRole());
 	}
 
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 }

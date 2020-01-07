@@ -22,7 +22,7 @@ public class LogoutRequest extends RestRequest {
     private User user = new User();
 
     public LogoutRequest(String userName, UUID tokenId) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
         user.setUserName(userName);
         setTokenId(tokenId);
     }

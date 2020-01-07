@@ -24,8 +24,8 @@ import com.dam.exception.DamServiceException;
 @Component
 @Import({ ConfigProperties.class, ConfigProperties.class })
 public class TokenStore {
-	
-	private static final Logger logger = LoggerFactory.getLogger(TokenStore.class);	
+
+	private static final Logger logger = LoggerFactory.getLogger(TokenStore.class);
 
 	@Autowired
 	ConfigProperties config;
@@ -67,7 +67,7 @@ public class TokenStore {
 	 * 
 	 * @param validationToken
 	 * @return
-	 * @throws DamServiceException 
+	 * @throws DamServiceException
 	 */
 	public Token validateAndRefreshToken(Token validationToken) throws DamServiceException {
 		refreshTokenStore();
@@ -86,13 +86,12 @@ public class TokenStore {
 		// refresh expireTime
 		// update Map
 		// return Token
-		if (null != storedToken) {
-			if (tokenValidate(validationToken, storedToken)) {
-				storedToken.setExpireTime(System.currentTimeMillis() + getMaxTokenAge());
-				activeTokenMap.put(storedToken.getTokenId(), storedToken);
-				return storedToken;
-			}
+		if (tokenValidate(validationToken, storedToken)) {
+			storedToken.setExpireTime(System.currentTimeMillis() + getMaxTokenAge());
+			activeTokenMap.put(storedToken.getTokenId(), storedToken);
+			return storedToken;
 		}
+
 		throw new DamServiceException(new Long(500), "No valid Token", "Token does not exist.");
 	}
 

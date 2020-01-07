@@ -8,7 +8,7 @@ public class DropRequest extends RestRequest {
 
 
     public DropRequest(Long requestorUserId, Long personId, Long addressId) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
 		setPersonId(personId);
 		setAddressId(addressId);
 		setRequestorUserId(requestorUserId);

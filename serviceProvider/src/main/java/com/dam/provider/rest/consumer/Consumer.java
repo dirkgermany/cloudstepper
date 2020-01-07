@@ -24,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.JsonHelper;
-import com.dam.provider.types.ServiceDomain;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
@@ -36,8 +35,7 @@ public class Consumer {
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	public ResponseEntity<JsonNode> postLogin(JsonNode requestBody) throws DamServiceException {
-		ServiceDomain serviceDomain = ServiceDomain.AUTHENTICATION;
-		int index = config.getIndexPerDomain(serviceDomain.name());
+		int index = config.getIndexPerDomain("AUTHENTICATION");
 		String URI = config.getServiceUrl(index) + "/login";
 		ResponseEntity<JsonNode> response = sendMessageWithBodyAsOptional(URI, requestBody, null, null,
 				HttpMethod.POST);
@@ -55,13 +53,13 @@ public class Consumer {
 
 	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedResponse(JsonNode request,
 			Map<String, String> requestParams, @RequestHeader Map<String, String> headers, String serviceUrl,
-			String action, ServiceDomain serviceDomain, HttpMethod httpMethod) throws DamServiceException {
+			String action, String serviceDomain, HttpMethod httpMethod) throws DamServiceException {
 
 		return retrieveResponse(request, requestParams, headers, serviceUrl, action, serviceDomain, httpMethod);
 	}
 
 	public ResponseEntity<JsonNode> retrieveResponse(JsonNode request, Map<String, String> requestParams,
-			@RequestHeader Map<String, String> headers, String url, String action, ServiceDomain serviceDomain,
+			@RequestHeader Map<String, String> headers, String url, String action, String serviceDomain,
 			HttpMethod httpMethod) throws DamServiceException {
 
 		String tokenId = headers.get("tokenid");
@@ -110,7 +108,7 @@ public class Consumer {
 		headers.put("tokenId", tokenId);
 		headers.put("serviceDomain", domainName);
 
-		Integer index = config.getIndexPerDomain(ServiceDomain.AUTHENTICATION.name());
+		Integer index = config.getIndexPerDomain("AUTHENTICATION");
 		String url = config.getServiceUrl(index);
 		String URI = url + "/" + "validateToken";
 
@@ -157,6 +155,10 @@ public class Consumer {
 			}
 		}
 
+		//ToDo
+		// Austauschen, damit auch Responses mit HttpStatus!= 2xxx behandelt werden können
+		// https://www.baeldung.com/spring-5-webclient
+		ResponseEntity<JsonNode> bla = null;
 		if (null == requestParams) {
 			return restTemplate.exchange(URI, httpMethod, requestBody, JsonNode.class);
 		} else {

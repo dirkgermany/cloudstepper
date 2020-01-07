@@ -7,7 +7,7 @@ public class AddressRequest extends RestRequest {
     private AddressType addressType;
 
     public AddressRequest( Long requestorUserId, Long personId, AddressType addressType) {
-		super("DAM 2.0");
+		super("CS 0.0.1");
 		setRequestorUserId(requestorUserId);
 		setPersonId(personId);
 		setAddressType(addressType);

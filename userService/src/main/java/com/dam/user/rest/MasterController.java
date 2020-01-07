@@ -46,5 +46,4 @@ public class MasterController {
 		}
 		return decodedMap;
 	}
-
 }
