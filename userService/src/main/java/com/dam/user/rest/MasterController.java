@@ -7,7 +7,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import com.dam.exception.DamServiceException;
+import com.dam.user.rest.message.RestResponse;
 
 public class MasterController {
 	
@@ -34,7 +38,7 @@ public class MasterController {
 			throw new DamServiceException(404L, "Value could not be decode for URL", e.getMessage());
 		}
 	}
-
+	
 	protected Map<String, String> decodeHttpMap(Map<String, String> params) throws DamServiceException{
 		Map<String, String> decodedMap = new HashMap<>();
 		if (null != params && !params.isEmpty()) {

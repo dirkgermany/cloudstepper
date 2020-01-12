@@ -79,6 +79,22 @@ public class UserStore {
 		return user;
 	}
 
+	public List<User> listUsersSafe(Map<String, String> headers) throws DamServiceException {
+		String requestorUserIdAsString = headers.get("requestoruserid");
+		String rights = headers.get("rights");
+
+		PermissionCheck.checkRequestedParams(requestorUserIdAsString, rights);
+		Long requestorUserId = extractLong(requestorUserIdAsString);
+		PermissionCheck.isReadPermissionSet(requestorUserId, null, rights);
+
+		ArrayList<User> users = new ArrayList<>();
+		userModel.findAll().forEach(user -> {
+			user.setPassword("******");
+			users.add(user);
+		});
+		return users;
+	}
+
 	/**
 	 * For secure user reading.
 	 * 
@@ -119,8 +135,8 @@ public class UserStore {
 	/*
 	 * Only Super User may create users with admin rights
 	 */
-	public User createUserSafe(WriteRequest requestBody, Map<String, String> requestParams,
-			Map<String, String> headers) throws DamServiceException {
+	public User createUserSafe(WriteRequest requestBody, Map<String, String> requestParams, Map<String, String> headers)
+			throws DamServiceException {
 
 		String requestorUserIdAsString = headers.get("requestoruserid");
 		String rights = headers.get("rights");
@@ -148,8 +164,8 @@ public class UserStore {
 	/*
 	 * Only Super User may create users with admin rights
 	 */
-	public User updateUserSafe(WriteRequest requestBody, Map<String, String> requestParams,
-			Map<String, String> headers) throws DamServiceException {
+	public User updateUserSafe(WriteRequest requestBody, Map<String, String> requestParams, Map<String, String> headers)
+			throws DamServiceException {
 
 		String requestorUserIdAsString = headers.get("requestoruserid");
 		String rights = headers.get("rights");
@@ -185,7 +201,7 @@ public class UserStore {
 	 * @param lastName
 	 * @return
 	 */
-	public User createUser(String userName, String password, String givenName, String lastName, String role)
+	private User createUser(String userName, String password, String givenName, String lastName, String role)
 			throws DamServiceException {
 
 		if (null == userName || null == password || null == givenName || null == lastName || null == role) {
@@ -217,7 +233,7 @@ public class UserStore {
 		}
 
 		if (null == storedUser) {
-			throw new DamServiceException(401L, "Cannot update user", "User not found by userId and userName");
+			throw new DamServiceException(401L, "Cannot update user", "User not found by userId or userName");
 		}
 
 		storedUser.updateFrom(userUpdateData);
@@ -229,36 +245,35 @@ public class UserStore {
 		return storedUser;
 	}
 
-	public HttpStatus dropUser(Long requestorUserId, User userToDrop) {
-		if (null == requestorUserId || null == userToDrop) {
-			return HttpStatus.BAD_REQUEST;
+	public void dropUserSafe(Map<String, String> requestParams, Map<String, String> headers)
+			throws DamServiceException {
+		String requestorUserIdAsString = headers.get("requestoruserid");
+		String rights = headers.get("rights");
+		PermissionCheck.checkRequestedParams(requestorUserIdAsString, rights);
+
+		User storedUser = null;
+		if (null != requestParams.get("userId")) {
+			Long userId = extractLong(requestParams.get("userId"));
+			storedUser = getUser(userId);
+		} else if (null != requestParams.get("userName")) {
+			storedUser = getUser(requestParams.get("userName"));
 		}
 
-		User user = null;
-		if (null != userToDrop.getUserId()) {
-			user = getUser(userToDrop.getUserId());
-		} else if (null != userToDrop.getUserName()) {
-			user = getUser(userToDrop.getUserName());
+		if (null == storedUser) {
+			throw new DamServiceException(500L, "Cannot drop user", "User not found by userId or userName");
 		}
 
-		if (null == user) {
-			return HttpStatus.NOT_FOUND;
-		}
-		if (user.getUserId().longValue() != requestorUserId.longValue()) {
-			return HttpStatus.METHOD_NOT_ALLOWED;
-		}
-
-		return dropUser(user);
+		Long requestorUserId = extractLong(requestorUserIdAsString);
+		PermissionCheck.isDeletePermissionSet(requestorUserId, storedUser.getUserId(), rights);
+		dropUser(storedUser.getUserId());
 	}
 
-	private HttpStatus dropUser(User user) {
-		userModel.deleteById(user.getUserId());
-		User deletedUser = getUser(user.getUserId());
-		if (null == deletedUser) {
-			return HttpStatus.NO_CONTENT;
+	private void dropUser(long userId) throws DamServiceException {
+		userModel.deleteById(userId);
+		User deletedUser = getUser(userId);
+		if (null != deletedUser) {
+			throw new DamServiceException(404L, "User not deleted", "Unknown reason but user was not saved");
 		}
-
-		return HttpStatus.INTERNAL_SERVER_ERROR;
 	}
 
 	public static Long userIdToLong(String formattedUserId) {

@@ -1,5 +1,6 @@
 package com.dam.user.rest;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import com.dam.user.rest.message.WriteResponse;
 import com.dam.user.rest.message.DropRequest;
 import com.dam.user.rest.message.DropResponse;
 import com.dam.user.rest.message.ErrorResponse;
+import com.dam.user.rest.message.ListUserResponse;
 import com.dam.user.rest.message.RestResponse;
 import com.dam.user.rest.message.UpdateRequest;
 import com.dam.user.rest.message.UpdateResponse;
@@ -60,6 +62,26 @@ public class UserRepoController extends MasterController {
 		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_FOUND, "User not found",
 				"User or combination of user+password is unknown"), HttpStatus.OK);
 	}
+	
+	@GetMapping("/listUser")
+	public ResponseEntity<RestResponse> listUser(@RequestHeader Map<String, String> headers) throws DamServiceException {
+
+		try {
+			List<User> users = userStore.listUsersSafe(headers);
+			if (null != users) {
+				return new ResponseEntity<RestResponse>(new ListUserResponse(users), HttpStatus.OK);
+			}
+		} catch (DamServiceException dse) {
+			return new ResponseEntity<RestResponse>(
+					new RestResponse(HttpStatus.valueOf(dse.getErrorId().intValue()), "User list could not be read", dse.getMessage()),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<RestResponse>(
+				new RestResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User list could not be read", "No user found"),
+				HttpStatus.OK);
+	}
+
+
 
 	/**
 	 * Retrieves a user by userName and userId Calling user must be logged in
@@ -68,7 +90,7 @@ public class UserRepoController extends MasterController {
 	 * @return
 	 */
 	@GetMapping("/getUser")
-	public ResponseEntity<RestResponse> getUserByGet(@RequestParam Map<String, String> params,
+	public ResponseEntity<RestResponse> getUser(@RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) throws DamServiceException {
 
 		Map<String, String> decodedParams = null;
@@ -76,7 +98,7 @@ public class UserRepoController extends MasterController {
 			decodedParams = decodeHttpMap(params);
 		} catch (Exception e) {
 			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.BAD_REQUEST, "Invalid requestParams",
-					"RequestParams couldn't be decoded"), HttpStatus.BAD_REQUEST);
+					"RequestParams couldn't be decoded"), HttpStatus.OK);
 		}
 
 		try {
@@ -84,9 +106,9 @@ public class UserRepoController extends MasterController {
 			if (null != user) {
 				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
 			}
-		} catch (Exception e) {
+		} catch (DamServiceException dse) {
 			return new ResponseEntity<RestResponse>(
-					new RestResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User could not be read", e.getMessage()),
+					new RestResponse(HttpStatus.valueOf(dse.getErrorId().intValue()), "User could not be read", dse.getMessage()),
 					HttpStatus.OK);
 		}
 		return new ResponseEntity<RestResponse>(
@@ -95,35 +117,58 @@ public class UserRepoController extends MasterController {
 	}
 
 	@PostMapping("/createUser")
-	public ResponseEntity<RestResponse> createUser(@RequestBody WriteRequest requestBody, @RequestParam Map<String, String> params,
-			@RequestHeader Map<String, String> headers) {
-		
+	public ResponseEntity<RestResponse> createUser(@RequestBody WriteRequest requestBody,
+			@RequestParam Map<String, String> params, @RequestHeader Map<String, String> headers) {
+
 		Map<String, String> decodedParams = null;
 		try {
 			decodedParams = decodeHttpMap(params);
 		} catch (Exception e) {
 			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.BAD_REQUEST, "Invalid requestParams",
-					"RequestParams couldn't be decoded"), HttpStatus.BAD_REQUEST);
+					"RequestParams couldn't be decoded"), HttpStatus.OK);
 		}
-		
+
 		try {
 			User user = userStore.createUserSafe(requestBody, decodedParams, headers);
 			if (null != user) {
 				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
 			}
 		} catch (DamServiceException e) {
-			return new ResponseEntity<RestResponse>(
-					new RestResponse(HttpStatus.valueOf(e.getErrorId().intValue()), "User could not be created", e.getMessage()),
-					HttpStatus.OK);
+			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.valueOf(e.getErrorId().intValue()),
+					"User could not be created", e.getMessage()), HttpStatus.OK);
 		}
 		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_MODIFIED, "User not created",
-				"User still exists, data invalid or not complete"), HttpStatus.NOT_MODIFIED);
+				"User still exists, data invalid or not complete"), HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/updateUser")
-	public ResponseEntity<RestResponse> updateUser(@RequestBody WriteRequest requestBody, @RequestParam Map<String, String> params,
+	public ResponseEntity<RestResponse> updateUser(@RequestBody WriteRequest requestBody,
+			@RequestParam Map<String, String> params, @RequestHeader Map<String, String> headers) {
+
+		Map<String, String> decodedParams = null;
+		try {
+			decodedParams = decodeHttpMap(params);
+		} catch (Exception e) {
+			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.BAD_REQUEST, "Invalid requestParams",
+					"RequestParams couldn't be decoded"), HttpStatus.OK);
+		}
+
+		try {
+			User user = userStore.updateUserSafe(requestBody, decodedParams, headers);
+			if (null != user) {
+				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
+			}
+		} catch (DamServiceException e) {
+			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.valueOf(e.getErrorId().intValue()),
+					"User could not be created", e.getMessage()), HttpStatus.OK);
+		}
+		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_MODIFIED, "User not created",
+				"User still exists, data invalid or not complete"), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/dropUser")
+	public ResponseEntity<RestResponse> dropUser(@RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {
-		
 		Map<String, String> decodedParams = null;
 		try {
 			decodedParams = decodeHttpMap(params);
@@ -131,33 +176,22 @@ public class UserRepoController extends MasterController {
 			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.BAD_REQUEST, "Invalid requestParams",
 					"RequestParams couldn't be decoded"), HttpStatus.BAD_REQUEST);
 		}
-		
-		try {
-			User user = userStore.updateUserSafe(requestBody, decodedParams, headers);
-			if (null != user) {
-				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
-			}
-		} catch (DamServiceException e) {
+
+		String userIdAsString = decodedParams.get("userId");
+		if (null == userIdAsString) {
 			return new ResponseEntity<RestResponse>(
-					new RestResponse(HttpStatus.valueOf(e.getErrorId().intValue()), "User could not be created", e.getMessage()),
+					new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User not deleted", "User not found"),
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_MODIFIED, "User not created",
-				"User still exists, data invalid or not complete"), HttpStatus.NOT_MODIFIED);
-	}
 
-	@DeleteMapping("/dropUser")
-	public ResponseEntity<RestResponse> dropUser(@RequestBody DropRequest dropRequest) {
-		Long userId = new Long(dropRequest.getRequestorUserId());
-		HttpStatus result = userStore.dropUser(userId, dropRequest.getUser());
-
-		if (result == HttpStatus.NO_CONTENT) {
-			return new ResponseEntity<RestResponse>(new DropResponse(result), HttpStatus.NO_CONTENT);
+		try {
+			userStore.dropUserSafe(decodedParams, headers);
+		} catch (DamServiceException dse) {
+			return new ResponseEntity<RestResponse>(
+					new ErrorResponse(HttpStatus.valueOf(dse.getErrorId().intValue()), "User not deleted", dse.getMessage()),
+					HttpStatus.OK);
 		}
 
-		return new ResponseEntity<RestResponse>(
-				new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User not deleted", "User not found"),
-				HttpStatus.INTERNAL_SERVER_ERROR);
-
+		return new ResponseEntity<RestResponse>(new DropResponse(HttpStatus.NO_CONTENT), HttpStatus.NO_CONTENT);
 	}
 }
