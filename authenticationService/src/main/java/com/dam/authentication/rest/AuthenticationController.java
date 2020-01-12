@@ -101,6 +101,9 @@ public class AuthenticationController extends MasterController {
 				Permission permission = permissionManager.getRolePermission(validatedToken.getUser().getRole(),
 						serviceDomain);
 
+				if (null == permission) {
+					return new RestResponse(HttpStatus.UNAUTHORIZED, "Token valid but user has no permissions to serviceDomain", "Check permissions of role " + validatedToken.getUser().getRole() + " and serviceDomain " + serviceDomain);
+				}
 				TokenAndPermissionsResponse response = new TokenAndPermissionsResponse(
 						validatedToken.getUser().getUserId(), validatedToken.getTokenId(), validatedToken.getRights(),
 						permission);

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.dam.provider.rest.consumer.Consumer;
+import com.dam.provider.rest.consumer.Client;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins = "*")
@@ -24,7 +24,7 @@ public class ServiceProviderAnyCallGet extends MasterController {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCallGet.class);
 
 	@Autowired
-	Consumer consumer;
+	Client client;
 
 	@Autowired
 	ServiceProviderPing serviceProviderPing;

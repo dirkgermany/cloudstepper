@@ -5,9 +5,11 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +18,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.RequestHeadersUriSpec;
 
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
@@ -27,11 +32,11 @@ import com.dam.provider.JsonHelper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
-public class Consumer {
+public class Client {
 	@Autowired
 	ConfigProperties config;
 
-	private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
+	private static final Logger logger = LoggerFactory.getLogger(Client.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	public ResponseEntity<JsonNode> postLogin(JsonNode requestBody) throws DamServiceException {
@@ -81,9 +86,13 @@ public class Consumer {
 		JsonNode permission = jsonHelper.extractNodeFromNode(jsonBody, "permission");
 		String rights = jsonHelper.extractStringFromJsonNode(permission, "rights");
 		Long loggedInUserId = jsonHelper.extractLongFromNode(jsonBody, "userId");
+		String rightOption = jsonHelper.extractStringFromJsonNode(permission, "rightOption");
 
 		headers.put("requestorUserId", loggedInUserId.toString());
 		headers.put("rights", rights);
+		if (null != rightOption && !rightOption.isEmpty()) {
+			headers.put("rightOption", rightOption);
+		}
 
 		action = action.replace("/", "");
 		String URI = url + "/" + action;
@@ -154,11 +163,10 @@ public class Consumer {
 				empersant = "&";
 			}
 		}
-
+	
 		//ToDo
 		// Austauschen, damit auch Responses mit HttpStatus!= 2xxx behandelt werden können
 		// https://www.baeldung.com/spring-5-webclient
-		ResponseEntity<JsonNode> bla = null;
 		if (null == requestParams) {
 			return restTemplate.exchange(URI, httpMethod, requestBody, JsonNode.class);
 		} else {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,8 +20,8 @@ import com.dam.user.PermissionCheck;
 import com.dam.user.UserStore;
 import com.dam.user.model.entity.User;
 import com.dam.user.model.entity.UserMessageContainer;
-import com.dam.user.rest.message.CreateRequest;
-import com.dam.user.rest.message.CreateResponse;
+import com.dam.user.rest.message.WriteRequest;
+import com.dam.user.rest.message.WriteResponse;
 import com.dam.user.rest.message.DropRequest;
 import com.dam.user.rest.message.DropResponse;
 import com.dam.user.rest.message.ErrorResponse;
@@ -56,7 +57,8 @@ public class UserRepoController extends MasterController {
 		if (null != user && new Long(userRequest.getRequestorUserId()).longValue() == user.getUserId().longValue()) {
 			return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
 		}
-		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_FOUND, "User not found", "User or combination of user+password is unknown"), HttpStatus.OK);
+		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_FOUND, "User not found",
+				"User or combination of user+password is unknown"), HttpStatus.OK);
 	}
 
 	/**
@@ -68,48 +70,80 @@ public class UserRepoController extends MasterController {
 	@GetMapping("/getUser")
 	public ResponseEntity<RestResponse> getUserByGet(@RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) throws DamServiceException {
-		Map<String, String> decodedMap = decodeHttpMap(params);
 
-		String requestorUserIdAsString = decodedMap.get("requestorUserId");
-		if (null == requestorUserIdAsString) {
-			requestorUserIdAsString = headers.get("requestoruserid");
-		}
-		String rights = decodedMap.get("rights");
-		if (null == rights) {
-			rights = headers.get("rights");
+		Map<String, String> decodedParams = null;
+		try {
+			decodedParams = decodeHttpMap(params);
+		} catch (Exception e) {
+			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.BAD_REQUEST, "Invalid requestParams",
+					"RequestParams couldn't be decoded"), HttpStatus.BAD_REQUEST);
 		}
 
-		PermissionCheck.checkRequestedParams(requestorUserIdAsString, rights);
-		Long requestorUserId = extractLong(requestorUserIdAsString);
-
-		String userIdAsString = decodedMap.get("userId");
-		String userName = decodedMap.get("userName");
-
-		User user = null;
-		if (null != userIdAsString) {
-			Long userId = extractLong(userIdAsString);
-			user = userStore.getUser(userId);
-		} else if (null != userName) {
-			user = userStore.getUser(userName);
+		try {
+			User user = userStore.getUserSafe(decodedParams, headers);
+			if (null != user) {
+				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<RestResponse>(
+					new RestResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User could not be read", e.getMessage()),
+					HttpStatus.OK);
 		}
-
-		if (null != user) {
-			PermissionCheck.isReadPermissionSet(requestorUserId, user.getUserId(), rights);
-			return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
-		}
-
-		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_FOUND, "User not found", "Check userId: " + userIdAsString + ", userName: " + userName), HttpStatus.NOT_FOUND);
+		return new ResponseEntity<RestResponse>(
+				new RestResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User could not be read", "User not found"),
+				HttpStatus.OK);
 	}
 
 	@PostMapping("/createUser")
-	public ResponseEntity<RestResponse> createUser(@RequestBody CreateRequest createRequest) {
-		User user = userStore.createUser(createRequest.getUser());
-
-		if (null != user) {
-			return new ResponseEntity<RestResponse>(new CreateResponse(user), HttpStatus.CREATED);
+	public ResponseEntity<RestResponse> createUser(@RequestBody WriteRequest requestBody, @RequestParam Map<String, String> params,
+			@RequestHeader Map<String, String> headers) {
+		
+		Map<String, String> decodedParams = null;
+		try {
+			decodedParams = decodeHttpMap(params);
+		} catch (Exception e) {
+			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.BAD_REQUEST, "Invalid requestParams",
+					"RequestParams couldn't be decoded"), HttpStatus.BAD_REQUEST);
 		}
-
-		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_MODIFIED, "User not created", "User still exists, data invalid or not complete"), HttpStatus.NOT_MODIFIED);
+		
+		try {
+			User user = userStore.createUserSafe(requestBody, decodedParams, headers);
+			if (null != user) {
+				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
+			}
+		} catch (DamServiceException e) {
+			return new ResponseEntity<RestResponse>(
+					new RestResponse(HttpStatus.valueOf(e.getErrorId().intValue()), "User could not be created", e.getMessage()),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_MODIFIED, "User not created",
+				"User still exists, data invalid or not complete"), HttpStatus.NOT_MODIFIED);
+	}
+	
+	@PutMapping("/updateUser")
+	public ResponseEntity<RestResponse> updateUser(@RequestBody WriteRequest requestBody, @RequestParam Map<String, String> params,
+			@RequestHeader Map<String, String> headers) {
+		
+		Map<String, String> decodedParams = null;
+		try {
+			decodedParams = decodeHttpMap(params);
+		} catch (Exception e) {
+			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.BAD_REQUEST, "Invalid requestParams",
+					"RequestParams couldn't be decoded"), HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			User user = userStore.updateUserSafe(requestBody, decodedParams, headers);
+			if (null != user) {
+				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
+			}
+		} catch (DamServiceException e) {
+			return new ResponseEntity<RestResponse>(
+					new RestResponse(HttpStatus.valueOf(e.getErrorId().intValue()), "User could not be created", e.getMessage()),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_MODIFIED, "User not created",
+				"User still exists, data invalid or not complete"), HttpStatus.NOT_MODIFIED);
 	}
 
 	@DeleteMapping("/dropUser")
@@ -121,36 +155,9 @@ public class UserRepoController extends MasterController {
 			return new ResponseEntity<RestResponse>(new DropResponse(result), HttpStatus.NO_CONTENT);
 		}
 
-		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User not deleted", "User not found"), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<RestResponse>(
+				new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User not deleted", "User not found"),
+				HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
-
-	@PostMapping("/updateUser")
-	public RestResponse updateUser(@RequestBody UpdateRequest updateRequest) {
-		if (null == updateRequest.getRequestorUserId()) {
-			return null;
-		}
-		Long userId = new Long(updateRequest.getRequestorUserId());
-		User user = userStore.updateUser(userId, updateRequest.getUserStored(), updateRequest.getUserUpdate());
-		if (null != user) {
-			UserMessageContainer userMessageContainer = new UserMessageContainer(user.getUserName(),
-					user.getGivenName(), user.getLastName());
-			return new UpdateResponse(userMessageContainer);
-		}
-
-		return null;
-//		return new RestResponse(new Long(500), "User NOT updated",
-//				"User not found, no valid data or entity not ready for update");
-
-	}
-
-	private Long extractLong(String longString) throws DamServiceException {
-		try {
-			return Long.valueOf(longString);
-		} catch (Exception e) {
-			throw new DamServiceException(404L, "Extraction Long from String failed",
-					"Parameter is required but null or does not represent a Long value");
-		}
-	}
-
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.PingFactory;
-import com.dam.provider.rest.consumer.Consumer;
+import com.dam.provider.rest.consumer.Client;
 import com.dam.provider.rest.service.message.PingResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -21,7 +21,7 @@ public class ServiceProviderPing {
 	ConfigProperties config;
 
 	@Autowired
-	Consumer consumer;
+	Client client;
 	
 	@Autowired
 	PingFactory pingFactory;

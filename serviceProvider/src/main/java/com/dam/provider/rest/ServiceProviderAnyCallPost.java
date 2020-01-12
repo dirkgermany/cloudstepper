@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.dam.provider.ConfigProperties;
-import com.dam.provider.rest.consumer.Consumer;
+import com.dam.provider.rest.consumer.Client;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins = "*")
@@ -26,7 +26,7 @@ public class ServiceProviderAnyCallPost extends MasterController {
 	ConfigProperties config;
 
 	@Autowired
-	Consumer consumer;
+	Client client;
 
 	@Autowired
 	ServiceProviderPing serviceProviderPing;

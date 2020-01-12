@@ -92,7 +92,7 @@ public class User {
 	 * userId is not changeable
 	 * @param updateUser
 	 */
-	public void updateEntity (User updateUser) {
+	public void updateFrom (User updateUser) {
 		if (null == updateUser) {
 			return;
 		}

@@ -23,7 +23,7 @@ import com.dam.exception.AuthorizationServiceException;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.JsonHelper;
-import com.dam.provider.rest.consumer.Consumer;
+import com.dam.provider.rest.consumer.Client;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
@@ -33,7 +33,7 @@ public class MasterController {
 	ConfigProperties config;
 	
 	@Autowired
-	Consumer consumer;
+	Client client;
 
 	
 	protected String requestUri;
@@ -48,7 +48,7 @@ public class MasterController {
 
 		prepareHttpMessageParts(requestParams, servletRequest, requestBody);
 		try {
-			return consumer.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers, getServiceUrl(serviceDomain),
+			return client.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers, getServiceUrl(serviceDomain),
 					subPath + apiMethod, serviceDomain, httpMethod);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,

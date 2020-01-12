@@ -4,10 +4,10 @@ import org.springframework.http.HttpStatus;
 
 import com.dam.user.model.entity.User;
 
-public class CreateResponse extends RestResponse{
+public class WriteResponse extends RestResponse{
     private User user;
     	
-	public CreateResponse (User user) {
+	public WriteResponse (User user) {
 		super(HttpStatus.CREATED, "OK", "User created");
 		
 		setUser(user);

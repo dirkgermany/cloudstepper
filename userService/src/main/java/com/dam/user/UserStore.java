@@ -2,6 +2,7 @@ package com.dam.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 
+import com.dam.exception.DamServiceException;
 import com.dam.user.model.UserModel;
 import com.dam.user.model.entity.User;
+import com.dam.user.rest.message.WriteRequest;
 
 /**
  * Handles active and non active Tokens
@@ -30,13 +33,50 @@ public class UserStore {
 	}
 
 	public User getUser(String userName, String password) {
-		return userModel.getUser(userName, password);
+		User user = userModel.getUser(userName, password);
+		if (null != user) {
+			user.setPassword("******");
+		}
+		return user;
 	}
-	
+
 	public List<User> getUserList() {
 		List<User> users = new ArrayList<User>();
-		userModel.findAll().forEach((User user) -> users.add(user));
+		userModel.findAll().forEach((User user) -> {
+			user.setPassword("******");
+			users.add(user);
+		});
 		return users;
+	}
+
+	public User getUserSafe(Map<String, String> requestParams, Map<String, String> headers) throws DamServiceException {
+		String requestorUserIdAsString = requestParams.get("requestorUserId");
+		if (null == requestorUserIdAsString) {
+			requestorUserIdAsString = headers.get("requestoruserid");
+		}
+		String rights = requestParams.get("rights");
+		if (null == rights) {
+			rights = headers.get("rights");
+		}
+
+		PermissionCheck.checkRequestedParams(requestorUserIdAsString, rights);
+		Long requestorUserId = extractLong(requestorUserIdAsString);
+
+		String userIdAsString = requestParams.get("userId");
+		String userName = requestParams.get("userName");
+
+		User user = null;
+		if (null != userIdAsString) {
+			Long userId = extractLong(userIdAsString);
+			user = getUser(userId);
+		} else if (null != userName) {
+			user = getUser(userName);
+		}
+
+		if (null != user) {
+			PermissionCheck.isReadPermissionSet(requestorUserId, user.getUserId(), rights);
+		}
+		return user;
 	}
 
 	/**
@@ -61,18 +101,79 @@ public class UserStore {
 	public User getUser(Long userId) {
 		Optional<User> optionalUser = userModel.findById(userId);
 		if (null != optionalUser && optionalUser.isPresent()) {
-			return optionalUser.get();
+			User user = optionalUser.get();
+			user.setPassword("******");
+			return user;
 		}
 		return null;
 	}
 
 	public User getUser(String userName) {
-		return userModel.findByUserName(userName);
+		User user = userModel.findByUserName(userName);
+		if (null != user) {
+			user.setPassword("******");
+		}
+		return user;
 	}
 
-	public User createUser(User user) {
+	/*
+	 * Only Super User may create users with admin rights
+	 */
+	public User createUserSafe(WriteRequest requestBody, Map<String, String> requestParams,
+			Map<String, String> headers) throws DamServiceException {
+
+		String requestorUserIdAsString = headers.get("requestoruserid");
+		String rights = headers.get("rights");
+		PermissionCheck.checkRequestedParams(requestBody, requestorUserIdAsString, rights);
+		PermissionCheck.checkRequestedEntity(requestBody.getUser(), User.class, "");
+
+		User user = requestBody.getUser();
+
+		// Diese Prüfung muss ähnlich in die Permissions rein
+		if (user.getRole().equalsIgnoreCase("ROOT_ADMIN")) {
+			String rightOption = headers.get("rightoption");
+			if (null == rightOption || !"Write_Root_Admin=true".equalsIgnoreCase(rightOption)) {
+				throw new DamServiceException(401L, "User not created",
+						"Creating user with ROOT rights is not allowed for the current user");
+			}
+		}
+
+		Long requestorUserId = extractLong(requestorUserIdAsString);
+		PermissionCheck.isWritePermissionSet(requestorUserId, user.getUserId(), rights);
+
 		return createUser(user.getUserName(), user.getPassword(), user.getGivenName(), user.getLastName(),
 				user.getRole());
+	}
+
+	/*
+	 * Only Super User may create users with admin rights
+	 */
+	public User updateUserSafe(WriteRequest requestBody, Map<String, String> requestParams,
+			Map<String, String> headers) throws DamServiceException {
+
+		String requestorUserIdAsString = headers.get("requestoruserid");
+		String rights = headers.get("rights");
+		PermissionCheck.checkRequestedParams(requestBody, requestorUserIdAsString, rights);
+		PermissionCheck.checkRequestedEntity(requestBody.getUser(), User.class, "");
+
+		User userUpdateData = requestBody.getUser();
+		if (null == userUpdateData.getUserId() && null == userUpdateData.getUserName()) {
+			throw new DamServiceException(401L, "Cannot update user", "User name and userId are empty");
+		}
+
+		// Diese Prüfung muss ähnlich in die Permissions rein
+		if (userUpdateData.getRole().equalsIgnoreCase("ROOT_ADMIN")) {
+			String rightOption = headers.get("rightoption");
+			if (null == rightOption || !"Write_Root_Admin=true".equalsIgnoreCase(rightOption)) {
+				throw new DamServiceException(401L, "User not created",
+						"Creating user with ROOT rights is not allowed for the current user");
+			}
+		}
+
+		Long requestorUserId = extractLong(requestorUserIdAsString);
+		PermissionCheck.isWritePermissionSet(requestorUserId, userUpdateData.getUserId(), rights);
+
+		return updateUser(userUpdateData);
 	}
 
 	/**
@@ -84,7 +185,8 @@ public class UserStore {
 	 * @param lastName
 	 * @return
 	 */
-	public User createUser(String userName, String password, String givenName, String lastName, String role) {
+	public User createUser(String userName, String password, String givenName, String lastName, String role)
+			throws DamServiceException {
 
 		if (null == userName || null == password || null == givenName || null == lastName || null == role) {
 			return null;
@@ -92,42 +194,39 @@ public class UserStore {
 
 		// does the userName already exists?
 		if (null != getUser(userName)) {
-			return null;
+			throw new DamServiceException(409L, "User not created", "User already exists, try update method");
 		}
 
 		try {
-			return userModel.save(new User(userName, password, givenName, lastName, role));
+			User user = userModel.save(new User(userName, password, givenName, lastName, role));
+			if (null != user) {
+				user.setPassword("******");
+			}
+			return user;
 		} catch (Exception ex) {
 			return null;
 		}
 	}
 
-	/**
-	 * Save update; requesting user must be user in storage
-	 * 
-	 * @param userId
-	 * @param userStored
-	 * @param userUpdate
-	 * @return
-	 */
-	public User updateUser(Long userId, User userStored, User userUpdate) {
-		if (null == userId || null == userStored || null == userUpdate) {
-			return null;
+	private User updateUser(User userUpdateData) throws DamServiceException {
+		User storedUser = null;
+		if (null != userUpdateData.getUserId()) {
+			storedUser = getUser(userUpdateData.getUserId());
+		} else if (null != userUpdateData.getUserName()) {
+			storedUser = getUser(userUpdateData.getUserName());
 		}
 
-		User user = null;
-		if (null != userStored.getUserId()) {
-			user = getUser(userStored.getUserId());
-		} else {
-			user = getUser(userStored.getUserName()); // , userStored.getPassword());
+		if (null == storedUser) {
+			throw new DamServiceException(401L, "Cannot update user", "User not found by userId and userName");
 		}
 
-		if (null != user && user.getUserId().longValue() == userId.longValue()) {
-			user.updateEntity(userUpdate);
-			return userModel.save(user);
+		storedUser.updateFrom(userUpdateData);
+		storedUser = userModel.save(storedUser);
+		if (null == storedUser) {
+			throw new DamServiceException(401L, "User not updated", "Unknown reason but user was not saved");
 		}
-
-		return null;
+		storedUser.setPassword("******");
+		return storedUser;
 	}
 
 	public HttpStatus dropUser(Long requestorUserId, User userToDrop) {
@@ -166,4 +265,12 @@ public class UserStore {
 		return Long.valueOf(formattedUserId);
 	}
 
+	private Long extractLong(String longString) throws DamServiceException {
+		try {
+			return Long.valueOf(longString);
+		} catch (Exception e) {
+			throw new DamServiceException(404L, "Extraction Long from String failed",
+					"Parameter is required but null or does not represent a Long value");
+		}
+	}
 }

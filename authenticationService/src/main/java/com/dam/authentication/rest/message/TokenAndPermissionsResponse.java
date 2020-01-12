@@ -6,23 +6,23 @@ import com.dam.authentication.model.entity.Permission;
 
 public class TokenAndPermissionsResponse extends TokenValidationResponse {
 	
-	private String permissions;
+	private String rights;
     private Permission permission;
 
 	
-	public TokenAndPermissionsResponse (Long userId, UUID tokenId, String permissions, Permission permission) {
+	public TokenAndPermissionsResponse (Long userId, UUID tokenId, String rights, Permission permission) {
 		super(userId, tokenId);
-		setPermissions(permissions);
+		setRights(rights);
 		setPermission(permission);
 
 	}
 
-	public String getPermissions() {
-		return permissions;
+	public String getRights() {
+		return rights;
 	}
 
-	public void setPermissions(String permissions) {
-		this.permissions = permissions;
+	public void setRights(String rights) {
+		this.rights = rights;
 	}
 
 	public Permission getPermission() {

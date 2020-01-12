@@ -2,8 +2,6 @@ package com.dam.authentication.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,13 +29,17 @@ public class Permission {
 	@Column(nullable=false)
 	private String rights;
 	
+	@Column(nullable=true)
+	private String rightOption;
+	
 	public Permission () {
 	}
 	
-	public Permission (String role, String service, String rights) {
+	public Permission (String role, String service, String rights, String rightOption) {
 		setRole(role);
 		setServiceDomain(service);
 		setRights(rights);
+		setRightOption(rightOption);
 	}
 	
 	
@@ -71,6 +73,14 @@ public class Permission {
 		setServiceDomain(updatePermission.getServiceDomain());
 		// TODO Zeile
 		setRole(updatePermission.getRole());
+	}
+
+	public String getRightOption() {
+		return rightOption;
+	}
+
+	public void setRightOption(String rightOption) {
+		this.rightOption = rightOption;
 	}
 
 }

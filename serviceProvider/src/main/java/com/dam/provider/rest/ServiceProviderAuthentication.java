@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.dam.exception.AuthorizationServiceException;
 import com.dam.exception.DamServiceException;
 import com.dam.provider.ConfigProperties;
-import com.dam.provider.rest.consumer.Consumer;
+import com.dam.provider.rest.consumer.Client;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @CrossOrigin(origins = "*")
@@ -23,16 +23,14 @@ public class ServiceProviderAuthentication {
 	ConfigProperties config;
 
 	@Autowired
-	Consumer consumer;
+	Client client;
 
 	@PostMapping("/login")
 	public ResponseEntity<JsonNode> loginPost(@RequestBody JsonNode loginBody,
 			@RequestHeader Map<String, String> headers) {
 		try {
-			ResponseEntity<JsonNode> x = consumer.postLogin(loginBody);
-			return x;
+			return client.postLogin(loginBody);
 
-//			return consumer.postLogin(loginBody);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User or Password not valid.");
 		} catch (DamServiceException dse) {

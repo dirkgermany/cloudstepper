@@ -13,7 +13,7 @@ public class PermissionCheck {
 	 * @param rights
 	 * @throws DamServiceException
 	 */
-	public static void checkRequestedParams(RestRequest request, Long requestorUserId, String rights)
+	public static void checkRequestedParams(RestRequest request, String requestorUserId, String rights)
 			throws DamServiceException {
 		if (null == request) {
 			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
@@ -51,6 +51,9 @@ public class PermissionCheck {
 			throws DamServiceException {
 		if (null == entity) {
 			throw new DamServiceException(new Long(400), "Invalid Request", "Required object " + theClass.getSimpleName() + " is null." + "; " + additionalInformation);
+		}
+		if (!entity.getClass().getName().equals(theClass.getName())) {
+			throw new DamServiceException(new Long(400), "Invalid Request", "Object " + entity.getClass().getSimpleName() + " is not instance of " + theClass.getSimpleName()+ "; " + additionalInformation);
 		}
 	}
 

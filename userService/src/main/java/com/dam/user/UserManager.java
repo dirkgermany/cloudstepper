@@ -1,7 +1,6 @@
 package com.dam.user;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +39,6 @@ public class UserManager {
 	public synchronized User getUser(User requestedUser) throws DamServiceException {
 		return getUser(requestedUser.getUserName(), requestedUser.getPassword());
 	}
-
-//	private void updateUserStore() throws DamServiceException {
-//		if (!isTimeForUpdate()) {
-//			return;
-//		}
-//		userMap = new HashMap<>();
-//		List<User> users = userStore.getUserList();
-//		users.forEach(user -> userMap.put(user.getUserName() + user.getPassword(), user));
-//	}
 
 	private Boolean isTimeForUpdate() {
 		if (System.currentTimeMillis() - lastUpdate > config.getUserStoreUpdateInterval()) {

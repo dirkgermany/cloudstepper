@@ -25,7 +25,7 @@ public class SimpleCORSFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
 
-		HttpServletRequest request = (HttpServletRequest) req;
+//		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 		
 //		if (null == request.getHeader("Origin") || request.getHeader("Origin").isEmpty()) {
