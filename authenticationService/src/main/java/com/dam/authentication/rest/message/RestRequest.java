@@ -1,9 +1,9 @@
-package com.dam.authentication.rest.message;
+package com.dam.authentication;
 
 public class RestRequest {
 	
 	private String clientSource;
-    private String requestorUserId;
+    private Long requestorUserId;
 
 	
 	public RestRequest (String clientSource) {
@@ -18,11 +18,11 @@ public class RestRequest {
 		this.clientSource = clientSource;
 	}
 	
-    public String getRequestorUserId() {
+    public Long getRequestorUserId() {
     	return requestorUserId;
     }
     
-    public void setRequestorUserId(String requestorUserId) {
+    public void setRequestorUserId(Long requestorUserId) {
     	this.requestorUserId = requestorUserId;
     }
 
