@@ -27,7 +27,7 @@ import com.dam.authentication.rest.message.LogoutRequest;
 import com.dam.authentication.rest.message.RestResponse;
 import com.dam.authentication.rest.message.TokenAndPermissionsResponse;
 import com.dam.authentication.rest.message.TokenValidationResponse;
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 
 @CrossOrigin
 @RestController
@@ -50,7 +50,7 @@ public class AuthenticationController extends MasterController {
 	ConfigProperties config;
 
 	@PostMapping("/login")
-	public RestResponse loginPost(@RequestBody String permissionRequest) throws DamServiceException {
+	public RestResponse loginPost(@RequestBody String permissionRequest) throws CsServiceException {
 		JsonHelper jsonHelper = new JsonHelper();
 		String userName = jsonHelper.extractStringFromRequest(permissionRequest, "userName");
 		String password = jsonHelper.extractStringFromRequest(permissionRequest, "password");
@@ -64,7 +64,7 @@ public class AuthenticationController extends MasterController {
 	}
 
 	@PostMapping("/logout")
-	public RestResponse logoutResponse(@RequestBody LogoutRequest logoutRequest) throws DamServiceException {
+	public RestResponse logoutResponse(@RequestBody LogoutRequest logoutRequest) throws CsServiceException {
 		if (new Long(0).longValue() == tokenStore.logout(logoutRequest)) {
 			return new RestResponse(HttpStatus.OK, "Logout successfull", logoutRequest.getUserName());
 		}
@@ -80,19 +80,19 @@ public class AuthenticationController extends MasterController {
 	 */
 	@PostMapping("/validateToken")
 	public RestResponse validateToken(@RequestBody(required = false) String tokenRequest,
-			@RequestHeader Map<String, String> headers) throws DamServiceException {
+			@RequestHeader Map<String, String> headers) throws CsServiceException {
 		if (null == headers || headers.size() == 0) {
 			return new RestResponse(HttpStatus.BAD_REQUEST, "Token not validated", "No token received with request");
 		}
 
 		String tokenString = headers.get("tokenid");
 		if (null == tokenString) {
-			throw new DamServiceException(400L, "Token not validated", "Token missed in request");
+			throw new CsServiceException(400L, "Token not validated", "Token missed in request");
 		}
 
 		String serviceDomain = headers.get("servicedomain");
 		if (null == serviceDomain) {
-			throw new DamServiceException(400L, "Token not validated", "domain name missed in request");
+			throw new CsServiceException(400L, "Token not validated", "domain name missed in request");
 		}
 
 		try {
@@ -117,7 +117,7 @@ public class AuthenticationController extends MasterController {
 				"Requested Token could not be matched with a valid active Token");
 	}
 
-	private RestResponse login(LoginRequest loginRequest) throws DamServiceException {
+	private RestResponse login(LoginRequest loginRequest) throws CsServiceException {
 		// Erst mit dem ersten Login werden die Rollen und Rechte aus der DB geholt
 		try {
 			GetUserResponse userResponse = userServiceConsumer.readUser(loginRequest);
@@ -132,19 +132,19 @@ public class AuthenticationController extends MasterController {
 			else {
 				throw new ResponseStatusException(httpStatus, userResponse.getResult() + "; " + userResponse.getDescription());
 			}
-		} catch (DamServiceException dse) {
+		} catch (CsServiceException dse) {
 			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "ErrorId: " + dse.getErrorId() + "; "
 					+ dse.getShortMsg() + "; " + dse.getMessage() + "; Service:" + dse.getServiceName());
 		}
 	}
 
-	private Token validateAndRefresh(String tokenString) throws DamServiceException {
+	private Token validateAndRefresh(String tokenString) throws CsServiceException {
 
 		UUID tokenId = UUID.fromString(tokenString);
 		User user = null;
 		Token token = tokenStore.getToken(tokenId);
 		if (null == token) {
-			throw new DamServiceException(new Long(500), "Token not valid", "Token not found in Tokenstore");
+			throw new CsServiceException(new Long(500), "Token not valid", "Token not found in Tokenstore");
 		}
 
 		user = token.getUser();
@@ -161,9 +161,9 @@ public class AuthenticationController extends MasterController {
 	 * 
 	 * @param loginRequest
 	 * @return
-	 * @throws DamServiceException
+	 * @throws CsServiceException
 	 */
-	private Token createToken(User user) throws DamServiceException {
+	private Token createToken(User user) throws CsServiceException {
 		return tokenStore.createNewToken(user);
 	}
 

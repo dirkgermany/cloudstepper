@@ -7,10 +7,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.dam.user.model.UserModel;
 import com.dam.user.model.entity.User;
 import com.dam.user.rest.message.WriteRequest;
@@ -49,7 +48,7 @@ public class UserStore {
 		return users;
 	}
 
-	public User getUserSafe(Map<String, String> requestParams, Map<String, String> headers) throws DamServiceException {
+	public User getUserSafe(Map<String, String> requestParams, Map<String, String> headers) throws CsServiceException {
 		String requestorUserIdAsString = requestParams.get("requestorUserId");
 		if (null == requestorUserIdAsString) {
 			requestorUserIdAsString = headers.get("requestoruserid");
@@ -73,13 +72,14 @@ public class UserStore {
 			user = getUser(userName);
 		}
 
-		if (null != user) {
-			PermissionCheck.isReadPermissionSet(requestorUserId, user.getUserId(), rights);
+		if (null == user) {
+			throw new CsServiceException(404L, "User not found", "Unknown userId or userName");
 		}
+		PermissionCheck.isReadPermissionSet(requestorUserId, user.getUserId(), rights);
 		return user;
 	}
 
-	public List<User> listUsersSafe(Map<String, String> headers) throws DamServiceException {
+	public List<User> listUsersSafe(Map<String, String> headers) throws CsServiceException {
 		String requestorUserIdAsString = headers.get("requestoruserid");
 		String rights = headers.get("rights");
 
@@ -136,36 +136,33 @@ public class UserStore {
 	 * Only Super User may create users with admin rights
 	 */
 	public User createUserSafe(WriteRequest requestBody, Map<String, String> requestParams, Map<String, String> headers)
-			throws DamServiceException {
+			throws CsServiceException {
 
 		String requestorUserIdAsString = headers.get("requestoruserid");
 		String rights = headers.get("rights");
 		PermissionCheck.checkRequestedParams(requestBody, requestorUserIdAsString, rights);
 		PermissionCheck.checkRequestedEntity(requestBody.getUser(), User.class, "");
 
-		User user = requestBody.getUser();
-
 		// Diese Prüfung muss ähnlich in die Permissions rein
-		if (user.getRole().equalsIgnoreCase("ROOT_ADMIN")) {
+		if (requestBody.getUser().getRole().equalsIgnoreCase("ROOT_ADMIN")) {
 			String rightOption = headers.get("rightoption");
 			if (null == rightOption || !"Write_Root_Admin=true".equalsIgnoreCase(rightOption)) {
-				throw new DamServiceException(401L, "User not created",
+				throw new CsServiceException(401L, "User not created",
 						"Creating user with ROOT rights is not allowed for the current user");
 			}
 		}
 
 		Long requestorUserId = extractLong(requestorUserIdAsString);
-		PermissionCheck.isWritePermissionSet(requestorUserId, user.getUserId(), rights);
+		PermissionCheck.isWritePermissionSet(requestorUserId, requestBody.getUser().getUserId(), rights);
 
-		return createUser(user.getUserName(), user.getPassword(), user.getGivenName(), user.getLastName(),
-				user.getRole());
+		return createUser(requestBody.getUser());
 	}
 
 	/*
 	 * Only Super User may create users with admin rights
 	 */
 	public User updateUserSafe(WriteRequest requestBody, Map<String, String> requestParams, Map<String, String> headers)
-			throws DamServiceException {
+			throws CsServiceException {
 
 		String requestorUserIdAsString = headers.get("requestoruserid");
 		String rights = headers.get("rights");
@@ -174,14 +171,17 @@ public class UserStore {
 
 		User userUpdateData = requestBody.getUser();
 		if (null == userUpdateData.getUserId() && null == userUpdateData.getUserName()) {
-			throw new DamServiceException(401L, "Cannot update user", "User name and userId are empty");
+			throw new CsServiceException(401L, "Cannot update user", "User name and userId are empty");
 		}
 
 		// Diese Prüfung muss ähnlich in die Permissions rein
+		// UND in die Verwaltung der Domänen -> User-, Permission-,
+		// Authentication-Domänen dürfen nicht verändert werden (evtl. gar nicht gelesen
+		// werden)
 		if (userUpdateData.getRole().equalsIgnoreCase("ROOT_ADMIN")) {
 			String rightOption = headers.get("rightoption");
 			if (null == rightOption || !"Write_Root_Admin=true".equalsIgnoreCase(rightOption)) {
-				throw new DamServiceException(401L, "User not created",
+				throw new CsServiceException(401L, "User not created",
 						"Creating user with ROOT rights is not allowed for the current user");
 			}
 		}
@@ -201,20 +201,19 @@ public class UserStore {
 	 * @param lastName
 	 * @return
 	 */
-	private User createUser(String userName, String password, String givenName, String lastName, String role)
-			throws DamServiceException {
+	private User createUser(User userContainer) throws CsServiceException {
 
-		if (null == userName || null == password || null == givenName || null == lastName || null == role) {
+		if (null == userContainer.getUserName() || null == userContainer.getPassword() || null == userContainer.getGivenName() || null == userContainer.getLastName() || null == userContainer.getRole()) {
 			return null;
 		}
 
 		// does the userName already exists?
-		if (null != getUser(userName)) {
-			throw new DamServiceException(409L, "User not created", "User already exists, try update method");
+		if (null != getUser(userContainer.getUserName())) {
+			throw new CsServiceException(409L, "User not created", "User already exists, try update method");
 		}
 
 		try {
-			User user = userModel.save(new User(userName, password, givenName, lastName, role));
+			User user = userModel.save(userContainer);
 			if (null != user) {
 				user.setPassword("******");
 			}
@@ -224,7 +223,7 @@ public class UserStore {
 		}
 	}
 
-	private User updateUser(User userUpdateData) throws DamServiceException {
+	private User updateUser(User userUpdateData) throws CsServiceException {
 		User storedUser = null;
 		if (null != userUpdateData.getUserId()) {
 			storedUser = getUser(userUpdateData.getUserId());
@@ -233,20 +232,19 @@ public class UserStore {
 		}
 
 		if (null == storedUser) {
-			throw new DamServiceException(401L, "Cannot update user", "User not found by userId or userName");
+			throw new CsServiceException(401L, "Cannot update user", "User not found by userId or userName");
 		}
 
 		storedUser.updateFrom(userUpdateData);
 		storedUser = userModel.save(storedUser);
 		if (null == storedUser) {
-			throw new DamServiceException(401L, "User not updated", "Unknown reason but user was not saved");
+			throw new CsServiceException(401L, "User not updated", "Unknown reason but user was not saved");
 		}
 		storedUser.setPassword("******");
 		return storedUser;
 	}
 
-	public void dropUserSafe(Map<String, String> requestParams, Map<String, String> headers)
-			throws DamServiceException {
+	public void dropUserSafe(Map<String, String> requestParams, Map<String, String> headers) throws CsServiceException {
 		String requestorUserIdAsString = headers.get("requestoruserid");
 		String rights = headers.get("rights");
 		PermissionCheck.checkRequestedParams(requestorUserIdAsString, rights);
@@ -260,7 +258,15 @@ public class UserStore {
 		}
 
 		if (null == storedUser) {
-			throw new DamServiceException(500L, "Cannot drop user", "User not found by userId or userName");
+			throw new CsServiceException(500L, "Cannot drop user", "User not found by userId or userName");
+		}
+
+		if (storedUser.getRole().equalsIgnoreCase("ROOT_ADMIN")) {
+			String rightOption = headers.get("rightoption");
+			if (null == rightOption || !"Write_Root_Admin=true".equalsIgnoreCase(rightOption)) {
+				throw new CsServiceException(401L, "User not deleted",
+						"Deleting user with ROOT rights is not allowed for the current user");
+			}
 		}
 
 		Long requestorUserId = extractLong(requestorUserIdAsString);
@@ -268,23 +274,19 @@ public class UserStore {
 		dropUser(storedUser.getUserId());
 	}
 
-	private void dropUser(long userId) throws DamServiceException {
+	private void dropUser(long userId) throws CsServiceException {
 		userModel.deleteById(userId);
 		User deletedUser = getUser(userId);
 		if (null != deletedUser) {
-			throw new DamServiceException(404L, "User not deleted", "Unknown reason but user was not saved");
+			throw new CsServiceException(404L, "User not deleted", "Unknown reason but user was not deleted");
 		}
 	}
 
-	public static Long userIdToLong(String formattedUserId) {
-		return Long.valueOf(formattedUserId);
-	}
-
-	private Long extractLong(String longString) throws DamServiceException {
+	private Long extractLong(String longString) throws CsServiceException {
 		try {
 			return Long.valueOf(longString);
 		} catch (Exception e) {
-			throw new DamServiceException(404L, "Extraction Long from String failed",
+			throw new CsServiceException(404L, "Extraction Long from String failed",
 					"Parameter is required but null or does not represent a Long value");
 		}
 	}

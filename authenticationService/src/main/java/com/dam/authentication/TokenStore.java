@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.dam.authentication.model.User;
 import com.dam.authentication.rest.message.LogoutRequest;
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 
 /**
  * Handles active and non active Tokens
@@ -36,9 +36,9 @@ public class TokenStore {
 	private static Map<UUID, Token> expiredTokenMap = new ConcurrentHashMap<>();
 	private static Map<Long, UUID> activeUserMap = new ConcurrentHashMap<>();
 
-	public Token createNewToken(User user) throws DamServiceException {
+	public Token createNewToken(User user) throws CsServiceException {
 		if (null == user) {
-			throw new DamServiceException(new Long(424), "User is null", "Token for user could not be created");
+			throw new CsServiceException(new Long(424), "User is null", "Token for user could not be created");
 		}
 
 		// kill active Token of user (user is still logged in)
@@ -67,20 +67,20 @@ public class TokenStore {
 	 * 
 	 * @param validationToken
 	 * @return
-	 * @throws DamServiceException
+	 * @throws CsServiceException
 	 */
-	public Token validateAndRefreshToken(Token validationToken) throws DamServiceException {
+	public Token validateAndRefreshToken(Token validationToken) throws CsServiceException {
 		refreshTokenStore();
 
 		Token storedToken = activeTokenMap.get(validationToken.getTokenId());
 		if (null == storedToken) {
-			throw new DamServiceException(new Long(500), "No valid Token", "Token not in TokenStore.");
+			throw new CsServiceException(new Long(500), "No valid Token", "Token not in TokenStore.");
 		}
 
 		// Check age of token
 		if (!tokenIsStillValid(storedToken)) {
 			archiveToken(storedToken);
-			throw new DamServiceException(new Long(500), "No valid Token", "Token lifetime exceeded.");
+			throw new CsServiceException(new Long(500), "No valid Token", "Token lifetime exceeded.");
 		}
 
 		// refresh expireTime
@@ -92,7 +92,7 @@ public class TokenStore {
 			return storedToken;
 		}
 
-		throw new DamServiceException(new Long(500), "No valid Token", "Token does not exist.");
+		throw new CsServiceException(new Long(500), "No valid Token", "Token does not exist.");
 	}
 
 	public User getUser(Long userId) {

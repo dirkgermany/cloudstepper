@@ -2,7 +2,6 @@ package com.dam.authentication.rest.message;
 
 import java.util.UUID;
 
-import com.dam.authentication.RestRequest;
 import com.dam.authentication.model.User;
 
 /**

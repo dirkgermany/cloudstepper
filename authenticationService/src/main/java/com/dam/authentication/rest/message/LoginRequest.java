@@ -1,6 +1,5 @@
 package com.dam.authentication.rest.message;
 
-import com.dam.authentication.RestRequest;
 import com.dam.authentication.model.User;
 
 /**

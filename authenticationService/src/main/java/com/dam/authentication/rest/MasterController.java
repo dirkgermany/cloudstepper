@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 
 public class MasterController {
 	
-	protected Long decode (Long value) throws DamServiceException {
+	protected Long decode (Long value) throws CsServiceException {
 		if (null == value) {
 			return null;
 		}
@@ -20,22 +20,22 @@ public class MasterController {
 			longValue = decode(longValue);
 			return Long.valueOf(longValue);
 		} catch (NumberFormatException ne) {
-			throw new DamServiceException(404L, "Value could not be decoded for URL", ne.getMessage());
+			throw new CsServiceException(404L, "Value could not be decoded for URL", ne.getMessage());
 		}
 	}
 	
-	protected String decode(String value) throws DamServiceException {
+	protected String decode(String value) throws CsServiceException {
 		if (null == value)
 			return null;
 
 		try {
 			return URLDecoder.decode(value, StandardCharsets.UTF_8.toString()).trim();
 		} catch (UnsupportedEncodingException e) {
-			throw new DamServiceException(404L, "Value could not be decode for URL", e.getMessage());
+			throw new CsServiceException(404L, "Value could not be decode for URL", e.getMessage());
 		}
 	}
 
-	protected Map<String, String> decodeHttpMap(Map<String, String> params) throws DamServiceException{
+	protected Map<String, String> decodeHttpMap(Map<String, String> params) throws CsServiceException{
 		Map<String, String> decodedMap = new HashMap<>();
 		if (null != params && !params.isEmpty()) {
 			Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();

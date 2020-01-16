@@ -69,10 +69,11 @@ public class Permission {
 		this.rights = rights;
 	}
 	
-	public void updateEntity (Permission updatePermission) {
+	public void updateFrom (Permission updatePermission) {
 		setServiceDomain(updatePermission.getServiceDomain());
-		// TODO Zeile
 		setRole(updatePermission.getRole());
+		setRightOption(updatePermission.getRightOption());
+		setRights(updatePermission.getRights());
 	}
 
 	public String getRightOption() {

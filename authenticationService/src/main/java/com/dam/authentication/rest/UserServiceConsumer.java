@@ -18,7 +18,7 @@ import com.dam.authentication.model.User;
 import com.dam.authentication.rest.message.GetUserResponse;
 import com.dam.authentication.rest.message.LoginRequest;
 import com.dam.authentication.rest.message.RestResponse;
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,7 +27,7 @@ public class UserServiceConsumer {
 	@Autowired
 	ConfigProperties config;
 
-	public GetUserResponse readUser(LoginRequest loginRequest) throws DamServiceException {
+	public GetUserResponse readUser(LoginRequest loginRequest) throws CsServiceException {
 		RestTemplate restTemplate = new RestTemplate();
 
 		try {
@@ -43,7 +43,7 @@ public class UserServiceConsumer {
 			ResponseEntity<GetUserResponse> response = restTemplate.exchange(uri, HttpMethod.POST, requestBody, GetUserResponse.class);
 			return response.getBody();
 		} catch (Exception e) {
-			throw new DamServiceException(new Long(500), "User could not be evaluated", e.getMessage());
+			throw new CsServiceException(new Long(500), "User could not be evaluated", e.getMessage());
 		}
 	}
 

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.dam.user.PermissionCheck;
 import com.dam.user.UserStore;
 import com.dam.user.model.entity.User;
@@ -63,15 +63,15 @@ public class UserRepoController extends MasterController {
 				"User or combination of user+password is unknown"), HttpStatus.OK);
 	}
 	
-	@GetMapping("/listUser")
-	public ResponseEntity<RestResponse> listUser(@RequestHeader Map<String, String> headers) throws DamServiceException {
+	@GetMapping("/listUsers")
+	public ResponseEntity<RestResponse> listUsers(@RequestHeader Map<String, String> headers) throws CsServiceException {
 
 		try {
 			List<User> users = userStore.listUsersSafe(headers);
 			if (null != users) {
 				return new ResponseEntity<RestResponse>(new ListUserResponse(users), HttpStatus.OK);
 			}
-		} catch (DamServiceException dse) {
+		} catch (CsServiceException dse) {
 			return new ResponseEntity<RestResponse>(
 					new RestResponse(HttpStatus.valueOf(dse.getErrorId().intValue()), "User list could not be read", dse.getMessage()),
 					HttpStatus.OK);
@@ -91,7 +91,7 @@ public class UserRepoController extends MasterController {
 	 */
 	@GetMapping("/getUser")
 	public ResponseEntity<RestResponse> getUser(@RequestParam Map<String, String> params,
-			@RequestHeader Map<String, String> headers) throws DamServiceException {
+			@RequestHeader Map<String, String> headers) throws CsServiceException {
 
 		Map<String, String> decodedParams = null;
 		try {
@@ -103,17 +103,13 @@ public class UserRepoController extends MasterController {
 
 		try {
 			User user = userStore.getUserSafe(decodedParams, headers);
-			if (null != user) {
 				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
-			}
-		} catch (DamServiceException dse) {
+			
+		} catch (CsServiceException dse) {
 			return new ResponseEntity<RestResponse>(
 					new RestResponse(HttpStatus.valueOf(dse.getErrorId().intValue()), "User could not be read", dse.getMessage()),
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<RestResponse>(
-				new RestResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User could not be read", "User not found"),
-				HttpStatus.OK);
 	}
 
 	@PostMapping("/createUser")
@@ -133,11 +129,11 @@ public class UserRepoController extends MasterController {
 			if (null != user) {
 				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
 			}
-		} catch (DamServiceException e) {
+		} catch (CsServiceException e) {
 			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.valueOf(e.getErrorId().intValue()),
 					"User could not be created", e.getMessage()), HttpStatus.OK);
 		}
-		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_MODIFIED, "User not created",
+		return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.NOT_MODIFIED, "User not created",
 				"User still exists, data invalid or not complete"), HttpStatus.OK);
 	}
 
@@ -158,12 +154,12 @@ public class UserRepoController extends MasterController {
 			if (null != user) {
 				return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
 			}
-		} catch (DamServiceException e) {
+		} catch (CsServiceException e) {
 			return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.valueOf(e.getErrorId().intValue()),
-					"User could not be created", e.getMessage()), HttpStatus.OK);
+					"User could not be updated", e.getMessage()), HttpStatus.OK);
 		}
-		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_MODIFIED, "User not created",
-				"User still exists, data invalid or not complete"), HttpStatus.OK);
+		return new ResponseEntity<RestResponse>(new RestResponse(HttpStatus.NOT_MODIFIED, "User not updated",
+				"User does not exist, data invalid or not complete"), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/dropUser")
@@ -180,15 +176,15 @@ public class UserRepoController extends MasterController {
 		String userIdAsString = decodedParams.get("userId");
 		if (null == userIdAsString) {
 			return new ResponseEntity<RestResponse>(
-					new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User not deleted", "User not found"),
+					new RestResponse(HttpStatus.INTERNAL_SERVER_ERROR, "User not deleted", "User id is empty"),
 					HttpStatus.OK);
 		}
 
 		try {
 			userStore.dropUserSafe(decodedParams, headers);
-		} catch (DamServiceException dse) {
+		} catch (CsServiceException dse) {
 			return new ResponseEntity<RestResponse>(
-					new ErrorResponse(HttpStatus.valueOf(dse.getErrorId().intValue()), "User not deleted", dse.getMessage()),
+					new RestResponse(HttpStatus.valueOf(dse.getErrorId().intValue()), "User not deleted", dse.getMessage()),
 					HttpStatus.OK);
 		}
 

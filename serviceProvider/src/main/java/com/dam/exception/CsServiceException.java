@@ -1,6 +1,6 @@
 package com.dam.exception;
 
-public class DamServiceException extends Exception{
+public class CsServiceException extends Exception{
 
 	/**
 	 * 
@@ -12,7 +12,7 @@ public class DamServiceException extends Exception{
 	private String shortMsg;
 	private String description;
 	
-	public DamServiceException (Long errorId, String shortMsg, String description) {
+	public CsServiceException (Long errorId, String shortMsg, String description) {
 		super (description);
 		this.errorId = errorId;
 		this.shortMsg = shortMsg;

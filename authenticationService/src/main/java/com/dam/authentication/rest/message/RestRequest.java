@@ -1,4 +1,4 @@
-package com.dam.authentication;
+package com.dam.authentication.rest.message;
 
 public class RestRequest {
 	

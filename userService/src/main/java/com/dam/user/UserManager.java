@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.dam.user.model.entity.User;
 
 @Component
@@ -21,7 +21,7 @@ public class UserManager {
 	private static Map<String, User> userMap;
 	private static Long lastUpdate = new Long(0);
 
-	public synchronized User getUser(String userName, String password) throws DamServiceException {
+	public synchronized User getUser(String userName, String password) throws CsServiceException {
 		if (isTimeForUpdate()) {
 			userMap = new HashMap<>();
 		}
@@ -36,7 +36,7 @@ public class UserManager {
 		return user;
 	}
 
-	public synchronized User getUser(User requestedUser) throws DamServiceException {
+	public synchronized User getUser(User requestedUser) throws CsServiceException {
 		return getUser(requestedUser.getUserName(), requestedUser.getPassword());
 	}
 

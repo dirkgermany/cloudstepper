@@ -1,7 +1,5 @@
 package com.dam.authentication.rest.message;
 
-import com.dam.authentication.RestRequest;
-
 public class PermissionRequest extends RestRequest {
     private Long userId;
     private Long personId;

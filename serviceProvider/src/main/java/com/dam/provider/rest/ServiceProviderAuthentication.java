@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import com.dam.exception.AuthorizationServiceException;
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.rest.consumer.Client;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,7 +33,7 @@ public class ServiceProviderAuthentication {
 
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User or Password not valid.");
-		} catch (DamServiceException dse) {
+		} catch (CsServiceException dse) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
 							+ dse.getMessage() + "; Service:" + dse.getServiceName());

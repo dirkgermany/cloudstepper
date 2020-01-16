@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.PingFactory;
 import com.dam.provider.rest.consumer.Client;
@@ -33,7 +33,7 @@ public class ServiceProviderPing {
 	 * @return
 	 */
 	@GetMapping("/ping")
-	public PingResponse ping() throws DamServiceException{
+	public PingResponse ping() throws CsServiceException{
 		pingFactory.setInfo("ServiceProvider");
 
 		JsonNode response = pingFactory.getNode();

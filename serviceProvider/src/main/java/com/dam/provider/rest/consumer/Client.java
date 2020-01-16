@@ -26,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersUriSpec;
 
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.JsonHelper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,7 +39,7 @@ public class Client {
 	private static final Logger logger = LoggerFactory.getLogger(Client.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-	public ResponseEntity<JsonNode> postLogin(JsonNode requestBody) throws DamServiceException {
+	public ResponseEntity<JsonNode> postLogin(JsonNode requestBody) throws CsServiceException {
 		int index = config.getIndexPerDomain("AUTHENTICATION");
 		String URI = config.getServiceUrl(index) + "/login";
 		ResponseEntity<JsonNode> response = sendMessageWithBodyAsOptional(URI, requestBody, null, null,
@@ -58,14 +58,14 @@ public class Client {
 
 	public ResponseEntity<JsonNode> retrieveWrappedAuthorizedResponse(JsonNode request,
 			Map<String, String> requestParams, @RequestHeader Map<String, String> headers, String serviceUrl,
-			String action, String serviceDomain, HttpMethod httpMethod) throws DamServiceException {
+			String action, String serviceDomain, HttpMethod httpMethod) throws CsServiceException {
 
 		return retrieveResponse(request, requestParams, headers, serviceUrl, action, serviceDomain, httpMethod);
 	}
 
 	public ResponseEntity<JsonNode> retrieveResponse(JsonNode request, Map<String, String> requestParams,
 			@RequestHeader Map<String, String> headers, String url, String action, String serviceDomain,
-			HttpMethod httpMethod) throws DamServiceException {
+			HttpMethod httpMethod) throws CsServiceException {
 
 		String tokenId = headers.get("tokenid");
 
@@ -102,7 +102,7 @@ public class Client {
 		} catch (Exception e) {
 			logger.error("Service Provider :: Consumer {}: Message could not be send. URI {} - Request: {}",
 					dateTimeFormatter.format(LocalDateTime.now()), URI, request);
-			throw new DamServiceException(new Long(500), "Message could not be send. URI: " + URI, e.getMessage());
+			throw new CsServiceException(new Long(500), "Message could not be send. URI: " + URI, e.getMessage());
 		}
 	}
 
@@ -111,7 +111,7 @@ public class Client {
 	 * by calling the Authentication Service.
 	 */
 	private ResponseEntity<JsonNode> validateToken(JsonNode request, String tokenId, String domainName)
-			throws DamServiceException {
+			throws CsServiceException {
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("tokenId", tokenId);
@@ -126,13 +126,13 @@ public class Client {
 		} catch (Exception e) {
 			logger.error("Service Provider :: Consumer {}: Message could not be send. URI {} - Request: {}",
 					dateTimeFormatter.format(LocalDateTime.now()), URI, request);
-			throw new DamServiceException(new Long(500), "Message could not be send. URI: " + URI, e.getMessage());
+			throw new CsServiceException(new Long(500), "Message could not be send. URI: " + URI, e.getMessage());
 		}
 	}
 
 	private ResponseEntity<JsonNode> sendMessageWithBodyAsOptional(String URI, JsonNode jsonNode,
 			Map<String, String> requestParams, @RequestHeader Map<String, String> headers, HttpMethod httpMethod)
-			throws DamServiceException {
+			throws CsServiceException {
 
 		HttpEntity<JsonNode> requestBody = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -174,11 +174,11 @@ public class Client {
 		}
 	}
 
-	private String encodeValue(String value) throws DamServiceException {
+	private String encodeValue(String value) throws CsServiceException {
 		try {
 			return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException e) {
-			throw new DamServiceException(404L, "Value could not be encoded for URL", e.getMessage());
+			throw new CsServiceException(404L, "Value could not be encoded for URL", e.getMessage());
 		}
 	}
 }

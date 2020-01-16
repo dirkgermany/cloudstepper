@@ -2,19 +2,19 @@ package com.dam.authentication.rest.message;
 
 import com.dam.authentication.model.entity.Permission;
 
-public class PermissionCreateRequest extends RestRequest {
-    private Permission permission = new Permission();
+public class WriteRequest extends RestRequest {
+    private Permission permission;
 
-    public PermissionCreateRequest(String requestorUserId, String role, String serviceDomain, String rights) {
+    public WriteRequest(Permission permission) {
 		super("CS 0.0.1");
-		permission.setRole(role);
-		permission.setServiceDomain(serviceDomain);
-		permission.setRights(rights);
-		setRequestorUserId(requestorUserId);
+		setPermission(permission);
 	}
+    
+    public void setPermission (Permission permission) {
+    	this.permission = permission;
+    }
     
     public Permission getPermission() {
     	return permission;
     }
-    
 }

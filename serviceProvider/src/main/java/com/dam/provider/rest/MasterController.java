@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dam.exception.AuthorizationServiceException;
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.JsonHelper;
 import com.dam.provider.rest.consumer.Client;
@@ -53,7 +53,7 @@ public class MasterController {
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
 					"User not logged in, invalid token or not enough rights for action.");
-		} catch (DamServiceException dse) {
+		} catch (CsServiceException dse) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
 					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; Service:" + dse.getServiceName());
 		}
@@ -70,25 +70,25 @@ public class MasterController {
 			subPath = getSubPath(pathParts);
 			apiMethod = getApiMethod(pathParts, requestUri);
 
-		} catch (DamServiceException dse) {
+		} catch (CsServiceException dse) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; "
 							+ dse.getMessage() + "; Service:" + dse.getServiceName());
 		}
 	}
 
-	protected String decode(String value) throws DamServiceException {
+	protected String decode(String value) throws CsServiceException {
 		if (null == value)
 			return null;
 
 		try {
 			return URLDecoder.decode(value, StandardCharsets.UTF_8.toString()).trim();
 		} catch (UnsupportedEncodingException e) {
-			throw new DamServiceException(404L, "Value could not be decode for URL", e.getMessage());
+			throw new CsServiceException(404L, "Value could not be decode for URL", e.getMessage());
 		}
 	}
 
-	protected Map<String, String> decodeHttpMap(Map<String, String> params) throws DamServiceException{
+	protected Map<String, String> decodeHttpMap(Map<String, String> params) throws CsServiceException{
 		Map<String, String> decodedMap = new HashMap<>();
 		if (null != params && !params.isEmpty()) {
 			Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
@@ -100,44 +100,44 @@ public class MasterController {
 		return decodedMap;
 	}
 
-	protected String[] getPathParts(HttpServletRequest servletRequest) throws DamServiceException {
+	protected String[] getPathParts(HttpServletRequest servletRequest) throws CsServiceException {
 		String requestUri = servletRequest.getRequestURI();
 
 		if (requestUri.contains("/")) {
 			return requestUri.split("/");
 		} else {
-			throw new DamServiceException(500L, "Ungültiger Pfad",
+			throw new CsServiceException(500L, "Ungültiger Pfad",
 					"Der aufgerufene Pfad existiert nicht: " + requestUri);
 		}
 	}
 
-	protected String getServiceUrl(String domain) throws DamServiceException {
+	protected String getServiceUrl(String domain) throws CsServiceException {
 		if (null == domain) {
-			throw new DamServiceException(400L, "Konfigurationsfehler", "domain ist null");
+			throw new CsServiceException(400L, "Konfigurationsfehler", "domain ist null");
 		}
 		Integer index = config.getIndexPerDomain(domain);
 		return config.getServiceUrl(index);
 	}
 
 	
-	protected String extractTokenFromRequest(JsonNode requestBody) throws DamServiceException {
+	protected String extractTokenFromRequest(JsonNode requestBody) throws CsServiceException {
 		if (null != requestBody) {
 			return new JsonHelper().extractStringFromJsonNode(requestBody, "tokenId");
 		}
-		throw new DamServiceException(404L, "Missing tokenId", "Request not processed while tokenId was not received");
+		throw new CsServiceException(404L, "Missing tokenId", "Request not processed while tokenId was not received");
 	}
 
-	protected String getApiMethod(String[] pathParts, String requestUri) throws DamServiceException {
+	protected String getApiMethod(String[] pathParts, String requestUri) throws CsServiceException {
 		try {
 			return decode(pathParts[pathParts.length - 1]);
 
 		} catch (Exception e) {
-			throw new DamServiceException(500L, "Ungültiger Pfad",
+			throw new CsServiceException(500L, "Ungültiger Pfad",
 					"Der aufgerufene Pfad existiert nicht: " + requestUri);
 		}
 	}
 
-	protected String getSubPath(String[] pathParts) throws DamServiceException {
+	protected String getSubPath(String[] pathParts) throws CsServiceException {
 		String subPath = "/";
 		try {
 			int index = 2;
@@ -150,13 +150,13 @@ public class MasterController {
 		return subPath;
 	}
 
-	protected String getServiceDomain(String[] pathParts) throws DamServiceException {
+	protected String getServiceDomain(String[] pathParts) throws CsServiceException {
 		String domain = decode(pathParts[1]);
 
 		try {
 			return domain.toUpperCase();
 		} catch (Exception e) {
-			throw new DamServiceException(500L, "Ungültiger Pfad", "Domäne existiert nicht: " + domain.toUpperCase());
+			throw new CsServiceException(500L, "Ungültiger Pfad", "Domäne existiert nicht: " + domain.toUpperCase());
 		}
 	}
 }

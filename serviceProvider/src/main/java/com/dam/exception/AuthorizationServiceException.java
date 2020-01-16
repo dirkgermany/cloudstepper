@@ -1,6 +1,6 @@
 package com.dam.exception;
 
-public class AuthorizationServiceException extends DamServiceException{
+public class AuthorizationServiceException extends CsServiceException{
 
 	/**
 	 * 

@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 
 import com.dam.authentication.model.entity.Permission;
 
-public class PermissionsByDomainResponse extends RestResponse{
+public class ListPermissionResponse extends RestResponse{
     private List<Permission> permissions;
     	
-	public PermissionsByDomainResponse (List<Permission> permissions) {
-		super(HttpStatus.OK, "OK", "Permission list read");
+	public ListPermissionResponse (List<Permission> permissions) {
+		super(HttpStatus.OK, "OK", "Permissions found.");
 		
 		setPermissions(permissions);
 	}  
@@ -22,4 +22,5 @@ public class PermissionsByDomainResponse extends RestResponse{
 	public List<Permission> getPermissions() {
 		return this.permissions;
 	}
+	
 }

@@ -1,6 +1,6 @@
 package com.dam.user;
 
-import com.dam.exception.DamServiceException;
+import com.dam.exception.CsServiceException;
 import com.dam.exception.PermissionCheckException;
 import com.dam.user.rest.message.RestRequest;
 
@@ -11,31 +11,31 @@ public class PermissionCheck {
 	 * @param request
 	 * @param requestorUserId
 	 * @param rights
-	 * @throws DamServiceException
+	 * @throws CsServiceException
 	 */
 	public static void checkRequestedParams(RestRequest request, String requestorUserId, String rights)
-			throws DamServiceException {
+			throws CsServiceException {
 		if (null == request) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
+			throw new CsServiceException(new Long(400), "Invalid Request", "Request is null.");
 		}
 		if (null == requestorUserId) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new CsServiceException(new Long(400), "Invalid Request",
 					"requestorUserId is recommended but not set.");
 		}
 		if (null == rights || rights.isEmpty()) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new CsServiceException(new Long(400), "Invalid Request",
 					"User rights are recommended but are null or empty.");
 		}		
 	}
 	
 	public static void checkRequestedParams(String requestorUserId, String rights)
-			throws DamServiceException {
+			throws CsServiceException {
 		if (null == requestorUserId) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new CsServiceException(new Long(400), "Invalid Request",
 					"requestorUserId is recommended but not set.");
 		}
 		if (null == rights || rights.isEmpty()) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new CsServiceException(new Long(400), "Invalid Request",
 					"User rights are recommended but are null or empty.");
 		}
 	}
@@ -44,16 +44,16 @@ public class PermissionCheck {
 	 * Checks if a required object is existing
 	 * @param entity
 	 * @param theClass
-	 * @throws DamServiceException
+	 * @throws CsServiceException
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void checkRequestedEntity(Object entity, Class theClass, String additionalInformation) 
-			throws DamServiceException {
+			throws CsServiceException {
 		if (null == entity) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Required object " + theClass.getSimpleName() + " is null." + "; " + additionalInformation);
+			throw new CsServiceException(new Long(400), "Invalid Request", "Required object " + theClass.getSimpleName() + " is null." + "; " + additionalInformation);
 		}
 		if (!entity.getClass().getName().equals(theClass.getName())) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Object " + entity.getClass().getSimpleName() + " is not instance of " + theClass.getSimpleName()+ "; " + additionalInformation);
+			throw new CsServiceException(new Long(400), "Invalid Request", "Object " + entity.getClass().getSimpleName() + " is not instance of " + theClass.getSimpleName()+ "; " + additionalInformation);
 		}
 	}
 

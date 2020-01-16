@@ -1,6 +1,6 @@
 package com.dam.exception;
 
-public class PermissionCheckException extends DamServiceException{
+public class PermissionCheckException extends CsServiceException{
 
 	/**
 	 * 
