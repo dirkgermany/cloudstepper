@@ -1,175 +1,167 @@
 package com.dam.provider;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+
+import com.dam.exception.CsServiceException;
+import com.dam.provider.rest.consumer.Client;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @ConfigurationProperties(prefix = "service")
 public class ConfigProperties {
 
+	@Autowired
+	Client client;
+
 	@Value("${server.port}")
 	String serverPort;
 
-	@Value("${activated.services}")
-	private String[] servicesInConfFile;
-	
-	@Value("${activated.domains}")
-	private String[] domainsInConfFile;
+	@Value("${service.user.name}")
+	private String userName;
 
-	private List<String> configuredServices;
-	private List<String> configuredDomains;
-	
-	private Map<String, Integer> indexDomain;
-	private Map<String, Integer> indexService;
-	
-	private List<String> services;
-	private List<String> domains;
-	private List<String> ports;
-	private List<String> hosts;
-	private List<String> protocols;
-	
+	@Value("${service.user.password}")
+	private String password;
+
+	@Value("${service.configuration.port}")
+	private String configServicePort;
+
+	@Value("${service.configuration.protocol}")
+	private String configServiceProtocol;
+
+	@Value("${service.configuration.host}")
+	private String configServiceHost;
+
+	@Value("${service.authentication.port}")
+	private String authenticationServicePort;
+
+	@Value("${service.authentication.protocol}")
+	private String authenticationServiceProtocol;
+
+	@Value("${service.authentication.host}")
+	private String authenticationServiceHost;
+
+	private Map<String, Domain> domainList = new HashMap<>();
+	private JsonHelper jsonHelper = new JsonHelper();
+	private static boolean initialized = false;
+
 	public ConfigProperties() {
-		
+
 	}
-	
-	public Integer getIndexPerDomain(String domain) {
-		if (null == indexDomain) {
-			indexDomain = new HashMap<String, Integer>();
-			
-			Iterator <String> it = getDomains().iterator();
-			Integer index = 0;
-			while (it.hasNext()) {
-				String name = it.next();
-				indexDomain.put(name.toUpperCase(), index);
-				index++;
+
+	public void init() throws CsServiceException {
+		if (initialized) {
+			return;
+		}
+
+		JsonNode loginData = login();
+		readDomainConfigListFromDb(loginData);
+		initialized = true;
+	}
+
+	private JsonNode login() throws CsServiceException {
+		try {
+			JsonNode loginBody = jsonHelper.createEmptyNode();
+			loginBody = jsonHelper.addToJsonNode(loginBody, "userName", this.userName);
+			loginBody = jsonHelper.addToJsonNode(loginBody, "password", this.password);
+
+			ResponseEntity<JsonNode> responseEntity = client.postLogin(loginBody);
+			return responseEntity.getBody();
+		} catch (CsServiceException cse) {
+			System.out.println(
+					"Login fehl geschlagen. Service Provider konnte nicht authentifiziert werden. Der Service wird beendet.");
+			System.exit(500);
+			return null;
+		}
+	}
+
+	private void readDomainConfigListFromDb(JsonNode loginData) throws CsServiceException {
+
+		Long userId = jsonHelper.extractLongFromNode(loginData, "userId");
+		String tokenId = jsonHelper.extractStringFromJsonNode(loginData, "tokenId");
+		String key = "domain";
+
+		Map<String, String> requestParams = new HashMap<>();
+		Map<String, String> headers = new HashMap<>();
+
+		requestParams.put("userId", userId.toString());
+		requestParams.put("key", key);
+
+		headers.put("requestoruserid", userId.toString());
+		headers.put("tokenid", tokenId);
+		headers.put("rights", "RWD+RWD");
+
+		String action = "getConfiguration";
+
+		String URI = configServiceProtocol + "://" + configServiceHost + ":" + configServicePort + "/" + action;
+
+		ResponseEntity<JsonNode> responseEntity = client.sendMessageWithBodyAsOptional(URI, null, requestParams,
+				headers, HttpMethod.GET);
+		JsonNode responseNode = responseEntity.getBody();
+
+		Boolean isList = jsonHelper.extractBooleanFromNode(responseNode, "isList");
+
+		if (isList) {
+			JsonNode domainListNode = jsonHelper.extractNodeFromNode(responseNode, "configurations");
+			List<Object> domainNodes = jsonHelper.toArray(domainListNode, JsonNode.class);
+			for (Object obj : domainNodes) {
+				try {
+					JsonNode objNode = JsonNode.class.cast(obj);
+					String domainNodeAsString = jsonHelper.extractNodeFromNode(objNode, "value").toString();
+					domainNodeAsString = prepareJsonString(domainNodeAsString);
+					JsonNode domainNode = jsonHelper.getObjectMapper().readTree(domainNodeAsString);
+					Domain domain = jsonHelper.getObjectMapper().treeToValue(domainNode, Domain.class);
+					
+					domainList.put(domain.getDomainName(), domain);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} else {
+			JsonNode configurationNode = jsonHelper.extractNodeFromNode(responseNode, "configuration");
+			try {
+				String domainNodeAsString = jsonHelper.extractNodeFromNode(configurationNode, "value").toString();
+				domainNodeAsString = prepareJsonString(domainNodeAsString);
+				JsonNode domainNode = jsonHelper.getObjectMapper().readTree(domainNodeAsString);
+				Domain domain = jsonHelper.getObjectMapper().treeToValue(domainNode, Domain.class);
+				domainList.put(domain.getDomainName(), domain);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		return indexDomain.get(domain.toUpperCase());
+
 	}
-	
-	public Integer getIndexPerService(String service) {
-		if (null == indexService) {
-			indexService = new HashMap<String, Integer>();
-			
-			Iterator <String> it = getServices().iterator();
-			Integer index = 0;
-			while (it.hasNext()) {
-				String name = it.next();
-				indexService.put(name.toUpperCase(), index);
-				index++;
-			}
+
+	private String prepareJsonString(String jsonString) {
+		jsonString = jsonString.trim();
+		if (jsonString.contains("\\")) {
+			jsonString = jsonString.replace("\\", "");
 		}
-		return indexService.get(service.toUpperCase());
-	}
-	
-	public String getServiceUrl(int index) {
-		return getProtocols().get(index) + "://" + getHosts().get(index) + ":" + getPorts().get(index);
-	}
-	
-	public String getServiceName(int index) {
-		return getServices().get(index);
-	}
-
-
-	public List<String> getServiceList() {
-		if (null == configuredServices || configuredServices.isEmpty()) {
-			configuredServices = Arrays.asList(servicesInConfFile);
+		if (jsonString.contains("\"{")) {
+			jsonString = jsonString.replace("\"{", "{");
 		}
-		return configuredServices;
-	}
-
-	public List<String> getDomainList() {
-		if (null == configuredDomains || configuredDomains.isEmpty()) {
-			configuredDomains = Arrays.asList(domainsInConfFile);
+		if (jsonString.contains("}\"")) {
+			jsonString = jsonString.replace("}\"", "}");
 		}
-		return configuredDomains;
+		return jsonString;
 	}
 
-	public String[] getServicesInConfFile() {
-		return servicesInConfFile;
+	public String getAuthenticationUrl() {
+		return this.authenticationServiceProtocol + "://" + this.authenticationServiceHost + ":"
+				+ this.authenticationServicePort;
 	}
 
-	public void setServicesInConfFile(String[] servicesInConfFile) {
-		this.servicesInConfFile = servicesInConfFile;
-	}
-
-
-	public List<String> getConfiguredServices() {
-		return configuredServices;
-	}
-
-	public void setConfiguredServices(List<String> configuredServices) {
-		this.configuredServices = configuredServices;
-	}
-	
-	public String[] getDomainsInConfFile() {
-		return domainsInConfFile;
-	}
-
-	public void setDomainsInConfFile(String[] domainsInConfFile) {
-		this.domainsInConfFile = domainsInConfFile;
-	}
-
-	public List<String> getConfiguredDomains() {
-		return configuredDomains;
-	}
-
-	public void setConfiguredDomains(List<String> configuredDomains) {
-		this.configuredDomains = configuredDomains;
-	}
-
-
-	public Map<String, Integer> getIndexes() {
-		return indexDomain;
-	}
-
-	public void setIndexes(Map<String, Integer> indexes) {
-		this.indexDomain = indexes;
-	}
-
-	public List<String> getDomains() {
-		return domains;
-	}
-
-	public void setDomains(List<String> domains) {
-		this.domains = domains;
-	}
-
-	public List<String> getPorts() {
-		return ports;
-	}
-
-	public void setPorts(List<String> ports) {
-		this.ports = ports;
-	}
-
-	public List<String> getHosts() {
-		return hosts;
-	}
-
-	public void setHosts(List<String> hosts) {
-		this.hosts = hosts;
-	}
-
-	public List<String> getProtocols() {
-		return protocols;
-	}
-
-	public void setProtocols(List<String> protocols) {
-		this.protocols = protocols;
-	}
-
-	public List<String> getServices() {
-		return services;
-	}
-
-	public void setServices(List<String> services) {
-		this.services = services;
+	public String getServiceUrl(String domainName) {
+		Domain domain = domainList.get(domainName);
+		return domain.getUrl();
 	}
 
 	public String getServerPort() {
@@ -179,4 +171,5 @@ public class ConfigProperties {
 	public void setServerPort(String serverPort) {
 		this.serverPort = serverPort;
 	}
+
 }

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -14,13 +13,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.dam.authentication.ConfigProperties;
 import com.dam.authentication.JsonHelper;
-import com.dam.authentication.model.User;
 import com.dam.authentication.rest.message.GetUserResponse;
 import com.dam.authentication.rest.message.LoginRequest;
-import com.dam.authentication.rest.message.RestResponse;
 import com.dam.exception.CsServiceException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class UserServiceConsumer {
@@ -40,11 +35,11 @@ public class UserServiceConsumer {
 
 			HttpEntity<String> requestBody = new HttpEntity<String>(jsonLoginRequest, headers);
 			URI uri = new URI(config.getUserService().getServiceUrl() + "/checkUser");
-			ResponseEntity<GetUserResponse> response = restTemplate.exchange(uri, HttpMethod.POST, requestBody, GetUserResponse.class);
+			ResponseEntity<GetUserResponse> response = restTemplate.exchange(uri, HttpMethod.POST, requestBody,
+					GetUserResponse.class);
 			return response.getBody();
 		} catch (Exception e) {
 			throw new CsServiceException(new Long(500), "User could not be evaluated", e.getMessage());
 		}
 	}
-
 }

@@ -40,8 +40,9 @@ public class Client {
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	public ResponseEntity<JsonNode> postLogin(JsonNode requestBody) throws CsServiceException {
-		int index = config.getIndexPerDomain("AUTHENTICATION");
-		String URI = config.getServiceUrl(index) + "/login";
+		String URI = config.getAuthenticationUrl() + "/login";
+//		int index = config.getIndexPerDomain("AUTHENTICATION");
+//		String URI = config.getServiceUrl(index) + "/login";
 		ResponseEntity<JsonNode> response = sendMessageWithBodyAsOptional(URI, requestBody, null, null,
 				HttpMethod.POST);
 
@@ -72,7 +73,7 @@ public class Client {
 		// calls AuthenticationService
 		// and validates token
 		JsonHelper jsonHelper = new JsonHelper();
-		ResponseEntity<JsonNode> validatedTokenNode = validateToken(request, tokenId, serviceDomain.toString());
+		ResponseEntity<JsonNode> validatedTokenNode = validateToken(request, tokenId, serviceDomain);
 
 		JsonNode jsonBody = validatedTokenNode.getBody();
 		HttpStatus httpStatus = HttpStatus.valueOf(jsonBody.get("httpStatus").asText());
@@ -88,7 +89,7 @@ public class Client {
 		Long loggedInUserId = jsonHelper.extractLongFromNode(jsonBody, "userId");
 		String rightOption = jsonHelper.extractStringFromJsonNode(permission, "rightOption");
 
-		headers.put("requestorUserId", loggedInUserId.toString());
+		headers.put("requestoruserid", loggedInUserId.toString());
 		headers.put("rights", rights);
 		if (null != rightOption && !rightOption.isEmpty()) {
 			headers.put("rightOption", rightOption);
@@ -117,9 +118,10 @@ public class Client {
 		headers.put("tokenId", tokenId);
 		headers.put("serviceDomain", domainName);
 
-		Integer index = config.getIndexPerDomain("AUTHENTICATION");
-		String url = config.getServiceUrl(index);
-		String URI = url + "/" + "validateToken";
+//		Integer index = config.getIndexPerDomain("AUTHENTICATION");
+//		String url = config.getServiceUrl(index);
+//		String URI = url + "/" + "validateToken";
+		String URI = config.getAuthenticationUrl() + "/validateToken";
 
 		try {
 			return sendMessageWithBodyAsOptional(URI, request, null, headers, HttpMethod.POST);
@@ -130,7 +132,7 @@ public class Client {
 		}
 	}
 
-	private ResponseEntity<JsonNode> sendMessageWithBodyAsOptional(String URI, JsonNode jsonNode,
+	public ResponseEntity<JsonNode> sendMessageWithBodyAsOptional(String URI, JsonNode jsonNode,
 			Map<String, String> requestParams, @RequestHeader Map<String, String> headers, HttpMethod httpMethod)
 			throws CsServiceException {
 

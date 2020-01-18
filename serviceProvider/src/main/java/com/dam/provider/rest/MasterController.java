@@ -28,14 +28,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class MasterController {
-	
+
 	@Autowired
 	ConfigProperties config;
-	
+
 	@Autowired
 	Client client;
 
-	
 	protected String requestUri;
 	protected String[] pathParts;
 	protected String serviceDomain;
@@ -43,24 +42,33 @@ public class MasterController {
 	protected String apiMethod;
 	protected Map<String, String> decodedParams = null;
 
-	protected ResponseEntity<JsonNode> anyHttpRequest(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest,
-			Map<String, String> requestParams, @RequestHeader Map<String, String> headers, HttpMethod httpMethod) {
+	protected ResponseEntity<JsonNode> anyHttpRequest(@RequestBody(required = false) JsonNode requestBody,
+			HttpServletRequest servletRequest, Map<String, String> requestParams,
+			@RequestHeader Map<String, String> headers, HttpMethod httpMethod) {
+
+		// if first call in lifetime initialize configuration of provider
+		try {
+			config.init();
+		} catch (CsServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		prepareHttpMessageParts(requestParams, servletRequest, requestBody);
 		try {
-			return client.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers, getServiceUrl(serviceDomain),
-					subPath + apiMethod, serviceDomain, httpMethod);
+			return client.retrieveWrappedAuthorizedResponse(requestBody, decodedParams, headers,
+					config.getServiceUrl(serviceDomain), subPath + apiMethod, serviceDomain, httpMethod);
 		} catch (AuthorizationServiceException ase) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
 					"User not logged in, invalid token or not enough rights for action.");
 		} catch (CsServiceException dse) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-					"ErrorId: " + dse.getErrorId() + "; " + dse.getDescription() + "; " + dse.getShortMsg() + "; Service:" + dse.getServiceName());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "ErrorId: " + dse.getErrorId() + "; "
+					+ dse.getDescription() + "; " + dse.getShortMsg() + "; Service:" + dse.getServiceName());
 		}
 	}
 
-	
-	protected void prepareHttpMessageParts(@RequestParam Map<String, String> requestParams, HttpServletRequest servletRequest, JsonNode requestBody) throws ResponseStatusException {
+	protected void prepareHttpMessageParts(@RequestParam Map<String, String> requestParams,
+			HttpServletRequest servletRequest, JsonNode requestBody) throws ResponseStatusException {
 
 		try {
 			decodedParams = decodeHttpMap(requestParams);
@@ -88,7 +96,7 @@ public class MasterController {
 		}
 	}
 
-	protected Map<String, String> decodeHttpMap(Map<String, String> params) throws CsServiceException{
+	protected Map<String, String> decodeHttpMap(Map<String, String> params) throws CsServiceException {
 		Map<String, String> decodedMap = new HashMap<>();
 		if (null != params && !params.isEmpty()) {
 			Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
@@ -115,11 +123,11 @@ public class MasterController {
 		if (null == domain) {
 			throw new CsServiceException(400L, "Konfigurationsfehler", "domain ist null");
 		}
-		Integer index = config.getIndexPerDomain(domain);
-		return config.getServiceUrl(index);
+		return config.getServiceUrl(domain);
+//		Integer index = config.getIndexPerDomain(domain);
+//		return config.getServiceUrl(index);
 	}
 
-	
 	protected String extractTokenFromRequest(JsonNode requestBody) throws CsServiceException {
 		if (null != requestBody) {
 			return new JsonHelper().extractStringFromJsonNode(requestBody, "tokenId");

@@ -44,14 +44,14 @@ public class ServiceProviderPing {
 		pingResponse.getServiceInfos().add(response);
 		
 		// all other microservices
-		Iterator<String> it = config.getServiceList().iterator();
-		Integer index = 0;
-		while (it.hasNext()) {
-			String serviceName = it.next();
-			index = config.getIndexPerService(serviceName);
-//			pingResponse = pingToService(pingResponse, config.getServiceUrl(index), serviceName.toUpperCase());
-			index++;
-		}
+//		Iterator<String> it = config.getServiceList().iterator();
+//		Integer index = 0;
+//		while (it.hasNext()) {
+//			String serviceName = it.next();
+//			index = config.getIndexPerService(serviceName);
+////			pingResponse = pingToService(pingResponse, config.getServiceUrl(index), serviceName.toUpperCase());
+//			index++;
+//		}
 		
 		return pingResponse;
 	}
