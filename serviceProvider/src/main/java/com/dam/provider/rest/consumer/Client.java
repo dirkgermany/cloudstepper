@@ -70,7 +70,7 @@ public class Client {
 		// calls AuthenticationService
 		// and validates token
 		JsonHelper jsonHelper = new JsonHelper();
-		ResponseEntity<JsonNode> validatedTokenNode = tokenStore.validateCachedToken(tokenId, serviceDomain, config.getTokenCacheMaxAge());
+		ResponseEntity<JsonNode> validatedTokenNode = tokenStore.validateCachedToken(tokenId, serviceDomain, config.getTokenCacheMaxAge(), config.getTokenCacheActive());
 		
 		boolean updateCache = false;
 		if (null == validatedTokenNode) {

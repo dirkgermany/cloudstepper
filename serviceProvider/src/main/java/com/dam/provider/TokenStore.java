@@ -1,13 +1,11 @@
 package com.dam.provider;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -24,9 +22,13 @@ public class TokenStore {
 	private Map<String, Long> tokenAges = new HashMap<>();
 	private Long maxAge = 60000L; // 1 minute = default
 
-	public ResponseEntity<JsonNode> validateCachedToken(String tokenId, String serviceDomain, Long maxAge) {
+	public ResponseEntity<JsonNode> validateCachedToken(String tokenId, String serviceDomain, Long maxAge, Boolean isTokenCacheActive) {
+		if (!isTokenCacheActive) {
+			return null;
+		}
+		
 		if (null != maxAge) {
-			this.maxAge = maxAge;
+			setMaxAge(maxAge);
 		}
 		JsonNode node = tokens.get(tokenId + serviceDomain);
 
@@ -46,5 +48,13 @@ public class TokenStore {
 	public void cacheToken(JsonNode jsonBody, String tokenId, String serviceDomain) {
 		tokens.put(tokenId + serviceDomain, jsonBody);
 		tokenAges.put(tokenId + serviceDomain, System.currentTimeMillis());
+	}
+
+	public Long getMaxAge() {
+		return maxAge;
+	}
+
+	public void setMaxAge(Long maxAge) {
+		this.maxAge = maxAge;
 	}
 }

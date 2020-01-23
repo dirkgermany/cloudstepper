@@ -49,6 +49,9 @@ public class ConfigProperties {
 	
 	@Value("${token.cache.maxage}")
 	private Long tokenCacheMaxAge;
+	
+	@Value("${token.cache.active}")
+	private Boolean tokenCacheActive;
 
 	private Map<String, Domain> domainList = new HashMap<>();
 	private JsonHelper jsonHelper = new JsonHelper();
@@ -177,6 +180,10 @@ public class ConfigProperties {
 
 	public Long getTokenCacheMaxAge() {
 		return tokenCacheMaxAge;
+	}
+
+	public Boolean getTokenCacheActive() {
+		return tokenCacheActive;
 	}
 
 }
