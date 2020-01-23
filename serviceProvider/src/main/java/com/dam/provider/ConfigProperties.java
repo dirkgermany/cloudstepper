@@ -46,6 +46,9 @@ public class ConfigProperties {
 
 	@Value("${service.authentication.host}")
 	private String authenticationServiceHost;
+	
+	@Value("${token.cache.maxage}")
+	private Long tokenCacheMaxAge;
 
 	private Map<String, Domain> domainList = new HashMap<>();
 	private JsonHelper jsonHelper = new JsonHelper();
@@ -170,6 +173,10 @@ public class ConfigProperties {
 
 	public void setServerPort(String serverPort) {
 		this.serverPort = serverPort;
+	}
+
+	public Long getTokenCacheMaxAge() {
+		return tokenCacheMaxAge;
 	}
 
 }
