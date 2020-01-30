@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.dam.provider.ConfigProperties;
 import com.dam.provider.rest.consumer.Client;
@@ -30,7 +33,7 @@ public class ServiceProviderAnyCallPost extends MasterController {
 
 	@Autowired
 	ServiceProviderPing serviceProviderPing;
-
+	
 	@PostMapping("/*/*")
 	public ResponseEntity<JsonNode> doubleSlashPost(@RequestBody (required = false) JsonNode requestBody, HttpServletRequest servletRequest, @RequestParam Map<String, String> params,
 			@RequestHeader Map<String, String> headers) {

@@ -1,0 +1,27 @@
+2020-01-30 23:22:46.699  INFO 6782 --- [main] com.dam.authentication.Application       : Starting Application on dirk-dev with PID 6782 (/home/dirk/microservices/authenticationService/target/classes started by dirk in /home/dirk/microservices/authenticationService)
+2020-01-30 23:22:46.702  INFO 6782 --- [main] com.dam.authentication.Application       : No active profile set, falling back to default profiles: default
+2020-01-30 23:22:47.468  INFO 6782 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-30 23:22:47.606  INFO 6782 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 121ms. Found 1 repository interfaces.
+2020-01-30 23:22:47.986  INFO 6782 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$93d5e69c] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-01-30 23:22:48.239  INFO 6782 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2020-01-30 23:22:48.265  INFO 6782 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-01-30 23:22:48.266  INFO 6782 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.17]
+2020-01-30 23:22:48.333  INFO 6782 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-01-30 23:22:48.334  INFO 6782 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1583 ms
+2020-01-30 23:22:48.503  INFO 6782 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-01-30 23:22:48.561  INFO 6782 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-01-30 23:22:48.609  INFO 6782 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2020-01-30 23:22:48.775  INFO 6782 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.9.Final}
+2020-01-30 23:22:48.777  INFO 6782 --- [main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2020-01-30 23:22:48.927  INFO 6782 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2020-01-30 23:22:49.059  INFO 6782 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MariaDB103Dialect
+2020-01-30 23:22:49.542  INFO 6782 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-01-30 23:22:49.805  INFO 6782 --- [main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2020-01-30 23:22:50.062  INFO 6782 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-01-30 23:22:50.258  INFO 6782 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2020-01-30 23:22:50.260  INFO 6782 --- [main] com.dam.authentication.Application       : Started Application in 4.076 seconds (JVM running for 4.772)
+2020-01-30 23:23:13.695  INFO 6782 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-01-30 23:23:13.695  INFO 6782 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-01-30 23:23:13.710  INFO 6782 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 15 ms
