@@ -49,8 +49,7 @@ public class TokenStore {
 		}
 
 		// create new token
-		Token newToken = new Token(UUID.randomUUID(), user, null,
-				config.getTokenConfiguration().getMaxTokenAge() + System.currentTimeMillis());
+		Token newToken = new Token(user, getMaxTokenAge());
 
 		activeTokenMap.put(newToken.getTokenId(), newToken);
 		activeUserMap.put(user.getUserId(), newToken.getTokenId());
@@ -78,7 +77,7 @@ public class TokenStore {
 		}
 
 		// Check age of token
-		if (!tokenIsStillValid(storedToken)) {
+		if (!storedToken.getIsValid()) {
 			archiveToken(storedToken);
 			throw new CsServiceException(new Long(500), "No valid Token", "Token lifetime exceeded.");
 		}
@@ -108,18 +107,13 @@ public class TokenStore {
 	}
 
 	private void archiveToken(Token tokenToArchive) {
+		if (null == tokenToArchive) {
+			return;
+		}
 		activeTokenMap.remove(tokenToArchive.getTokenId());
 		expiredTokenMap.put(tokenToArchive.getTokenId(), tokenToArchive);
 
 		activeUserMap.remove(tokenToArchive.getUser().getUserId());
-	}
-
-	private Boolean tokenIsStillValid(Token validationToken) {
-		Long currentTime = System.currentTimeMillis();
-		if (null == validationToken || validationToken.getExpireTime() <= currentTime) {
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
 	}
 
 	/**
@@ -141,14 +135,13 @@ public class TokenStore {
 		}
 
 		return Boolean.FALSE;
-
 	}
 
 	public Long logout(LogoutRequest logoutRequest) {
 		Token storedToken = activeTokenMap.get(logoutRequest.getTokenId());
 		if (null != storedToken && logoutRequest.getUserName().equals(storedToken.getUser().getUserName())) {
 			archiveToken(storedToken);
-			return new Long(0);
+			return 200L;
 		}
 		return new Long(7);
 	}
@@ -167,8 +160,9 @@ public class TokenStore {
 				Token nextToken = tokens.next();
 				logger.debug("SysTime: " + currentTime + "; Token: " + nextToken.getTokenId() + " ;expireTime: "
 						+ nextToken.getExpireTime());
-				if (null != nextToken && nextToken.getExpireTime() < currentTime) {
+				if (null != nextToken && !(nextToken.getIsValid() && nextToken.getIsValid())) {
 					logger.debug("Token expired: " + nextToken.getTokenId());
+					nextToken.setIsValid(Boolean.FALSE);
 					expiredTokenMap.put(nextToken.getTokenId(), nextToken);
 					tokens.remove();
 				}

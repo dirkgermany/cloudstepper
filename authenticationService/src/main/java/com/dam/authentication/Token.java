@@ -14,29 +14,31 @@ public class Token {
 	private Long creationTime;
 	private Long expireTime;
 	private String rights;
+	private Boolean isValid;
 	
 
 	public Token() {
 
 	}
-
-	public Token(UUID tokenId, User user, Long creationTime, Long expireTime) {
-		if (null == creationTime) {
-			creationTime = System.currentTimeMillis();
-		}
-		setTokenId(tokenId);
+	
+	public Token (User user, Long initialAge) {
+		setTokenId(UUID.randomUUID());
 		setUser(user);
-		setCreationTime(creationTime);
-		setExpireTime(expireTime);
+		setCreationTime(System.currentTimeMillis());
+		setExpireTime(initialAge + System.currentTimeMillis());
+		setIsValid(Boolean.TRUE);
 	}
+	
+	public Token(UUID tokenId, User user, Long creationTime, Long expireTime) {
+        if (null == creationTime) {
+                creationTime = System.currentTimeMillis();
+        }
+        setTokenId(tokenId);
+        setUser(user);
+        setCreationTime(creationTime);
+        setExpireTime(expireTime);
+}
 
-	public Token(UUID tokenId, User user, Long expireTime) {
-		this(tokenId, user, System.currentTimeMillis(), expireTime);
-	}
-
-	public Token(UUID tokenId, User user) {
-		this(tokenId, user, System.currentTimeMillis(), System.currentTimeMillis());
-	}
 
 	public UUID getTokenId() {
 		return tokenId;
@@ -76,6 +78,15 @@ public class Token {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Boolean getIsValid() {
+		Long sysTime = System.currentTimeMillis();
+		return isValid &&  sysTime < this.expireTime;
+	}
+
+	public void setIsValid(Boolean isValid) {
+		this.isValid = isValid;
 	}
 
 }

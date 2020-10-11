@@ -147,10 +147,10 @@ public class AuthenticationController extends MasterController {
 			throw new CsServiceException(new Long(500), "Token not valid", "Token not found in Tokenstore");
 		}
 
-		user = token.getUser();
-		Token validationToken = new Token(tokenId, user,
-				config.getTokenConfiguration().getMaxTokenAge() + System.currentTimeMillis());
-		Token validatedToken = tokenStore.validateAndRefreshToken(validationToken);
+//		user = token.getUser();
+//		Token validationToken = new Token(tokenId, user, System.currentTimeMillis(),
+//				config.getTokenConfiguration().getMaxTokenAge() + System.currentTimeMillis());
+		Token validatedToken = tokenStore.validateAndRefreshToken(token);
 
 		return validatedToken;
 
