@@ -3,7 +3,7 @@
 
 V. 0.0.1
 
-Cloud Stepper is Java based and consists out of three services.
+Cloud Stepper is Java based and consists out of some services.
 
 Helpful if you want to create a backend with Microservice architecture.
 
@@ -20,6 +20,7 @@ Supports
 + GET, POST, PUT, PATCH, DELETE
 + Authentication
 + Authorization
++ Configuration
 
 Nearly available out of the box.
 No need of an installed Webserver.
