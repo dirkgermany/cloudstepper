@@ -24,10 +24,11 @@ Supports
 Nearly available out of the box.
 No need of an installed Webserver.
 
-This three services must run on the server:
+This services must run on the server:
 - serviceProvider (the Gateway itself)
 - userService (maintains the registered users)
 - authenticationService (maintains permissions, roles and tokens)
+- configurationService (delivers basic informations like services, urls, ports and other (individual) configuration parameters)
 
 Prerequisites:
 - Install and start mysql or mariadb and create user with database
