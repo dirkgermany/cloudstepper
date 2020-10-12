@@ -17,7 +17,7 @@ Short summarization
 Supports
 --------
 + REST services with Json formatted messages
-+ GET, POST, DELETE
++ GET, POST, PUT, PATCH, DELETE
 + Authentication
 + Authorization
 
