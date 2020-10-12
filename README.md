@@ -1,5 +1,5 @@
 # Cloud Stepper
-<h2>Microservice API Gateway including Authentication and Authorization</h2>
+<h2>Microservice API Gateway including Authentication, Authorization and Configuration</h2>
 
 V. 0.0.1
 
