@@ -81,8 +81,7 @@ public class Token {
 	}
 
 	public Boolean getIsValid() {
-		Long sysTime = System.currentTimeMillis();
-		return isValid &&  sysTime < this.expireTime;
+		return isValid &&  System.currentTimeMillis() < this.expireTime;
 	}
 
 	public void setIsValid(Boolean isValid) {

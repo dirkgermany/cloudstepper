@@ -8,7 +8,7 @@ public class UserResponse extends RestResponse{
     private User user;
     	
 	public UserResponse (User user) {
-		super(HttpStatus.OK, "OK", "User exists");
+		super(HttpStatus.OK, "OK", "User found");
 		
 		setUser(user);
 	}  

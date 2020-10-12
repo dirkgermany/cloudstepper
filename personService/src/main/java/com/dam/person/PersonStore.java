@@ -43,24 +43,25 @@ public class PersonStore {
 	 * @param person
 	 * @return
 	 */
-	public Person getPersonSafe(PersonRequest personRequest, Map<String, String> headers) throws DamServiceException {
+	public Person getPersonSafe(Map<String, String>  params, Map<String, String> headers) throws DamServiceException {
 		Long requestorUserId = null; 
 		String rights = null;
 		if (null != headers && headers.get("requestoruserid") != null ) {
 			requestorUserId= Long.valueOf(headers.get("requestoruserid"));
 			rights = headers.get("rights");
 		}
-		checkRequestedParamsRequest_Id_Rights(personRequest, requestorUserId, rights);
+//		checkRequestedParamsRequest_Id_Rights(personRequest, requestorUserId, rights);
+		
+		Long personId = Long.valueOf(params.get("person_id"));
 	
-		if (null == personRequest.getUserId() || null == personRequest.getPersonId()) {
+		if (null == personId ) {
 			throw new DamServiceException(new Long(400), "Invalid Request", "userId or personId is not set.");
 		}
 
 		// Check if the permissions is set
-		PermissionCheck.isReadPermissionSet(requestorUserId, personRequest.getUserId(),
-				rights);
+		PermissionCheck.isReadPermissionSet(requestorUserId, personId, rights);
 
-		Person person = getPersonById(personRequest.getPersonId());
+		Person person = getPersonById(personId);
 
 		if (null == person) {
 			throw new DamServiceException(new Long(404), "Person Unknown", "Person not found or invalid request");
@@ -79,8 +80,8 @@ public class PersonStore {
 	 * @throws PermissionCheckException
 	 */
 	public Person createPersonSafe(CreateRequest createRequest) throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(createRequest, createRequest.getRequestorUserId(),
-				createRequest.getRights());
+//		checkRequestedParamsRequest_Id_Rights(createRequest, createRequest.getRequestorUserId(),
+//				createRequest.getRights());
 		
 		checkRequestedParamsPerson(createRequest.getPerson());
 		
@@ -143,8 +144,8 @@ public class PersonStore {
 	 * @return
 	 */
 	public Person updatePersonSafe(UpdateRequest updateRequest) throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(updateRequest, updateRequest.getRequestorUserId(),
-				updateRequest.getRights());
+//		checkRequestedParamsRequest_Id_Rights(updateRequest, updateRequest.getRequestorUserId(),
+//				updateRequest.getRights());
 
 		checkRequestedParamsPerson(updateRequest.getPerson());
 		
@@ -175,7 +176,7 @@ public class PersonStore {
 	 * @return
 	 */
 	public Long dropPersonSafe(DropRequest dropRequest) throws DamServiceException {
-		checkRequestedParamsRequest_Id_Rights(dropRequest, dropRequest.getRequestorUserId(), dropRequest.getRights());
+//		checkRequestedParamsRequest_Id_Rights(dropRequest, dropRequest.getRequestorUserId(), dropRequest.getRights());
 		checkRequestedParamsPerson(dropRequest.getPerson());
 
 		// Save database requests
@@ -244,11 +245,8 @@ public class PersonStore {
 		return new Long(10);
 	}
 
-	private void checkRequestedParamsRequest_Id_Rights(RestRequest request, Long requestorUserId, String rights)
+	private void checkRequestedParamsRequest_Id_Rights(Long requestorUserId, String rights)
 			throws DamServiceException {
-		if (null == request) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
-		}
 		if (null == requestorUserId) {
 			throw new DamServiceException(new Long(400), "Invalid Request",
 					"requestorUserId is recommended but not set.");
