@@ -144,7 +144,7 @@ public class UserStore {
 		PermissionCheck.checkRequestedEntity(requestBody.getUser(), User.class, "");
 
 		// Diese Prüfung muss ähnlich in die Permissions rein
-		if (requestBody.getUser().getRole().equalsIgnoreCase("ROOT_ADMIN")) {
+		if (null !=requestBody.getUser().getRole() && requestBody.getUser().getRole().equalsIgnoreCase("ROOT_ADMIN")) {
 			String rightOption = headers.get("rightoption");
 			if (null == rightOption || !"Write_Root_Admin=true".equalsIgnoreCase(rightOption)) {
 				throw new CsServiceException(401L, "User not created",
