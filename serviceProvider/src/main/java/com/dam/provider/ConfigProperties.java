@@ -167,6 +167,9 @@ public class ConfigProperties {
 
 	public String getServiceUrl(String domainName) {
 		Domain domain = domainList.get(domainName);
+		if (null == domain) {
+			return null;
+		}
 		return domain.getUrl();
 	}
 
