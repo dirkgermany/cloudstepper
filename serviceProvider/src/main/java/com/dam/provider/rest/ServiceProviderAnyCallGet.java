@@ -4,8 +4,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 @CrossOrigin(origins = "*")
 @RestController
 public class ServiceProviderAnyCallGet extends MasterController {
-	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCallGet.class);
+//	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCallGet.class);
 
 	@Autowired
 	Client client;
@@ -44,6 +42,7 @@ public class ServiceProviderAnyCallGet extends MasterController {
 	@GetMapping("*")
 	public ResponseEntity<JsonNode> singleSlashGet(@RequestParam Map<String, String> params,
 			HttpServletRequest servletRequest, @RequestHeader Map<String, String> headers, @RequestBody (required = false) JsonNode requestBody) {
+		System.out.println("@GetMapping: " + requestBody + "\n - " + servletRequest + "\n - " + params + "\n - " + headers);
 		return anyHttpRequest(requestBody, servletRequest, params, headers, HttpMethod.GET);
 	}
 

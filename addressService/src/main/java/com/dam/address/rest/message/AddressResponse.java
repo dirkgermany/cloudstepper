@@ -6,7 +6,7 @@ public class AddressResponse extends RestResponse{
     private Address address;
     	
 	public AddressResponse (Address address) {
-		super(new Long(200), "OK", "Address found and attached.");
+		super(200L, "OK", "Address found and attached.");
 		
 		setAddress(address);
 	}  

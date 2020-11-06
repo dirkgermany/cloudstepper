@@ -7,11 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import com.dam.exception.CsServiceException;
-import com.dam.user.rest.message.RestResponse;
 
 public class MasterController {
 	

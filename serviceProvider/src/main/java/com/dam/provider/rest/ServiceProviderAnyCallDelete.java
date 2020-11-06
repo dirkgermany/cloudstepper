@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 @CrossOrigin(origins = "*")
 @RestController
 public class ServiceProviderAnyCallDelete extends MasterController {
-	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCallDelete.class);
+//	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderAnyCallDelete.class);
 
 	@Autowired
 	ConfigProperties config;

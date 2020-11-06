@@ -15,8 +15,6 @@ import com.dam.person.model.PersonModel;
 import com.dam.person.model.entity.Person;
 import com.dam.person.rest.message.CreateRequest;
 import com.dam.person.rest.message.DropRequest;
-import com.dam.person.rest.message.PersonRequest;
-import com.dam.person.rest.message.RestRequest;
 import com.dam.person.rest.message.UpdateRequest;
 
 /**
@@ -55,7 +53,7 @@ public class PersonStore {
 		Long personId = Long.valueOf(params.get("person_id"));
 	
 		if (null == personId ) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "userId or personId is not set.");
+			throw new DamServiceException(400L, "Invalid Request", "userId or personId is not set.");
 		}
 
 		// Check if the permissions is set
@@ -64,7 +62,7 @@ public class PersonStore {
 		Person person = getPersonById(personId);
 
 		if (null == person) {
-			throw new DamServiceException(new Long(404), "Person Unknown", "Person not found or invalid request");
+			throw new DamServiceException(404L, "Person Unknown", "Person not found or invalid request");
 		}
 
 		return person;
@@ -92,7 +90,7 @@ public class PersonStore {
 		if (null == createRequest.getPerson().getGivenName() || createRequest.getPerson().getGivenName().isEmpty()
 				|| null == createRequest.getPerson().getLastName()
 				|| createRequest.getPerson().getLastName().isEmpty()) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Person data not complete");
+			throw new DamServiceException(400L, "Invalid Request", "Person data not complete");
 		}
 
 		// check if still exists
@@ -128,7 +126,7 @@ public class PersonStore {
 		Person person = personModel.save(createRequest.getPerson());
 
 		if (null == person) {
-			throw new DamServiceException(new Long(422), "Person not created",
+			throw new DamServiceException(422L, "Person not created",
 					"Person still exists, data invalid or not complete");
 		}
 		return person;
@@ -158,7 +156,7 @@ public class PersonStore {
 
 		// Person must exist and userId ist not permutable
 		if (null == existingPerson) {
-			throw new DamServiceException(new Long(404), "Person for update not found",
+			throw new DamServiceException(404L, "Person for update not found",
 					"Person with personId doesn't exist.");
 		}
 
@@ -186,7 +184,7 @@ public class PersonStore {
 		Person existingPerson = getPersonById(dropRequest.getPerson().getPersonId());
 
 		if (null == existingPerson) {
-			throw new DamServiceException(new Long(404), "Person could not be dropped",
+			throw new DamServiceException(404L, "Person could not be dropped",
 					"Person does not exist or could not be found in database.");
 		}
 
@@ -226,11 +224,11 @@ public class PersonStore {
 			try {
 				return personModel.save(personForUpdate);
 			} catch (Exception e) {
-				throw new DamServiceException(new Long(409), 
+				throw new DamServiceException(409L, 
 						"Person could not be saved. Perhaps duplicate keys.", e.getMessage());
 			}
 		}
-		throw new DamServiceException(new Long(404), "Person could not be saved", "Check Person data in request.");
+		throw new DamServiceException(404L, "Person could not be saved", "Check Person data in request.");
 	}
 
 	private Long dropPerson(Person person) {
@@ -238,35 +236,35 @@ public class PersonStore {
 			personModel.deleteById(person.getPersonId());
 			Person deletedPerson = getPersonById(person.getPersonId());
 			if (null == deletedPerson) {
-				return new Long(200);
+				return 200L;
 			}
 		}
 
-		return new Long(10);
+		return 10L;
 	}
 
-	private void checkRequestedParamsRequest_Id_Rights(Long requestorUserId, String rights)
+/*	private void checkRequestedParamsRequest_Id_Rights(Long requestorUserId, String rights)
 			throws DamServiceException {
 		if (null == requestorUserId) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new DamServiceException(400L, "Invalid Request",
 					"requestorUserId is recommended but not set.");
 		}
 		if (null == rights || rights.isEmpty()) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new DamServiceException(400L, "Invalid Request",
 					"User rights are recommended but are null or empty.");
 		}
 	}
-
+*/
 	private void checkRequestorIdAndUserId(Long requestedUserId, Long persistentUserId) throws DamServiceException {
 		if (null != requestedUserId && null != persistentUserId && !requestedUserId.equals(persistentUserId)) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new DamServiceException(400L, "Invalid Request",
 					"userId in request and userId in database are not the same. userId is not permutable.");
 		}
 	}
 
 	private void checkRequestedParamsPerson(Person person) throws DamServiceException {
 		if (null == person || null == person.getUserId()) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Person is null or person userId is null.");
+			throw new DamServiceException(400L, "Invalid Request", "Person is null or person userId is null.");
 		}
 	}
 

@@ -17,7 +17,7 @@ public class PermissionCheck {
 	public static void isWritePermissionSet(Long requestorUserId, Long userId, String rights)
 			throws PermissionCheckException {
 		if (!isMarkerSet(requestorUserId, userId, rights, "W")) {
-			throw new PermissionCheckException(new Long(403), "No Write Permission",
+			throw new PermissionCheckException(403L, "No Write Permission",
 					"User has no permissions to write or update the dataset");
 		}
 	}
@@ -30,7 +30,7 @@ public class PermissionCheck {
 	 */
 	public static void isWritePermissionSetInGeneral(String rights) throws PermissionCheckException {
 		if (!rights.toUpperCase().contains("W")) {
-			throw new PermissionCheckException(new Long(403), "No Write Permission in general",
+			throw new PermissionCheckException(403L, "No Write Permission in general",
 					"User has no permissions to write or update a dataset in general");
 		}
 	}
@@ -38,14 +38,14 @@ public class PermissionCheck {
 	public static void isReadPermissionSet(Long requestorUserId, Long userId, String rights)
 			throws PermissionCheckException {
 		if (!isMarkerSet(requestorUserId, userId, rights, "R")) {
-			throw new PermissionCheckException(new Long(403), "No Read Permission",
+			throw new PermissionCheckException(403L, "No Read Permission",
 					"User has no permissions to read the requested dataset");
 		}
 	}
 
 	public static void isReadPermissionSetInGeneral(String rights) throws PermissionCheckException {
 		if (! rights.toUpperCase().contains("R")) {
-			throw new PermissionCheckException(new Long(403), "No Read Permission in general",
+			throw new PermissionCheckException(403L, "No Read Permission in general",
 					"User has no permissions to read a dataset in general");
 		}
 	}
@@ -53,14 +53,14 @@ public class PermissionCheck {
 	public static void isDeletePermissionSet(Long requestorUserId, Long userId, String rights)
 			throws PermissionCheckException {
 		if (! isMarkerSet(requestorUserId, userId, rights, "D")) {
-			throw new PermissionCheckException(new Long(403), "No Delete Permission",
+			throw new PermissionCheckException(403L, "No Delete Permission",
 					"User has no permissions to delete the requested dataset");
 		}
 	}
 
 	public static void isDeletePermissionSetInGeneral(String rights) throws PermissionCheckException {
 		if (!rights.toUpperCase().contains("W")) {
-			throw new PermissionCheckException(new Long(403), "No Delete Permission in general",
+			throw new PermissionCheckException(403L, "No Delete Permission in general",
 					"User has no permissions to delete a dataset in general");
 		}
 	}

@@ -55,7 +55,7 @@ public class AddressStore {
 		List<Address> addresses = getAddressListByPersonId(addressRequest.getPersonId());
 
 		if (null == addresses || addresses.size() == 0) {
-			throw new DamServiceException(new Long(1), "Address Unknown", "Address not found or invalid request");
+			throw new DamServiceException( 1L, "Address Unknown", "Address not found or invalid request");
 		}
 
 		// Filtering addresses with user permissions
@@ -73,7 +73,7 @@ public class AddressStore {
 		}
 
 		if (null == returnList || returnList.size() == 0) {
-			throw new DamServiceException(new Long(404), "Address not found", "Address does not exist.");
+			throw new DamServiceException( 404L, "Address not found", "Address does not exist.");
 		}
 
 		return returnList;
@@ -93,7 +93,7 @@ public class AddressStore {
 		PermissionCheck.isReadPermissionSetInGeneral(addressRequest.getRights());
 
 		if (null == addressRequest.getPersonId()) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "personId is not set.");
+			throw new DamServiceException(400L, "Invalid Request", "personId is not set.");
 		}
 
 		// deliver PRIMARY ADDRESS if type is not set with parameter
@@ -108,7 +108,7 @@ public class AddressStore {
 			return storedAddress;
 		}
 
-		throw new DamServiceException(new Long(404), "Address Unknown", "Address not found or invalid request");
+		throw new DamServiceException(404L, "Address Unknown", "Address not found or invalid request");
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class AddressStore {
 			return updateAddress(addressForUpdate, updateRequest.getAddress());
 		}
 
-		throw new DamServiceException(new Long(404), "Address for update not found",
+		throw new DamServiceException(404L, "Address for update not found",
 				"Address with userId and personId and type doesn't exist.");
 
 	}
@@ -189,7 +189,7 @@ public class AddressStore {
 		PermissionCheck.isDeletePermissionSetInGeneral(dropRequest.getRights());
 
 		if (null == dropRequest.getUserId() || null == dropRequest.getPersonId()) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "userId or personId is null.");
+			throw new DamServiceException(400L, "Invalid Request", "userId or personId is null.");
 		}
 
 		List<Address> addressList = getAddressListByPersonId(dropRequest.getPersonId());
@@ -204,7 +204,7 @@ public class AddressStore {
 			}
 		}
 
-		throw new DamServiceException(new Long(404), "No Address for deletion found",
+		throw new DamServiceException(404L, "No Address for deletion found",
 				"Address with userId and personId and type doesn't exist.");
 	}
 
@@ -231,7 +231,7 @@ public class AddressStore {
 			return dropAddress(addressToDelete);
 		}
 
-		throw new DamServiceException(new Long(404), "No Address for deletion found",
+		throw new DamServiceException(404L, "No Address for deletion found",
 				"Address with userId and personId and type doesn't exist.");
 	}
 
@@ -282,31 +282,31 @@ public class AddressStore {
 			addressModel.deleteById(addressContainer.getAddressId());
 			Address deletedAddress = getAddressById(addressContainer.getAddressId());
 			if (null == deletedAddress) {
-				return new Long(200);
+				return 200L;
 			}
 		}
 
-		return new Long(10);
+		return 10L;
 	}
 
 	private void checkRequestedParamsRequest_Id_Rights(RestRequest request, Long requestorUserId, String rights)
 			throws DamServiceException {
 		if (null == request) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Request is null.");
+			throw new DamServiceException(400L, "Invalid Request", "Request is null.");
 		}
 		if (null == requestorUserId) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new DamServiceException(400L, "Invalid Request",
 					"requestorUserId is recommended but not set.");
 		}
 		if (null == rights || rights.isEmpty()) {
-			throw new DamServiceException(new Long(400), "Invalid Request",
+			throw new DamServiceException(400L, "Invalid Request",
 					"User rights are recommended but are null or empty.");
 		}
 	}
 
 	private void checkRequestedParamsAddress(Address address) throws DamServiceException {
 		if (null == address || null == address.getUserId() || null == address.getPersonId()) {
-			throw new DamServiceException(new Long(400), "Invalid Request", "Address, userId or personId is null.");
+			throw new DamServiceException(400L, "Invalid Request", "Address, userId or personId is null.");
 		}
 	}
 }

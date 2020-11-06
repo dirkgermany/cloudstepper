@@ -17,19 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dam.exception.CsServiceException;
-import com.dam.user.PermissionCheck;
 import com.dam.user.UserStore;
 import com.dam.user.model.entity.User;
-import com.dam.user.model.entity.UserMessageContainer;
 import com.dam.user.rest.message.WriteRequest;
-import com.dam.user.rest.message.WriteResponse;
-import com.dam.user.rest.message.DropRequest;
 import com.dam.user.rest.message.DropResponse;
 import com.dam.user.rest.message.ErrorResponse;
 import com.dam.user.rest.message.ListUserResponse;
 import com.dam.user.rest.message.RestResponse;
-import com.dam.user.rest.message.UpdateRequest;
-import com.dam.user.rest.message.UpdateResponse;
 import com.dam.user.rest.message.UserRequest;
 import com.dam.user.rest.message.UserResponse;
 
@@ -56,7 +50,7 @@ public class UserRepoController extends MasterController {
 			return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
 		}
 
-		if (null != user && new Long(userRequest.getRequestorUserId()).longValue() == user.getUserId().longValue()) {
+		if (null != user && Long.parseLong(userRequest.getRequestorUserId()) == user.getUserId().longValue()) {
 			return new ResponseEntity<RestResponse>(new UserResponse(user), HttpStatus.OK);
 		}
 		return new ResponseEntity<RestResponse>(new ErrorResponse(HttpStatus.NOT_FOUND, "User not found",

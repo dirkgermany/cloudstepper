@@ -16,14 +16,14 @@ public class PermissionCheck {
 	public static void checkRequestedParams(RestRequest request, String requestorUserId, String rights)
 			throws CsServiceException {
 		if (null == request) {
-			throw new CsServiceException(new Long(400), "Invalid Request", "Request is null.");
+			throw new CsServiceException(400L, "Invalid Request", "Request is null.");
 		}
 		if (null == requestorUserId) {
-			throw new CsServiceException(new Long(400), "Invalid Request",
+			throw new CsServiceException(400L, "Invalid Request",
 					"requestorUserId is recommended but not set.");
 		}
 		if (null == rights || rights.isEmpty()) {
-			throw new CsServiceException(new Long(400), "Invalid Request",
+			throw new CsServiceException(400L, "Invalid Request",
 					"User rights are recommended but are null or empty.");
 		}		
 	}
@@ -31,11 +31,11 @@ public class PermissionCheck {
 	public static void checkRequestedParams(String requestorUserId, String rights)
 			throws CsServiceException {
 		if (null == requestorUserId) {
-			throw new CsServiceException(new Long(400), "Invalid Request",
+			throw new CsServiceException(400L, "Invalid Request",
 					"requestorUserId is recommended but not set.");
 		}
 		if (null == rights || rights.isEmpty()) {
-			throw new CsServiceException(new Long(400), "Invalid Request",
+			throw new CsServiceException(400L, "Invalid Request",
 					"User rights are recommended but are null or empty.");
 		}
 	}
@@ -50,10 +50,10 @@ public class PermissionCheck {
 	public static void checkRequestedEntity(Object entity, Class theClass, String additionalInformation) 
 			throws CsServiceException {
 		if (null == entity) {
-			throw new CsServiceException(new Long(400), "Invalid Request", "Required object " + theClass.getSimpleName() + " is null." + "; " + additionalInformation);
+			throw new CsServiceException(400L, "Invalid Request", "Required object " + theClass.getSimpleName() + " is null." + "; " + additionalInformation);
 		}
 		if (!entity.getClass().getName().equals(theClass.getName())) {
-			throw new CsServiceException(new Long(400), "Invalid Request", "Object " + entity.getClass().getSimpleName() + " is not instance of " + theClass.getSimpleName()+ "; " + additionalInformation);
+			throw new CsServiceException(400L, "Invalid Request", "Object " + entity.getClass().getSimpleName() + " is not instance of " + theClass.getSimpleName()+ "; " + additionalInformation);
 		}
 	}
 
@@ -72,7 +72,7 @@ public class PermissionCheck {
 	public static void isWritePermissionSet(Long requestorUserId, Long userId, String rights)
 			throws PermissionCheckException {
 		if (!isMarkerSet(requestorUserId, userId, rights, "W")) {
-			throw new PermissionCheckException(new Long(403), "No Write Permission",
+			throw new PermissionCheckException(403L, "No Write Permission",
 					"User has no permissions to write or update the dataset");
 		}
 	}
@@ -85,7 +85,7 @@ public class PermissionCheck {
 	 */
 	public static void isWritePermissionSetInGeneral(String rights) throws PermissionCheckException {
 		if (!rights.toUpperCase().contains("W")) {
-			throw new PermissionCheckException(new Long(403), "No Write Permission in general",
+			throw new PermissionCheckException(403L, "No Write Permission in general",
 					"User has no permissions to write or update a dataset in general");
 		}
 	}
@@ -93,14 +93,14 @@ public class PermissionCheck {
 	public static void isReadPermissionSet(Long requestorUserId, Long userId, String rights)
 			throws PermissionCheckException {
 		if (!isMarkerSet(requestorUserId, userId, rights, "R")) {
-			throw new PermissionCheckException(new Long(403), "No Read Permission",
+			throw new PermissionCheckException(403L, "No Read Permission",
 					"User has no permissions to read the requested dataset");
 		}
 	}
 
 	public static void isReadPermissionSetInGeneral(String rights) throws PermissionCheckException {
 		if (! rights.toUpperCase().contains("R")) {
-			throw new PermissionCheckException(new Long(403), "No Read Permission in general",
+			throw new PermissionCheckException(403L, "No Read Permission in general",
 					"User has no permissions to read a dataset in general");
 		}
 	}
@@ -108,14 +108,14 @@ public class PermissionCheck {
 	public static void isDeletePermissionSet(Long requestorUserId, Long userId, String rights)
 			throws PermissionCheckException {
 		if (! isMarkerSet(requestorUserId, userId, rights, "D")) {
-			throw new PermissionCheckException(new Long(403), "No Delete Permission",
+			throw new PermissionCheckException(403L, "No Delete Permission",
 					"User has no permissions to delete the requested dataset");
 		}
 	}
 
 	public static void isDeletePermissionSetInGeneral(String rights) throws PermissionCheckException {
 		if (!rights.toUpperCase().contains("W")) {
-			throw new PermissionCheckException(new Long(403), "No Delete Permission in general",
+			throw new PermissionCheckException(403L, "No Delete Permission in general",
 					"User has no permissions to delete a dataset in general");
 		}
 	}

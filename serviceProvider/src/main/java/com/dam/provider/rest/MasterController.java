@@ -159,6 +159,10 @@ public class MasterController {
 	}
 
 	protected String getServiceDomain(String[] pathParts) throws CsServiceException {
+		if (null == pathParts || pathParts.length == 0) {
+			System.out.println("MasterCrontroller::getServiceDomain pathParts sind NULL");
+			throw new CsServiceException(500L, "Ungültiger Pfad", "Domäne existiert nicht: PathParts=" + pathParts);
+		}
 		String domain = decode(pathParts[1]);
 
 		try {

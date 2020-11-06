@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Component
 public class TokenStore {
 
-	private static final Logger logger = LoggerFactory.getLogger(TokenStore.class);
-	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+//	private static final Logger logger = LoggerFactory.getLogger(TokenStore.class);
+//	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	private Map<String, JsonNode> tokens = new HashMap<>();
 	private Map<String, Long> tokenAges = new HashMap<>();

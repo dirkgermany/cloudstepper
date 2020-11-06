@@ -1,7 +1,7 @@
 package com.dam.person;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+//import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Does two missions:
@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author dirk
  *
  */
-@ConfigurationProperties
+//@ConfigurationProperties
 public class Configuration {
 	
 	

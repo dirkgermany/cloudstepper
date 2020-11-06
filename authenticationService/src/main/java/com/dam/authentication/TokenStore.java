@@ -38,7 +38,7 @@ public class TokenStore {
 
 	public Token createNewToken(User user) throws CsServiceException {
 		if (null == user) {
-			throw new CsServiceException(new Long(424), "User is null", "Token for user could not be created");
+			throw new CsServiceException(424L, "User is null", "Token for user could not be created");
 		}
 
 		// kill active Token of user (user is still logged in)
@@ -73,13 +73,13 @@ public class TokenStore {
 
 		Token storedToken = activeTokenMap.get(validationToken.getTokenId());
 		if (null == storedToken) {
-			throw new CsServiceException(new Long(500), "No valid Token", "Token not in TokenStore.");
+			throw new CsServiceException(500L, "No valid Token", "Token not in TokenStore.");
 		}
 
 		// Check age of token
 		if (!storedToken.getIsValid()) {
 			archiveToken(storedToken);
-			throw new CsServiceException(new Long(500), "No valid Token", "Token lifetime exceeded.");
+			throw new CsServiceException(500L, "No valid Token", "Token lifetime exceeded.");
 		}
 
 		// refresh expireTime
@@ -91,7 +91,7 @@ public class TokenStore {
 			return storedToken;
 		}
 
-		throw new CsServiceException(new Long(500), "No valid Token", "Token does not exist.");
+		throw new CsServiceException(500L, "No valid Token", "Token does not exist.");
 	}
 
 	public User getUser(Long userId) {
@@ -143,12 +143,12 @@ public class TokenStore {
 			archiveToken(storedToken);
 			return 200L;
 		}
-		return new Long(7);
+		return 7L;
 	}
 
 	private void refreshTokenStore() {
 		if (null == this.lastStoreUpdate) {
-			this.lastStoreUpdate = new Long(System.currentTimeMillis());
+			this.lastStoreUpdate = System.currentTimeMillis();
 			return;
 		}
 
@@ -168,7 +168,7 @@ public class TokenStore {
 				}
 			}
 		}
-		this.lastStoreUpdate = new Long(System.currentTimeMillis());
+		this.lastStoreUpdate = System.currentTimeMillis();
 	}
 
 	public Long getMaxTokenAge() {

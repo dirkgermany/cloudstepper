@@ -19,7 +19,6 @@ import com.dam.person.rest.message.DropResponse;
 import com.dam.person.rest.message.RestResponse;
 import com.dam.person.rest.message.UpdateRequest;
 import com.dam.person.rest.message.UpdateResponse;
-import com.dam.person.rest.message.PersonRequest;
 import com.dam.person.rest.message.PersonResponse;
 
 @RestController
